@@ -92,4 +92,4 @@ After following the steps for setup, do the following to run the `lrs-conformanc
 * Office React Fabric UI
 
 ## License
-This project is licensed under the GPL-3.0 License - see the [LICENSE](https://github.com/bitflipping-solutions/doctrina-lrs/blob/develop/LICENSE) file for details.
+This project is licensed under the AGPLv3 License - see the [LICENSE](https://github.com/bitflipping-solutions/doctrina-lrs/blob/develop/LICENSE) file for details.
