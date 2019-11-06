@@ -34,8 +34,8 @@ namespace Doctrina.Infrastructure
                         options.Clients.Add(new Client
                         {
                             ClientId = "Doctrina.IntegrationTests",
-                            AllowedGrantTypes = { GrantType.ResourceOwnerPassword },
                             ClientSecrets = { new Secret("secret".Sha256()) },
+                            AllowedGrantTypes = { GrantType.ResourceOwnerPassword },
                             AllowedScopes = { "Doctrina.WebUIAPI", "openid", "profile" }
                         });
                     }).AddTestUsers(new List<TestUser>
