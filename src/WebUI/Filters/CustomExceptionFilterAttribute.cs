@@ -20,7 +20,6 @@ namespace Doctrina.WebUI.Filters
 
         public override void OnException(ExceptionContext context)
         {
-            _logger.LogError(context.Exception, "Request failed.");
 
             if (context.Exception is ValidationException)
             {
@@ -36,21 +35,25 @@ namespace Doctrina.WebUI.Filters
                 context.Result = new JsonResult(new { message = context.Exception.Message });
                 return;
             }
-
-            var code = HttpStatusCode.InternalServerError;
-
-            if (context.Exception is NotFoundException)
+            else if (context.Exception is NotFoundException)
             {
-                code = HttpStatusCode.NotFound;
+                context.HttpContext.Response.ContentType = "application/json";
+                context.HttpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                context.Result = new JsonResult(new { message = context.Exception.Message });
+                return;
             }
-
-            context.HttpContext.Response.ContentType = "application/json";
-            context.HttpContext.Response.StatusCode = (int)code;
-            context.Result = new JsonResult(new
+            else
             {
-                error = new[] { context.Exception.InnerException?.Message ?? context.Exception.Message },
-                stackTrace = context.Exception.StackTrace
-            });
+                _logger.LogError(context.Exception, "Request failed.");
+
+                context.HttpContext.Response.ContentType = "application/json";
+                context.HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                context.Result = new JsonResult(new
+                {
+                    error = new[] { context.Exception.InnerException?.Message ?? context.Exception.Message },
+                    stackTrace = context.Exception.StackTrace
+                });
+            }
         }
     }
 }

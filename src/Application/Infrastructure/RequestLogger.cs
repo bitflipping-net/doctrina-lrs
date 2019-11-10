@@ -18,7 +18,8 @@ namespace Doctrina.Application.Infrastructure
         {
             // TODO: Add User Details
 
-            _logger.LogInformation("Request: {@Request}", request);
+            _logger.LogInformation("Request: {@Request}", request.GetType().Name);
+            _logger.LogDebug("Request information: {@Request}", request);
 
             return Task.CompletedTask;
         }
