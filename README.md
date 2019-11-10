@@ -1,3 +1,5 @@
+[![Build Status](https://dev.azure.com/bitflipping/Doctrina/_apis/build/status/bitflipping-net.doctrina-lrs?branchName=develop)](https://dev.azure.com/bitflipping/Doctrina/_build/latest?definitionId=10&branchName=develop)
+
 ## Getting Started
 Use these instructions to get the project up and running.
 

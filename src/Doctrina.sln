@@ -16,6 +16,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "experience-api", "experience-api", "{6FC901C9-4B90-44F5-817A-97B02C916C38}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2F673503-5698-4EC5-99E7-4BE0F735577E}"
+	ProjectSection(SolutionItems) = preProject
+		..\azure-pipelines.yml = ..\azure-pipelines.yml
+		..\README.md = ..\README.md
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client", "experience-api\src\Client\Client.csproj", "{4AF5E6BB-094E-4ADC-9262-98957F279A50}"
 EndProject
