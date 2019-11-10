@@ -1,5 +1,4 @@
 ﻿using Doctrina.Domain.Entities;
-using Doctrina.Persistence.ValueConverters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;

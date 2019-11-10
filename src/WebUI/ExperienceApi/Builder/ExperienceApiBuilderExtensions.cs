@@ -1,10 +1,9 @@
-﻿using Doctrina.WebUI.ExperienceApi.Authentication;
+﻿using Doctrina.Application.Common.Interfaces;
+using Doctrina.WebUI.ExperienceApi.Authentication;
 using Doctrina.WebUI.ExperienceApi.Controllers;
 using Doctrina.WebUI.ExperienceApi.Routing;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Doctrina.WebUI.ExperienceApi.Builder
 {
@@ -26,8 +25,11 @@ namespace Doctrina.WebUI.ExperienceApi.Builder
                 options.DefaultAuthenticateScheme = ExperienceApiAuthenticationOptions.DefaultScheme;
                 options.DefaultChallengeScheme = ExperienceApiAuthenticationOptions.DefaultScheme;
             })
-            .AddExperienceApiAuthentication(options => {
+            .AddExperienceApiAuthentication(options =>
+            {
             });
+
+            services.AddScoped<IAuthorityContext, AuthorityContext>();
 
             // services.AddAuthorization();
 

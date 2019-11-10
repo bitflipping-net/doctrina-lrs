@@ -1,8 +1,4 @@
 ﻿using Doctrina.Application.Common.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -26,7 +22,7 @@ namespace Doctrina.Application.System.Commands.SeedSampleData
 
         private async Task SeedUsersAsync(CancellationToken cancellationToken)
         {
-           // TODO: Seed user
+            // TODO: Seed user
         }
     }
 }

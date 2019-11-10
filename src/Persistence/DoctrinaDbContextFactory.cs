@@ -1,5 +1,4 @@
-﻿using Doctrina.Persistence.Infrastructure;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Doctrina.Persistence
 {

@@ -42,7 +42,7 @@ namespace Doctrina.WebUI.ExperienceApi.Mvc.ModelBinding
                 throw new BadRequestException(ex.Message);
             }
 
-            if(model.Statements == null)
+            if (model.Statements == null)
             {
                 bindingContext.Result = ModelBindingResult.Failed();
             }

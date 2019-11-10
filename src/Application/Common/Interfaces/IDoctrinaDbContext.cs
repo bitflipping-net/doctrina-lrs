@@ -1,12 +1,16 @@
 ﻿using Doctrina.Domain.Entities;
 using Doctrina.Domain.Entities.Documents;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Internal;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Doctrina.Application.Common.Interfaces
 {
-    public interface IDoctrinaDbContext
+    public interface IDoctrinaDbContext : IInfrastructure<IServiceProvider>, IDbContextDependencies, IDbSetCache, IDbContextPoolable, IResettableService
     {
         DbSet<VerbEntity> Verbs { get; set; }
         DbSet<ActivityEntity> Activities { get; set; }
@@ -17,5 +21,6 @@ namespace Doctrina.Application.Common.Interfaces
         DbSet<ActivityProfileEntity> ActivityProfiles { get; set; }
         DbSet<ActivityStateEntity> ActivityStates { get; set; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+        ChangeTracker ChangeTracker { get; }
     }
 }

@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Security.Claims;
 
 namespace Doctrina.Infrastructure
@@ -19,11 +20,14 @@ namespace Doctrina.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
         {
+            string connectionString = configuration.GetConnectionString("DoctrinaAuthorizationDatabase");
+            var migrationsAssemblyName = typeof(DependencyInjection).GetTypeInfo().Assembly.GetName().Name;
+
             services.AddScoped<IUserManager, UserManagerService>();
             services.AddTransient<IDateTime, MachineDateTime>();
 
             services.AddDbContext<DoctrinaAuthorizationDbContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("DoctrinaAuthorizationDatabase")));
+                options.UseSqlServer(connectionString));
 
             services.AddDefaultIdentity<DoctrinaUser>()
                 .AddEntityFrameworkStores<DoctrinaAuthorizationDbContext>();
@@ -57,6 +61,17 @@ namespace Doctrina.Infrastructure
             else
             {
                 services.AddIdentityServer()
+                    // this adds the operational data from DB (codes, tokens, consents)
+                    .AddOperationalStore(options =>
+                    {
+                        options.ConfigureDbContext = builder =>
+                            builder.UseSqlServer(connectionString,
+                                sql => sql.MigrationsAssembly(migrationsAssemblyName));
+
+                        // this enables automatic token cleanup. this is optional.
+                        options.EnableTokenCleanup = true;
+                        options.TokenCleanupInterval = 30; // interval in seconds
+                    })
                     .AddApiAuthorization<DoctrinaUser, DoctrinaAuthorizationDbContext>();
             }
 

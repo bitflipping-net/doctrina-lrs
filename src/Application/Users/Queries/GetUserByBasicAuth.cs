@@ -1,7 +1,5 @@
-using MediatR;
-using Doctrina.Domain.Identity;
-using System.Text;
 using System;
+using System.Text;
 
 namespace Doctrina.Application.Security.Queries
 {
@@ -11,7 +9,7 @@ namespace Doctrina.Application.Security.Queries
 
         public GetUserByBasicAuth(string basicAuth)
         {
-            if(basicAuth.StartsWith("Basic"))
+            if (basicAuth.StartsWith("Basic"))
             {
                 basicAuth = basicAuth.Substring(basicAuth.IndexOf("Basic")).Trim();
             }

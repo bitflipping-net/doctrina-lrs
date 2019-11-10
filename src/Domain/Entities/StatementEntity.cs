@@ -3,14 +3,15 @@ using System.Collections.Generic;
 
 namespace Doctrina.Domain.Entities
 {
-    public class StatementEntity : IStatementBaseEntity
+
+    public class StatementEntity : IStatementBaseEntity, IStatementEntity
     {
         public StatementEntity()
         {
             Attachments = new HashSet<AttachmentEntity>();
         }
 
-        public Guid? StatementId { get; set; }
+        public Guid StatementId { get; set; }
         public AgentEntity Actor { get; set; }
         public VerbEntity Verb { get; set; }
         public StatementObjectEntity Object { get; set; }
@@ -18,7 +19,6 @@ namespace Doctrina.Domain.Entities
         public ResultEntity Result { get; set; }
         public ContextEntity Context { get; set; }
         public virtual ICollection<AttachmentEntity> Attachments { get; set; }
-
         public DateTimeOffset? Stored { get; set; }
         public string Version { get; set; }
         public Guid? AuthorityId { get; set; }

@@ -1,15 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Doctrina.Domain.Entities
 {
-    public class StatementRefEntity : IStatementObjectEntity
+
+    public class StatementRefEntity : IStatementObjectEntity, IStatementRefEntity
     {
         public EntityObjectType ObjectType => EntityObjectType.StatementRef;
+
+        /// <summary>
+        /// Primary key
+        /// </summary>
         public Guid StatementRefId { get; set; }
-        public Guid? Id { get; set; }
+
+        /// <summary>
+        /// Id of the referenced statement
+        /// </summary>
+        public Guid StatementId { get; set; }
     }
 }

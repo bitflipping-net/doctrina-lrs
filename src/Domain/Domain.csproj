@@ -4,6 +4,8 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <LangVersion>7.1</LangVersion>
     <Configurations>Debug;Release;Test</Configurations>
+    <AssemblyName>Doctrina.Domain</AssemblyName>
+    <RootNamespace>Doctrina.Domain</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

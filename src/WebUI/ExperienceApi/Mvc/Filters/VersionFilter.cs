@@ -19,11 +19,15 @@ namespace Doctrina.WebUI.ExperienceApi.Mvc.Filters
             try
             {
                 if (!context.HttpContext.Request.Headers.ContainsKey(ApiHeaders.XExperienceApiVersion))
+                {
                     throw new Exception($"Missing '{ApiHeaders.XExperienceApiVersion}' header.");
+                }
 
                 string requestVersion = context.HttpContext.Request.Headers[ApiHeaders.XExperienceApiVersion];
                 if (string.IsNullOrEmpty(requestVersion))
+                {
                     throw new Exception($"'{ApiHeaders.XExperienceApiVersion}' header or it's null or empty.");
+                }
 
                 try
                 {

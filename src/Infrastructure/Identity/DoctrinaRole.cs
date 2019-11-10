@@ -4,6 +4,6 @@ namespace Doctrina.Infrastructure.Identity
 {
     public class DoctrinaRole : IdentityRole<string>
     {
-        
+
     }
 }

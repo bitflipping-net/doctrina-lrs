@@ -39,7 +39,7 @@ namespace Doctrina.WebUI.ExperienceApi.Mvc.ModelBinding
                 if (contentType.MediaType == MediaTypes.Application.Json)
                 {
                     string jsonString = System.Text.Encoding.UTF8.GetString(model.Content);
-                    if(!IsValidJson(jsonString))
+                    if (!IsValidJson(jsonString))
                     {
                         throw new BadRequestException("Not valid json.");
                     }

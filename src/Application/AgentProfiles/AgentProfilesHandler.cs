@@ -3,10 +3,8 @@ using Doctrina.Application.AgentProfiles.Commands;
 using Doctrina.Application.AgentProfiles.Queries;
 using Doctrina.Application.Agents.Commands;
 using Doctrina.Application.Common.Interfaces;
-using Doctrina.Application.Interfaces;
 using Doctrina.Domain.Entities;
 using Doctrina.Domain.Entities.Documents;
-using Doctrina.Domain.Entities.Extensions;
 using Doctrina.ExperienceApi.Data.Documents;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -40,7 +38,7 @@ namespace Doctrina.Application.AgentProfiles
         {
             var agentEntity = _mapper.Map<AgentEntity>(request.Agent);
             var query = _context.AgentProfiles
-                .WhereAgent(a=> a.Agent, agentEntity);
+                .Where(a => a.Agent.Hash == agentEntity.Hash);
 
             if (request.Since.HasValue)
             {
@@ -88,7 +86,7 @@ namespace Doctrina.Application.AgentProfiles
         public async Task<AgentProfileDocument> Handle(CreateAgentProfileCommand request, CancellationToken cancellationToken)
         {
 
-            var agent = await _mediator.Send(MergeActorCommand.Create(_mapper, request.Agent), cancellationToken);
+            var agent = (AgentEntity)await _mediator.Send(MergeActorCommand.Create(request.Agent), cancellationToken);
 
             var profile = new AgentProfileEntity(request.Content, request.ContentType)
             {
@@ -118,7 +116,7 @@ namespace Doctrina.Application.AgentProfiles
         private async Task<AgentProfileEntity> GetAgentProfile(AgentEntity agentEntity, string profileId, CancellationToken cancellationToken)
         {
             return await _context.AgentProfiles
-                            .WhereAgent(x=> x.Agent, agentEntity)
+                            .Where(x => x.Agent.Hash == agentEntity.Hash)
                             .SingleOrDefaultAsync(x => x.ProfileId == profileId, cancellationToken);
         }
     }

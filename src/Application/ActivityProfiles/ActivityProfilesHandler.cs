@@ -3,6 +3,7 @@ using Doctrina.Application.Activities.Commands;
 using Doctrina.Application.ActivityProfiles.Commands;
 using Doctrina.Application.ActivityProfiles.Queries;
 using Doctrina.Application.Common.Interfaces;
+using Doctrina.Domain.Entities;
 using Doctrina.Domain.Entities.Documents;
 using Doctrina.ExperienceApi.Data;
 using Doctrina.ExperienceApi.Data.Documents;
@@ -21,7 +22,7 @@ namespace Doctrina.Application.ActivityProfiles
         IRequestHandler<UpdateActivityProfileCommand>,
         IRequestHandler<GetActivityProfileQuery, ActivityProfileDocument>,
         IRequestHandler<GetActivityProfilesQuery, ICollection<ActivityProfileDocument>>,
-        IRequestHandler<DeleteActivityProfileCommand>
+    IRequestHandler<DeleteActivityProfileCommand>
     {
         private readonly IDoctrinaDbContext _context;
         private readonly IMediator _mediator;
@@ -48,10 +49,7 @@ namespace Doctrina.Application.ActivityProfiles
 
         public async Task<ActivityProfileDocument> Handle(CreateActivityProfileCommand request, CancellationToken cancellationToken)
         {
-            var activity = await _mediator.Send(new MergeActivityIriCommand()
-            {
-                ActivityId = request.ActivityId
-            });
+            var activity = (ActivityEntity)await _mediator.Send(MergeActivityCommand.Create(request.ActivityId));
 
             var profile = new ActivityProfileEntity(request.Content, request.ContentType)
             {

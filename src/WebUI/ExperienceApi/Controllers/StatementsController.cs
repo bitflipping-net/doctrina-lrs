@@ -49,7 +49,9 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             Statement statement = await _mediator.Send(GetStatementQuery.Create(statementId, includeAttachments, format));
 
             if (statement == null)
+            {
                 return NotFound();
+            }
 
             string statementJson = statement.ToJson(format);
 
@@ -88,7 +90,9 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             Statement statement = await _mediator.Send(GetVoidedStatemetQuery.Create(voidedStatementId, includeAttachments, format));
 
             if (statement == null)
+            {
                 return NotFound();
+            }
 
             string fullStatement = statement.ToJson(format);
 
@@ -142,16 +146,20 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 bool attachments = parameters.Attachments.GetValueOrDefault();
 
                 if (parameters.StatementId.HasValue)
+                {
                     return await GetStatement(
                         parameters.StatementId.Value,
                         attachments,
                         format);
+                }
 
                 if (parameters.VoidedStatementId.HasValue)
+                {
                     return await GetVoidedStatement(
                         parameters.VoidedStatementId.Value,
                         attachments,
                         format);
+                }
             }
 
             StatementsResult result = new StatementsResult();
@@ -181,7 +189,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             Response.ContentType = MediaTypes.Multipart.Mixed;
             var attachmentsWithPayload = statements.SelectMany(x => x.Attachments.Where(a => a.Payload != null));
 
-            var multipart = new MultipartContent("mixed")
+            using var multipart = new MultipartContent("mixed")
             {
                 new StringContent(result.ToJson(format), Encoding.UTF8, MediaTypes.Application.Json)
             };

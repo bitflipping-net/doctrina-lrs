@@ -1,4 +1,5 @@
 ﻿using Doctrina.Application.Statements.Queries;
+using Doctrina.ExperienceApi.Data;
 using Doctrina.ExperienceApi.Data.Validation;
 using FluentValidation;
 using MediatR;
@@ -13,20 +14,20 @@ namespace Doctrina.Application.Statements.Commands
         {
             _mediator = mediator;
 
-            RuleFor(x => x.Statement).NotNull().SetValidator(new StatementValidator())
+            RuleFor(x => (Statement)x.Statement).NotNull().SetValidator(new StatementValidator())
                 .DependentRules(() =>
                 {
-                    RuleFor(x => x.Statement).MustAsync(async (statement, cancellationToken) =>
+                    RuleFor(x => x).MustAsync(async (cmd, cancellationToken) =>
                     {
-                        var savedStatement = await _mediator.Send(GetStatementQuery.Create(statement.Id.Value), cancellationToken);
+                        var savedStatement = await _mediator.Send(GetStatementQuery.Create(cmd.Statement.Id.Value), cancellationToken);
 
-                        return savedStatement == null || statement.Equals(savedStatement);
+                        return savedStatement == null || cmd.Equals(savedStatement);
                     })
-                      .WithErrorCode("409")
-                      .WithName("id")
-                      .WithMessage("A statement is stored with the same id, and it does not match request statement.")
-                      .When(x => x.Statement.Id.HasValue);
-                });
+                    .WithErrorCode("409")
+                    .WithName("id")
+                    .WithMessage("A statement is stored with the same id, and it does not match request statement.")
+                    .When(cmd => cmd.Statement.Id.HasValue);
+            });
         }
     }
 }

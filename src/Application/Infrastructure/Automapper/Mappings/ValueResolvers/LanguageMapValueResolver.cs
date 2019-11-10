@@ -10,7 +10,7 @@ namespace Doctrina.Application.Mappings.ValueResolvers
     {
         public LanguageMapCollection Resolve(object source, object destination, LanguageMap sourceMember, LanguageMapCollection destMember, ResolutionContext context)
         {
-            if(sourceMember == null)
+            if (sourceMember == null)
             {
                 return null;
             }
@@ -26,7 +26,7 @@ namespace Doctrina.Application.Mappings.ValueResolvers
         public LanguageMap Resolve(object source, object destination, LanguageMapCollection sourceMember, LanguageMap destMember, ResolutionContext context)
         {
             var map = new LanguageMap();
-            foreach(var mem in sourceMember)
+            foreach (var mem in sourceMember)
             {
                 map.Add(mem);
             }

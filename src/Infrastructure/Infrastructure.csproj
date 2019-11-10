@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <Configurations>Debug;Release;Test</Configurations>
+    <AssemblyName>Doctrina.Infrastructure</AssemblyName>
+    <RootNamespace>Doctrina.Infrastructure</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

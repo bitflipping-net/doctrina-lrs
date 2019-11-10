@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Doctrina.Domain.Entities;
-using Doctrina.ExperienceApi.Data;
 using System;
 
 namespace Doctrina.Application.Mappings.ValueResolvers
@@ -20,23 +19,23 @@ namespace Doctrina.Application.Mappings.ValueResolvers
 
             if (sourceMember.ObjectType == EntityObjectType.Agent)
             {
-                return context.Mapper.Map<Agent>((AgentEntity)sourceMember.Agent);
+                return context.Mapper.Map<Agent>(sourceMember.Agent);
             }
             else if (sourceMember.ObjectType == EntityObjectType.Group)
             {
-                return context.Mapper.Map<Group>((GroupEntity)sourceMember.Agent);
+                return context.Mapper.Map<Group>(sourceMember.Agent);
             }
             else if (sourceMember.ObjectType == EntityObjectType.Activity)
             {
-                return context.Mapper.Map<Activity>((ActivityEntity)sourceMember.Activity);
+                return context.Mapper.Map<Activity>(sourceMember.Activity);
             }
             else if (sourceMember.ObjectType == EntityObjectType.SubStatement)
             {
-                return context.Mapper.Map<SubStatement>((SubStatementEntity)sourceMember.SubStatement);
+                return context.Mapper.Map<SubStatement>(sourceMember.SubStatement);
             }
             else if (sourceMember.ObjectType == EntityObjectType.StatementRef)
             {
-                return context.Mapper.Map<StatementRef>((StatementRefEntity)sourceMember.StatementRef);
+                return context.Mapper.Map<StatementRef>(sourceMember.StatementRef);
             }
 
             throw new NotImplementedException();

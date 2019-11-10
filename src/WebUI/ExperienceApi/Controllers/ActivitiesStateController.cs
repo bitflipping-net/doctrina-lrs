@@ -38,7 +38,9 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
         public async Task<ActionResult<StateDocumentModel>> GetSingleState(StateDocumentModel model)
         {
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             try
             {
@@ -51,10 +53,14 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 });
 
                 if (stateDocument == null)
+                {
                     return NotFound();
+                }
 
                 if (HttpMethods.IsHead(Request.Method))
+                {
                     return NoContent();
+                }
 
                 var content = new FileContentResult(stateDocument.Content, stateDocument.ContentType.ToString());
                 content.LastModified = stateDocument.LastModified;
@@ -73,7 +79,9 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
         public async Task<IActionResult> PostSingleState(StateDocumentModel model)
         {
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             try
             {
@@ -103,7 +111,9 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
         public async Task<IActionResult> DeleteSingleState([FromQuery]StateDocumentModel model)
         {
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             try
             {
@@ -140,7 +150,9 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
         public async Task<IActionResult> DeleteStatesAsync([FromQuery]Iri activityId, [FromQuery(Name = "agent")]string strAgent, [FromQuery]Guid? registration = null)
         {
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             Agent agent = new Agent(strAgent);
 
@@ -166,7 +178,9 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
         public async Task<IActionResult> GetMutipleStates(Iri activityId, [FromQuery(Name = "agent")]string strAgent, Guid? registration = null, DateTime? since = null)
         {
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             try
             {

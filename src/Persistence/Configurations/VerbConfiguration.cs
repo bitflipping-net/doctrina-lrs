@@ -2,7 +2,6 @@
 using Doctrina.Persistence.ValueConverters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
 
 namespace Doctrina.Persistence.Configurations
 {
@@ -18,7 +17,7 @@ namespace Doctrina.Persistence.Configurations
 
             builder.Property(e => e.Hash)
                 .IsRequired()
-                .HasMaxLength(Constants.HASH_LENGTH);
+                .HasMaxLength(Constants.SHA1_HASH_LENGTH);
 
             builder.Property(e => e.Id)
                 .IsRequired()

@@ -1,6 +1,5 @@
 ﻿using Doctrina.Domain.Entities;
 using Doctrina.Domain.Entities.Documents;
-using Doctrina.Domain.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;

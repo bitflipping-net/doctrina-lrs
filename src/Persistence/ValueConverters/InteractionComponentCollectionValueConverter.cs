@@ -1,5 +1,4 @@
 ﻿using Doctrina.Domain.Entities.InteractionActivities;
-using Doctrina.Domain.Entities.OwnedTypes;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Newtonsoft.Json;
 using System;

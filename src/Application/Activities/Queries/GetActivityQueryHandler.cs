@@ -9,13 +9,12 @@ using System.Threading.Tasks;
 
 namespace Doctrina.Application.Activities
 {
-    public class ActivitiesHandler :
-        IRequestHandler<GetActivityQuery, Activity>
+    public class GetActivityQueryHandler : IRequestHandler<GetActivityQuery, Activity>
     {
         private readonly IDoctrinaDbContext _context;
         private readonly IMapper _mapper;
 
-        public ActivitiesHandler(IDoctrinaDbContext context, IMapper mapper)
+        public GetActivityQueryHandler(IDoctrinaDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;

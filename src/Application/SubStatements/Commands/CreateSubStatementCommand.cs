@@ -4,8 +4,16 @@ using MediatR;
 
 namespace Doctrina.Application.SubStatements.Commands
 {
-    public class CreateSubStatementCommand : IRequest<SubStatementEntity>
+    public class CreateSubStatementCommand : IRequest<ISubStatementEntity>
     {
-        public SubStatement SubStatement { get; set; }
+        public ISubStatement SubStatement { get; private set; }
+
+        internal static CreateSubStatementCommand Create(ISubStatement subStatement)
+        {
+            return new CreateSubStatementCommand()
+            {
+                SubStatement = subStatement
+            };
+        }
     }
 }

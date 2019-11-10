@@ -24,7 +24,7 @@ namespace Doctrina.WebUI.ExperienceApi.Routing
 
         public async Task InvokeAsync(HttpContext context)
         {
-            if(context.Request.Path.HasValue && context.Request.Path.Value.StartsWith("/xapi/"))
+            if (context.Request.Path.HasValue && context.Request.Path.Value.StartsWith("/xapi/"))
             {
                 await AlternateRequest(context);
             }

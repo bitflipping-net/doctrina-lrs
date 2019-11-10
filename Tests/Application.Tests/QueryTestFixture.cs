@@ -1,6 +1,6 @@
-﻿using System;
-using AutoMapper;
+﻿using AutoMapper;
 using Doctrina.Persistence;
+using System;
 using Xunit;
 
 namespace Doctrina.Application.Tests.Infrastructure

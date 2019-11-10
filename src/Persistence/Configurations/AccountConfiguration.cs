@@ -19,11 +19,6 @@ namespace Doctrina.Persistence.Configurations
             builder.Property(e => e.Name)
                .HasMaxLength(40);
 
-            builder
-                .HasIndex(account => new { account.HomePage, account.Name })
-                .HasFilter("[HomePage] IS NOT NULL AND [Name] IS NOT NULL")
-                .IsUnique();
-
             builder.ToTable("AgentAccounts");
         }
     }

@@ -14,6 +14,8 @@ namespace Doctrina.Application.Tests.Infrastructure
                 mc.AddProfile(new AutoMapperProfile());
             });
 
+            mappingConfig.AssertConfigurationIsValid();
+
             return mappingConfig.CreateMapper();
         }
     }

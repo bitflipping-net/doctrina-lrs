@@ -12,9 +12,9 @@ namespace Doctrina.Persistence.Configurations
                 .ValueGeneratedOnAdd();
             builder.HasKey(x => x.StatementRefId);
 
-            builder.Property(x => x.Id)
+            builder.Property(x => x.StatementId)
                 .IsRequired();
-            builder.HasIndex(x => x.Id);
+            builder.HasIndex(x => x.StatementId);
         }
     }
 }

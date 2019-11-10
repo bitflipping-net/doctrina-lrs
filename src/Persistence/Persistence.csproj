@@ -7,6 +7,8 @@
     <PackageLicenseUrl>https://www.gnu.org/licenses/gpl-3.0.html</PackageLicenseUrl>
     <LangVersion>7.1</LangVersion>
     <Configurations>Debug;Release;Test</Configurations>
+    <AssemblyName>Doctrina.Persistence</AssemblyName>
+    <RootNamespace>Doctrina.Persistence</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

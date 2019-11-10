@@ -17,7 +17,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
     [Produces("application/json")]
     public class AgentsController : ApiControllerBase
     {
-        private IMediator _mediator;
+        private readonly IMediator _mediator;
 
         public AgentsController(IMediator mediator)
         {
@@ -30,13 +30,17 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             try
             {
                 if (!ModelState.IsValid)
+                {
                     return BadRequest(ModelState);
+                }
 
                 Agent agent = new Agent(strAgent);
 
                 var person = await _mediator.Send(GetPersonCommand.Create(agent));
                 if (person == null)
+                {
                     return NotFound();
+                }
 
                 if (HttpMethods.IsHead(Request.Method))
                 {

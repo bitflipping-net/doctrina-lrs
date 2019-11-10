@@ -37,7 +37,7 @@ namespace Doctrina.WebUI.ExperienceApi.Routing
             _next = next;
         }
 
-        public async Task InvokeAsync(HttpContext context)
+        public Task InvokeAsync(HttpContext context)
         {
             if (context.Request.Path.HasValue && context.Request.Path.StartsWithSegments("/xapi"))
             {
@@ -46,7 +46,9 @@ namespace Doctrina.WebUI.ExperienceApi.Routing
                 foreach (var requestParameter in requestParameters)
                 {
                     if (string.IsNullOrWhiteSpace(requestParameter))
+                    {
                         continue;
+                    }
 
                     if (!recognizedParameters.Contains(requestParameter))
                     {
@@ -55,7 +57,7 @@ namespace Doctrina.WebUI.ExperienceApi.Routing
                 }
             }
 
-            await _next(context);
+            return _next(context);
         }
     }
 }

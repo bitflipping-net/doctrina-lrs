@@ -32,7 +32,7 @@ namespace Doctrina.Domain.Entities.OwnedTypes
 
         public void Add(IDictionary<Uri, JToken> values)
         {
-            foreach(var item in values)
+            foreach (var item in values)
             {
                 Add(item);
             }

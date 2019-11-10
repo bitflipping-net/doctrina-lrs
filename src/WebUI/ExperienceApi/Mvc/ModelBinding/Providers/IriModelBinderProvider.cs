@@ -8,16 +8,27 @@ namespace Doctrina.WebUI.ExperienceApi.Mvc.ModelBinding.Providers
     {
         public IModelBinder GetBinder(ModelBinderProviderContext context)
         {
-            if (!context.Metadata.IsComplexType) return null;
+            if (!context.Metadata.IsComplexType)
+            {
+                return null;
+            }
 
             var propName = context.Metadata.PropertyName;
-            if (propName == null) return null;
+            if (propName == null)
+            {
+                return null;
+            }
 
             var modelType = context.Metadata.ModelType;
-            if (modelType == null) return null;
+            if (modelType == null)
+            {
+                return null;
+            }
 
             if (modelType != typeof(Iri))
+            {
                 return null;
+            }
 
             return new BinderTypeModelBinder(typeof(IriModelBinder));
         }

@@ -30,9 +30,9 @@ namespace Doctrina.WebUI
 
                 Log.Logger = new LoggerConfiguration()
                    .ReadFrom.Configuration(config)
-                  .MinimumLevel.Debug()
-                  .Enrich.FromLogContext()
-                  .CreateLogger();
+                   .MinimumLevel.Debug()
+                   .Enrich.FromLogContext()
+                   .CreateLogger();
 
                 try
                 {
@@ -44,6 +44,8 @@ namespace Doctrina.WebUI
 
                     var mediator = services.GetRequiredService<IMediator>();
                     await mediator.Send(new SeedSampleDataCommand(), CancellationToken.None);
+
+                    await host.RunAsync();
                 }
                 catch (Exception ex)
                 {
@@ -55,8 +57,6 @@ namespace Doctrina.WebUI
                     Log.CloseAndFlush();
                 }
             }
-
-            await host.RunAsync();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -87,11 +87,11 @@ namespace Doctrina.WebUI
                         }
                     });
 
-                    webBuilder.ConfigureLogging((context, logging) =>
-                     {
-                         // Clear our default providers
-                         logging.ClearProviders();
-                     });
+                    // webBuilder.ConfigureLogging((context, logging) =>
+                    //  {
+                    //      // Clear our default providers
+                    //      logging.ClearProviders();
+                    //  });
                     webBuilder.UseStartup<Startup>();
                     webBuilder.UseSerilog();
                 });

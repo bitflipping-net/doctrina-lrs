@@ -28,7 +28,9 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             Activity activity = await _mediator.Send(command);
 
             if (activity == null)
+            {
                 return Ok(new Activity());
+            }
 
             // TODO: Return only canonical that match accept-language header, or und
 

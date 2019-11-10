@@ -1,0 +1,26 @@
+POST https://localhost:44393/connect/token
+    ?client_id=Doctrina.IntegrationTests
+    &client_secret=2BB80D537B1DA3E38BD30361AA855686BDE0EACD7162FEF6A25FE97BF527A25B
+    &grant_type=password
+    &username=rasmus@doctrina
+    &password=Doctrina1!
+
+###
+GET https://localhost:44393/xapi/about
+
+
+###
+
+POST http://localhost:5000/xapi/statements
+X-Experience-API-Version: 1.0.3
+
+{"actor":{"objectType":"Agent","name":"xAPI mbox","mbox":"mailto:xapi@adlnet.gov"},"verb":{"id":"http://adlnet.gov/expapi/verbs/attended","display":{"en-GB":"attended","en-US":"attended"}},"object":{"objectType":"Activity","id":"http://www.example.com/meetings/occurances/34534"},"id":"0d497ebc-a044-4605-8f7d-16d0b24d2ff5"}
+
+
+###
+POST https://localhost:44393/xapi/statements
+X-Experience-API-Version: 1.0.3
+
+{"actor":{"objectType":"Agent","name":"xAPI account","mbox":"mailto:xapi@adlnet.gov"},"verb":{"id":"http://adlnet.gov/expapi/verbs/attended","display":{"en-GB":"attended","en-US":"attended"}},"context":{"registration":"ec531277-b57b-4c15-8d91-d292c5b2b8f7","instructor":{"objectType":"Agent","name":"xAPI mbox","mbox":"mailto:xapi@adlnet.gov"},"platform":"Example virtual meeting software","language":"tlh","statement":{"objectType":"StatementRef","id":"6690e6c9-3ef0-4ed3-8b37-7f3964730bee"}},"object":{"objectType":"Activity","id":"http://www.example.com/meetings/occurances/34534"}}
+
+

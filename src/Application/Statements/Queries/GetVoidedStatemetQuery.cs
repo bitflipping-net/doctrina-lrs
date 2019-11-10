@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Doctrina.Application.Common.Interfaces;
-using Doctrina.Application.Interfaces;
 using Doctrina.Domain.Entities;
 using Doctrina.ExperienceApi.Data;
 using MediatR;
@@ -28,7 +27,7 @@ namespace Doctrina.Application.Statements.Queries
             };
         }
 
-        public class Handler :IRequestHandler<GetVoidedStatemetQuery, Statement>
+        public class Handler : IRequestHandler<GetVoidedStatemetQuery, Statement>
         {
             private readonly IDoctrinaDbContext _context;
             private readonly IMapper _mapper;

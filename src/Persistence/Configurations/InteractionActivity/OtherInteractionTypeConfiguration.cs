@@ -1,5 +1,4 @@
-﻿using Doctrina.Domain.Entities;
-using Doctrina.Domain.Entities.InteractionActivities;
+﻿using Doctrina.Domain.Entities.InteractionActivities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

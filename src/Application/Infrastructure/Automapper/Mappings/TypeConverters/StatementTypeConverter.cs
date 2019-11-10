@@ -1,18 +1,15 @@
 ﻿using AutoMapper;
 using Doctrina.Domain.Entities;
 using Doctrina.ExperienceApi.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Doctrina.Application.Infrastructure.Automapper.Mappings.TypeConverters
 {
-    public class StatementTypeConverter : ITypeConverter<StatementEntity, Statement>
+    public class StatementTypeConverter : ITypeConverter<IStatementEntity, Statement>
     {
-        public Statement Convert(StatementEntity source, Statement destination, ResolutionContext context)
+        public Statement Convert(IStatementEntity source, Statement destination, ResolutionContext context)
         {
+            // FullStatement is the fastest way, allows us to not innerjoin other tables for the final result.
+            // But it does require fullStatement to be update to date.
             var stmt = new Statement(source.FullStatement);
             return stmt;
         }

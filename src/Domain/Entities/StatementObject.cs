@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Doctrina.Domain.Entities
+﻿namespace Doctrina.Domain.Entities
 {
     public class StatementObjectEntity : IStatementObjectEntity
     {

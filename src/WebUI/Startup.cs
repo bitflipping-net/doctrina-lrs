@@ -63,6 +63,8 @@ namespace Doctrina.WebUI
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
+
+            services.AddLearningRecordStore();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -93,16 +95,20 @@ namespace Doctrina.WebUI
 
 
             app.UseHealthChecks("/health");
-            app.UseHttpsRedirection();
+            if (!Environment.IsDevelopment())
+            {
+                app.UseHttpsRedirection();
+            }
             app.UseStaticFiles();
 
             app.UseOpenApi();
 
             app.UseSwaggerUi3(settings =>
             {
-                settings.Path = "/api";
+                settings.Path = "/xapi";
                 //settings.DocumentPath = "/api/specification.json";
             });
+
 
             app.UseRouting();
 

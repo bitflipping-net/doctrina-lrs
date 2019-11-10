@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Doctrina.Domain.Entities.InteractionActivities
+﻿namespace Doctrina.Domain.Entities.InteractionActivities
 {
     public class ChoiceInteractionActivity : InteractionActivityBase
     {

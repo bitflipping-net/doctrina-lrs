@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 
 namespace Doctrina.Domain.Entities.OwnedTypes
@@ -30,7 +29,7 @@ namespace Doctrina.Domain.Entities.OwnedTypes
 
         public void Add(IDictionary<string, string> values)
         {
-            foreach(var value in values)
+            foreach (var value in values)
             {
                 Add(value);
             }

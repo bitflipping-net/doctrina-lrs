@@ -8,7 +8,7 @@ namespace Doctrina.Infrastructure.Identity
     public class DoctrinaAuthorizationDbContext : ApiAuthorizationDbContext<DoctrinaUser>
     {
         public DoctrinaAuthorizationDbContext(
-            DbContextOptions<DoctrinaAuthorizationDbContext> options, 
+            DbContextOptions<DoctrinaAuthorizationDbContext> options,
             IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
         {
         }

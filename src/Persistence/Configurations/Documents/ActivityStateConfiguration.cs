@@ -42,7 +42,6 @@ namespace Doctrina.Persistence.Configurations.Documents
                     .HasMaxLength(50);
 
                 a.Property(e => e.LastModified)
-                    .HasDefaultValue(DateTimeOffset.UtcNow)
                     .IsRequired()
                     .ValueGeneratedOnAddOrUpdate();
 

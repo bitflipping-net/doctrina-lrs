@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Doctrina.Persistence.Migrations
 {
-    public partial class CreateDoctrinaSchema : Migration
+    public partial class CreateSchema : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -80,7 +80,7 @@ namespace Doctrina.Persistence.Migrations
                 columns: table => new
                 {
                     StatementRefId = table.Column<Guid>(nullable: false),
-                    Id = table.Column<Guid>(nullable: false)
+                    StatementId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -92,7 +92,7 @@ namespace Doctrina.Persistence.Migrations
                 columns: table => new
                 {
                     VerbId = table.Column<Guid>(nullable: false),
-                    Hash = table.Column<string>(maxLength: 32, nullable: false),
+                    Hash = table.Column<string>(maxLength: 40, nullable: false),
                     Id = table.Column<string>(maxLength: 2083, nullable: false),
                     Display = table.Column<string>(type: "ntext", nullable: true)
                 },
@@ -107,6 +107,7 @@ namespace Doctrina.Persistence.Migrations
                 {
                     AgentId = table.Column<Guid>(nullable: false),
                     ObjectType = table.Column<int>(nullable: false),
+                    Hash = table.Column<string>(maxLength: 40, nullable: false),
                     Name = table.Column<string>(maxLength: 100, nullable: true),
                     Mbox = table.Column<string>(maxLength: 128, nullable: true),
                     Mbox_SHA1SUM = table.Column<string>(maxLength: 40, nullable: true),
@@ -164,7 +165,7 @@ namespace Doctrina.Persistence.Migrations
                     Document_ContentType = table.Column<string>(maxLength: 255, nullable: true),
                     Document_Content = table.Column<byte[]>(nullable: true),
                     Document_Checksum = table.Column<string>(maxLength: 50, nullable: true),
-                    Document_LastModified = table.Column<DateTimeOffset>(nullable: true, defaultValue: new DateTimeOffset(new DateTime(2019, 10, 13, 18, 19, 47, 30, DateTimeKind.Unspecified).AddTicks(8770), new TimeSpan(0, 0, 0, 0, 0))),
+                    Document_LastModified = table.Column<DateTimeOffset>(nullable: true),
                     Document_CreateDate = table.Column<DateTimeOffset>(nullable: true)
                 },
                 constraints: table =>
@@ -220,7 +221,7 @@ namespace Doctrina.Persistence.Migrations
                 columns: table => new
                 {
                     ActivityId = table.Column<Guid>(nullable: false),
-                    Hash = table.Column<string>(maxLength: 32, nullable: false),
+                    Hash = table.Column<string>(maxLength: 40, nullable: false),
                     Id = table.Column<string>(maxLength: 2083, nullable: false),
                     DefinitionActivityDefinitionId = table.Column<Guid>(nullable: true)
                 },
@@ -246,7 +247,7 @@ namespace Doctrina.Persistence.Migrations
                     Document_ContentType = table.Column<string>(maxLength: 255, nullable: true),
                     Document_Content = table.Column<byte[]>(nullable: true),
                     Document_Checksum = table.Column<string>(maxLength: 50, nullable: true),
-                    Document_LastModified = table.Column<DateTimeOffset>(nullable: true, defaultValue: new DateTimeOffset(new DateTime(2019, 10, 13, 18, 19, 47, 18, DateTimeKind.Unspecified).AddTicks(2782), new TimeSpan(0, 0, 0, 0, 0))),
+                    Document_LastModified = table.Column<DateTimeOffset>(nullable: true),
                     Document_CreateDate = table.Column<DateTimeOffset>(nullable: true)
                 },
                 constraints: table =>
@@ -270,7 +271,7 @@ namespace Doctrina.Persistence.Migrations
                     Document_ContentType = table.Column<string>(maxLength: 255, nullable: true),
                     Document_Content = table.Column<byte[]>(nullable: true),
                     Document_Checksum = table.Column<string>(maxLength: 50, nullable: true),
-                    Document_LastModified = table.Column<DateTimeOffset>(nullable: true, defaultValue: new DateTimeOffset(new DateTime(2019, 10, 13, 18, 19, 47, 26, DateTimeKind.Unspecified).AddTicks(952), new TimeSpan(0, 0, 0, 0, 0))),
+                    Document_LastModified = table.Column<DateTimeOffset>(nullable: true),
                     Document_CreateDate = table.Column<DateTimeOffset>(nullable: true),
                     AgentId = table.Column<Guid>(nullable: true),
                     ActivityId = table.Column<Guid>(nullable: true)
@@ -505,13 +506,6 @@ namespace Doctrina.Persistence.Migrations
                 column: "AgentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AgentAccounts_HomePage_Name",
-                table: "AgentAccounts",
-                columns: new[] { "HomePage", "Name" },
-                unique: true,
-                filter: "[HomePage] IS NOT NULL AND [Name] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_AgentProfiles_AgentId",
                 table: "AgentProfiles",
                 column: "AgentId");
@@ -533,25 +527,10 @@ namespace Doctrina.Persistence.Migrations
                 column: "GroupEntityAgentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Agents_ObjectType_Mbox",
+                name: "IX_Agents_ObjectType_Hash",
                 table: "Agents",
-                columns: new[] { "ObjectType", "Mbox" },
-                unique: true,
-                filter: "[Mbox] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Agents_ObjectType_Mbox_SHA1SUM",
-                table: "Agents",
-                columns: new[] { "ObjectType", "Mbox_SHA1SUM" },
-                unique: true,
-                filter: "[Mbox_SHA1SUM] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Agents_ObjectType_OpenId",
-                table: "Agents",
-                columns: new[] { "ObjectType", "OpenId" },
-                unique: true,
-                filter: "[OpenId] IS NOT NULL");
+                columns: new[] { "ObjectType", "Hash" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_AttachmentEntity_StatementEntityStatementId",
@@ -579,9 +558,9 @@ namespace Doctrina.Persistence.Migrations
                 column: "TeamAgentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_StatementRefEntity_Id",
+                name: "IX_StatementRefEntity_StatementId",
                 table: "StatementRefEntity",
-                column: "Id");
+                column: "StatementId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Statements_ActorAgentId",

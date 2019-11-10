@@ -36,10 +36,6 @@ namespace Doctrina.Persistence.Migrations
 
                     b.HasKey("AccountId");
 
-                    b.HasIndex("HomePage", "Name")
-                        .IsUnique()
-                        .HasFilter("[HomePage] IS NOT NULL AND [Name] IS NOT NULL");
-
                     b.ToTable("AgentAccounts");
                 });
 
@@ -85,8 +81,8 @@ namespace Doctrina.Persistence.Migrations
 
                     b.Property<string>("Hash")
                         .IsRequired()
-                        .HasColumnType("nvarchar(32)")
-                        .HasMaxLength(32);
+                        .HasColumnType("nvarchar(40)")
+                        .HasMaxLength(40);
 
                     b.Property<string>("Id")
                         .IsRequired()
@@ -118,6 +114,11 @@ namespace Doctrina.Persistence.Migrations
                     b.Property<Guid?>("GroupEntityAgentId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Hash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(40)")
+                        .HasMaxLength(40);
+
                     b.Property<string>("Mbox")
                         .HasColumnName("Mbox")
                         .HasColumnType("nvarchar(128)")
@@ -137,7 +138,7 @@ namespace Doctrina.Persistence.Migrations
 
                     b.Property<string>("OpenId")
                         .HasColumnName("OpenId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("AgentId");
 
@@ -145,17 +146,8 @@ namespace Doctrina.Persistence.Migrations
 
                     b.HasIndex("GroupEntityAgentId");
 
-                    b.HasIndex("ObjectType", "Mbox")
-                        .IsUnique()
-                        .HasFilter("[Mbox] IS NOT NULL");
-
-                    b.HasIndex("ObjectType", "Mbox_SHA1SUM")
-                        .IsUnique()
-                        .HasFilter("[Mbox_SHA1SUM] IS NOT NULL");
-
-                    b.HasIndex("ObjectType", "OpenId")
-                        .IsUnique()
-                        .HasFilter("[OpenId] IS NOT NULL");
+                    b.HasIndex("ObjectType", "Hash")
+                        .IsUnique();
 
                     b.ToTable("Agents");
 
@@ -404,7 +396,7 @@ namespace Doctrina.Persistence.Migrations
 
             modelBuilder.Entity("Doctrina.Domain.Entities.StatementEntity", b =>
                 {
-                    b.Property<Guid?>("StatementId")
+                    b.Property<Guid>("StatementId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -430,6 +422,7 @@ namespace Doctrina.Persistence.Migrations
 
                     b.Property<DateTimeOffset?>("Timestamp")
                         .IsRequired()
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetimeoffset");
 
                     b.Property<Guid>("VerbId")
@@ -465,13 +458,12 @@ namespace Doctrina.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("Id")
-                        .IsRequired()
+                    b.Property<Guid>("StatementId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("StatementRefId");
 
-                    b.HasIndex("Id");
+                    b.HasIndex("StatementId");
 
                     b.ToTable("StatementRefEntity");
                 });
@@ -522,8 +514,8 @@ namespace Doctrina.Persistence.Migrations
 
                     b.Property<string>("Hash")
                         .IsRequired()
-                        .HasColumnType("nvarchar(32)")
-                        .HasMaxLength(32);
+                        .HasColumnType("nvarchar(40)")
+                        .HasMaxLength(40);
 
                     b.Property<string>("Id")
                         .IsRequired()
@@ -718,8 +710,7 @@ namespace Doctrina.Persistence.Migrations
                             b1.Property<DateTimeOffset?>("LastModified")
                                 .IsRequired()
                                 .ValueGeneratedOnAddOrUpdate()
-                                .HasColumnType("datetimeoffset")
-                                .HasDefaultValue(new DateTimeOffset(new DateTime(2019, 10, 13, 18, 19, 47, 18, DateTimeKind.Unspecified).AddTicks(2782), new TimeSpan(0, 0, 0, 0, 0)));
+                                .HasColumnType("datetimeoffset");
 
                             b1.HasKey("ActivityProfileEntityActivityProfileId");
 
@@ -764,8 +755,7 @@ namespace Doctrina.Persistence.Migrations
                             b1.Property<DateTimeOffset?>("LastModified")
                                 .IsRequired()
                                 .ValueGeneratedOnAddOrUpdate()
-                                .HasColumnType("datetimeoffset")
-                                .HasDefaultValue(new DateTimeOffset(new DateTime(2019, 10, 13, 18, 19, 47, 26, DateTimeKind.Unspecified).AddTicks(952), new TimeSpan(0, 0, 0, 0, 0)));
+                                .HasColumnType("datetimeoffset");
 
                             b1.HasKey("ActivityStateEntityActivityStateId");
 
@@ -806,8 +796,7 @@ namespace Doctrina.Persistence.Migrations
                             b1.Property<DateTimeOffset?>("LastModified")
                                 .IsRequired()
                                 .ValueGeneratedOnAddOrUpdate()
-                                .HasColumnType("datetimeoffset")
-                                .HasDefaultValue(new DateTimeOffset(new DateTime(2019, 10, 13, 18, 19, 47, 30, DateTimeKind.Unspecified).AddTicks(8770), new TimeSpan(0, 0, 0, 0, 0)));
+                                .HasColumnType("datetimeoffset");
 
                             b1.HasKey("AgentProfileEntityAgentProfileId");
 

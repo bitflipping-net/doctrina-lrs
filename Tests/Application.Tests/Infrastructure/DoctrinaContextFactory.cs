@@ -17,7 +17,7 @@ namespace Doctrina.Application.Tests.Infrastructure
             context.Database.EnsureCreated();
 
             //context.Statements.AddRange(new[] {
-               
+
             //});
 
             context.SaveChanges();

@@ -12,7 +12,9 @@ namespace Doctrina.WebUI.ExperienceApi.Mvc.ModelBinding
                 bindingContext.ValueProvider.GetValue(bindingContext.ModelName);
 
             if (valueProviderResult == ValueProviderResult.None)
+            {
                 return Task.CompletedTask;
+            }
 
             if (Iri.TryParse(valueProviderResult.FirstValue, out Iri iri))
             {

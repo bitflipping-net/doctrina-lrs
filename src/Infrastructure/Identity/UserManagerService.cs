@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Doctrina.Application.Common.Interfaces;
+﻿using Doctrina.Application.Common.Interfaces;
 using Doctrina.Application.Common.Models;
+using Microsoft.AspNetCore.Identity;
 using System.Linq;
 using System.Threading.Tasks;
 

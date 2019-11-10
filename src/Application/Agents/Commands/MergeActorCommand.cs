@@ -1,20 +1,21 @@
 ﻿using AutoMapper;
 using Doctrina.Application.Common.Interfaces;
 using Doctrina.Domain.Entities;
-using Doctrina.Domain.Entities.Extensions;
 using Doctrina.ExperienceApi.Data;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Doctrina.Application.Agents.Commands
 {
-    public class MergeActorCommand : IRequest<AgentEntity>
+    public class MergeActorCommand : IRequest<IAgentEntity>
     {
-        public AgentEntity Actor { get; private set; }
+        public IAgent Agent { get; set; }
 
-        public class Handler : IRequestHandler<MergeActorCommand, AgentEntity>
+        public class Handler : IRequestHandler<MergeActorCommand, IAgentEntity>
         {
             private readonly IDoctrinaDbContext _context;
             private readonly IMediator _mediator;
@@ -27,13 +28,11 @@ namespace Doctrina.Application.Agents.Commands
                 _mapper = mapper;
             }
 
-            public Task<AgentEntity> Handle(MergeActorCommand request, CancellationToken cancellationToken)
+            public async Task<IAgentEntity> Handle(MergeActorCommand request, CancellationToken cancellationToken)
             {
-                var agent = request.Actor;
-
-                MergeActor(agent);
-
-                return Task.FromResult(agent);
+                var newAgent = _mapper.Map<AgentEntity>(request.Agent);
+                var result = await MergeActor(newAgent, cancellationToken);
+                return result;
             }
 
             /// <summary>
@@ -41,24 +40,26 @@ namespace Doctrina.Application.Agents.Commands
             /// </summary>
             /// <param name="agent"></param>
             /// <returns></returns>
-            private AgentEntity MergeActor(AgentEntity agent)
+            private async Task<AgentEntity> MergeActor(AgentEntity agent, CancellationToken cancellationToken)
             {
                 // Get from db
-                var currentAgent = _context.Agents.WhereAgent(x => x, agent).FirstOrDefault();
+                var currentAgent = await _context.Agents.FirstOrDefaultAsync(x => 
+                    x.ObjectType == agent.ObjectType 
+                    && x.Hash == agent.Hash,
+                    cancellationToken);
 
                 if (currentAgent != null)
                 {
-                    GroupEntity group = currentAgent as GroupEntity;
-                    if(group != null)
+                    if (currentAgent is GroupEntity group)
                     {
                         // Perform group update logic, add group member etc.
                         foreach (var member in group.Members)
                         {
                             // Ensure Agent exist
-                            var grpAgent = MergeActor(member);
+                            var grpAgent = await MergeActor(member, cancellationToken);
 
                             // Check if the relation exist
-                            var isMember = group.Members.WhereAgent(x => x, grpAgent).Count() > 0;
+                            var isMember = group.Members.Count(x => x.Hash == grpAgent.Hash) > 0;
                             if (!isMember)
                             {
                                 group.Members.Add(grpAgent);
@@ -68,32 +69,21 @@ namespace Doctrina.Application.Agents.Commands
 
                     return currentAgent;
                 }
-
-                // New agent, or anonomouys group
-                _context.Agents.Add(agent);
-
-                return agent;
+                else
+                {
+                    // New agent, or anonomouys group
+                    _context.Agents.Add(agent);
+                    return agent;
+                }
             }
         }
 
-        public static MergeActorCommand Create(IMapper mapper, Agent actor)
+        internal static MergeActorCommand Create(IAgent agent)
         {
-            var cmd = new MergeActorCommand()
+            return new MergeActorCommand()
             {
-                Actor = mapper.Map<AgentEntity>(actor)
+                Agent = agent
             };
-
-            return cmd;
-        }
-
-        public static MergeActorCommand Create(AgentEntity actor)
-        {
-            var cmd = new MergeActorCommand()
-            {
-                Actor = actor
-            };
-
-            return cmd;
         }
     }
 }

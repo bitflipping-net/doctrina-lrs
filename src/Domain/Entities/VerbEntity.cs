@@ -1,10 +1,9 @@
 ﻿using Doctrina.Domain.Entities.OwnedTypes;
-using System.Collections.Generic;
 using System;
 
 namespace Doctrina.Domain.Entities
 {
-    public class VerbEntity
+    public class VerbEntity : IVerbEntity
     {
         /// <summary>
         /// Entity Id of the Verb

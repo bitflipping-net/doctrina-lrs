@@ -4,10 +4,8 @@ using Doctrina.Application.ActivityStates.Commands;
 using Doctrina.Application.ActivityStates.Queries;
 using Doctrina.Application.Agents.Commands;
 using Doctrina.Application.Common.Interfaces;
-using Doctrina.Application.Interfaces;
 using Doctrina.Domain.Entities;
 using Doctrina.Domain.Entities.Documents;
-using Doctrina.Domain.Entities.Extensions;
 using Doctrina.ExperienceApi.Data.Documents;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -36,8 +34,9 @@ namespace Doctrina.Application.ActivityStates
         }
         public async Task<ActivityStateDocument> Handle(CreateStateDocumentCommand request, CancellationToken cancellationToken)
         {
-            var activity = await _mediator.Send(MergeActivityIriCommand.Create(request.ActivityId), cancellationToken);
-            var agent = await _mediator.Send(MergeActorCommand.Create(_mapper, request.Agent), cancellationToken);
+            
+            ActivityEntity activity = (ActivityEntity)await _mediator.Send(MergeActivityCommand.Create(request.ActivityId), cancellationToken);
+            AgentEntity agent = (AgentEntity)await _mediator.Send(MergeActorCommand.Create(request.Agent), cancellationToken);
 
             var state = new ActivityStateEntity(request.Content, request.ContentType)
             {
@@ -61,7 +60,7 @@ namespace Doctrina.Application.ActivityStates
 
             var query = _context.ActivityStates
                 .Where(x => x.Activity.Hash == activityHash)
-                .WhereAgent(x => x.Agent, agent);
+                .Where(x => x.Agent.Hash == agent.Hash);
 
             if (request.Registration.HasValue)
             {
@@ -79,7 +78,7 @@ namespace Doctrina.Application.ActivityStates
             string activityHash = request.ActivityId.ComputeHash();
             var query = _context.ActivityStates
                 .Where(x => x.Activity.Hash == activityHash)
-                .WhereAgent(x => x.Agent, agent);
+                .Where(x => x.Agent.Hash == agent.Hash);
 
             if (request.Registration.HasValue)
             {
@@ -118,7 +117,7 @@ namespace Doctrina.Application.ActivityStates
             var activity = await _context.ActivityStates
                 .Where(x => x.StateId == request.StateId && x.Activity.Hash == activityHash &&
                 (!request.Registration.HasValue || x.Registration == request.Registration))
-                .WhereAgent(x => x.Agent, agent)
+                .Where(x => x.Agent.Hash == agent.Hash)
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (activity != null)
@@ -135,7 +134,7 @@ namespace Doctrina.Application.ActivityStates
             var agent = _mapper.Map<AgentEntity>(request.Agent);
             string activityHash = request.ActivityId.ComputeHash();
             var activities = _context.ActivityStates.Where(x => x.Activity.Hash == activityHash)
-                .WhereAgent(x => x.Agent, agent);
+                .Where(x => x.Agent.Hash == agent.Hash);
 
             _context.ActivityStates.RemoveRange(activities);
 

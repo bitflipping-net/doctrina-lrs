@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using Doctrina.Application.Common.Interfaces;
-using Doctrina.Application.Interfaces;
 using Doctrina.Application.Statements.Models;
 using Doctrina.Domain.Entities;
-using Doctrina.Domain.Entities.Extensions;
 using Doctrina.ExperienceApi.Data;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -12,7 +10,6 @@ using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -58,7 +55,7 @@ namespace Doctrina.Application.Statements.Queries
             if (request.Agent != null)
             {
                 var actor = _mapper.Map<AgentEntity>(request.Agent);
-                var currentAgent = await _context.Agents.WhereAgent(x => x, actor).FirstOrDefaultAsync(cancellationToken);
+                var currentAgent = await _context.Agents.Where(x => x.Hash == actor.Hash).FirstOrDefaultAsync(cancellationToken);
                 if (currentAgent != null)
                 {
                     Guid agentId = currentAgent.AgentId;
@@ -82,7 +79,7 @@ namespace Doctrina.Application.Statements.Queries
                     }
                     else
                     {
-                        query = query.WhereAgent(x => x.Actor, actor);
+                        query = query.Where(x => x.Actor.Hash == actor.Hash);
                     }
                 }
                 else
@@ -179,7 +176,7 @@ namespace Doctrina.Application.Statements.Queries
                 .GroupBy(p => new { TotalCount = query.Count() })
                 .FirstOrDefaultAsync(cancellationToken);
 
-            if(pagedQuery == null)
+            if (pagedQuery == null)
             {
                 return new PagedStatementsResult();
             }

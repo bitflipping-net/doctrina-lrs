@@ -45,22 +45,11 @@ Follow these steps to get your development environment set up:
 #### Visual Studio
 Follow these steps to get your development environment set up:
 1. Open the `Doctrina.sln` inside the `src` folder.
-2. Hit `F5` or `CTRL+F5` to start from Doctrina.WebUI.csproj
-3. Launch [https://localhost:44338/](https://localhost:44338/)
-4. Launch [https://localhost:44338/xapi/about](https://localhost:44338/xapi/about) in your browser to view the xAPI about resource
+2. Hit `F5` or `CTRL+F5` to start from WebUI.csproj
+3. Launch [https://localhost:44393/](https://localhost:44393/) to see Blazor application.
+4. Launch [https://localhost:44393/xapi/about](https://localhost:44393/xapi/about) in your browser to view the xAPI about resource
 
 5. Try posting a statem
-
-#### Docker Compose (WIP)
-
-1. At the src directory, build the image by running:
-   ```
-   docker-compose build
-   ```
-2. After image has finished building, start a new container by running:
-   ```
-   docker run doctrina
-   ```
 
 ### Testing
 After following the steps for setup, do the following to run the `lrs-conformance-test-suite`
@@ -79,17 +68,17 @@ After following the steps for setup, do the following to run the `lrs-conformanc
    ```
 2. After npm packages have been installed, run the following:
    ```
-   node bin/console_runner.js -e https://localhost:5001 -a -u admin@example.com -p zKR4gkYNHP5tvH
+   node bin/console_runner.js -e http://localhost:52209/xapi -a -u admin@example.com -p zKR4gkYNHP5tvH --errors
+   or
+   node bin/console_runner.js -e http://localhost:5000/xapi -a -u admin@example.com -p zKR4gkYNHP5tvH --errors
    ```
+   IMPORTANT: running tests on https does not work, hence the http schema above.
 
 
 ## Technologies
 * .NET Core 3.0
-* ASP.NET Core 3.0
 * Entity Framework Core 3.0
-* NodeJS
-* React
-* Office React Fabric UI
+* Blazor.net
 
 ## License
 This project is licensed under the AGPLv3 License - see the [LICENSE](https://github.com/bitflipping-solutions/doctrina-lrs/blob/develop/LICENSE) file for details.

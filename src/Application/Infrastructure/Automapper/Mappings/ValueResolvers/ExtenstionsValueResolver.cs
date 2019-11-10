@@ -11,7 +11,7 @@ namespace Doctrina.Application.Mappings.ValueResolvers
     {
         public ExtensionsCollection Resolve(object source, object destination, ExtensionsDictionary sourceMember, ExtensionsCollection destMember, ResolutionContext context)
         {
-            if(sourceMember == null)
+            if (sourceMember == null)
             {
                 return null;
             }
@@ -28,7 +28,7 @@ namespace Doctrina.Application.Mappings.ValueResolvers
         public ExtensionsDictionary Resolve(object source, object destination, ExtensionsCollection sourceMember, ExtensionsDictionary destMember, ResolutionContext context)
         {
             var ext = new ExtensionsDictionary();
-            foreach(var mem in sourceMember)
+            foreach (var mem in sourceMember)
             {
                 ext.Add(mem);
             }

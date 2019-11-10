@@ -2,7 +2,7 @@ using Doctrina.ExperienceApi.Data;
 
 namespace Doctrina.Application.Common.Interfaces
 {
-    public interface ICurrentAuthority
+    public interface IAuthorityContext
     {
         Agent Authority { get; set; }
     }

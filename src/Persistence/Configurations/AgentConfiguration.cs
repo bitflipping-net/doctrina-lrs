@@ -8,13 +8,17 @@ namespace Doctrina.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<AgentEntity> builder)
         {
-            builder.Property(x=> x.AgentId)
+            builder.Property(x => x.AgentId)
                 .ValueGeneratedOnAdd();
             builder.HasKey(x => x.AgentId);
 
             builder.HasDiscriminator(x => x.ObjectType)
                 .HasValue<AgentEntity>(EntityObjectType.Agent)
                 .HasValue<GroupEntity>(EntityObjectType.Group);
+
+            builder.Property(e => e.Hash)
+                .IsRequired()
+                .HasMaxLength(Constants.SHA1_HASH_LENGTH);
 
             builder.Property(e => e.Name)
                 .HasMaxLength(100);
@@ -34,25 +38,28 @@ namespace Doctrina.Persistence.Configurations
                 .WithMany()
                 .HasForeignKey("AccountId");
 
-            builder
-                .HasIndex(x => new { x.ObjectType, x.Mbox })
-                .HasFilter("[Mbox] IS NOT NULL")
-                .IsUnique();
+            //builder
+            //    .HasIndex(x => new { x.ObjectType, x.Mbox })
+            //    .HasFilter("[Mbox] IS NOT NULL")
+            //    .IsUnique();
 
-            builder
-                .HasIndex(x => new { x.ObjectType, x.Mbox_SHA1SUM })
-                .HasFilter("[Mbox_SHA1SUM] IS NOT NULL")
-                .IsUnique();
+            //builder
+            //    .HasIndex(x => new { x.ObjectType, x.Mbox_SHA1SUM })
+            //    .HasFilter("[Mbox_SHA1SUM] IS NOT NULL")Accou
+            //    .IsUnique();
 
-            builder
-                .HasIndex(x => new { x.ObjectType, x.OpenId })
-                .HasFilter("[OpenId] IS NOT NULL")
-                .IsUnique();
+            //builder
+            //    .HasIndex(x => new { x.ObjectType, x.OpenId })
+            //    .HasFilter("[OpenId] IS NOT NULL")
+            //    .IsUnique();
 
-            // TODO: We need to make sure accounts are Agents or Groups unique when identified with an account
-            builder
-                .HasIndex("ObjectType", "AccountId")
-                .HasFilter("[AccountId] IS NOT NULL")
+            //// TODO: We need to make sure accounts are Agents or Groups unique when identified with an account
+            //builder
+            //    .HasIndex("ObjectType", "AccountId")
+            //    .HasFilter("[AccountId] IS NOT NULL")
+            //    .IsUnique();
+
+            builder.HasIndex(x => new { x.ObjectType, x.Hash })
                 .IsUnique();
         }
     }

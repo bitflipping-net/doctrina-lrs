@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Doctrina.Domain.Entities
 {
-    public class SubStatementEntity : IStatementObjectEntity, IStatementEntityBase
+    public class SubStatementEntity : IStatementObjectEntity, IStatementEntityBase, ISubStatementEntity
     {
         public SubStatementEntity()
         {

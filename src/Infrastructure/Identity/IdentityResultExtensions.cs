@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Doctrina.Application.Common.Models;
+﻿using Doctrina.Application.Common.Models;
+using Microsoft.AspNetCore.Identity;
 using System.Linq;
 
 namespace Doctrina.Infrastructure.Identity

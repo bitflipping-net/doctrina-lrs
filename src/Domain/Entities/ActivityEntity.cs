@@ -2,7 +2,7 @@
 
 namespace Doctrina.Domain.Entities
 {
-    public class ActivityEntity : IStatementObjectEntity
+    public class ActivityEntity : IActivityEntity, IStatementObjectEntity
     {
         public EntityObjectType ObjectType => EntityObjectType.Activity;
 

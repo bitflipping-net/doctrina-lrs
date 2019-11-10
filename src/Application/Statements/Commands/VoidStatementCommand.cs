@@ -1,5 +1,4 @@
 ﻿using Doctrina.Application.Common.Interfaces;
-using Doctrina.Application.Interfaces;
 using Doctrina.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +14,7 @@ namespace Doctrina.Application.Statements.Commands
 
         public class Handler : IRequestHandler<VoidStatementCommand>
         {
-            private IDoctrinaDbContext _context;
+            private readonly IDoctrinaDbContext _context;
 
             public Handler(IDoctrinaDbContext context)
             {
@@ -27,7 +26,7 @@ namespace Doctrina.Application.Statements.Commands
                 IStatementBaseEntity voidingStatement = request.Statement;
 
                 StatementRefEntity statementRef = voidingStatement.Object.StatementRef as StatementRefEntity;
-                Guid? statementRefId = statementRef.Id;
+                Guid? statementRefId = statementRef.StatementId;
 
                 // Fetch statement to be voided
                 StatementEntity voidedStatement = await _context.Statements

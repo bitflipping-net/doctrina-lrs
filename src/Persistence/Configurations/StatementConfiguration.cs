@@ -1,8 +1,6 @@
 ﻿using Doctrina.Domain.Entities;
-using Doctrina.Persistence.ValueConverters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
 
 namespace Doctrina.Persistence.Configurations
 {
@@ -36,7 +34,8 @@ namespace Doctrina.Persistence.Configurations
                .WithMany();
 
             builder.Property(e => e.Timestamp)
-                .IsRequired();
+                .IsRequired()
+                .ValueGeneratedOnAdd();
 
             builder.HasMany(x => x.Attachments)
                 .WithOne();

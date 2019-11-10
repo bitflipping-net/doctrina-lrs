@@ -38,7 +38,9 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
         public async Task<IActionResult> GetProfile([BindRequired]string profileId, [BindRequired]Iri activityId, Guid? registration = null)
         {
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             ActivityProfileDocument profile = await _mediator.Send(new GetActivityProfileQuery()
             {
@@ -48,7 +50,9 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             });
 
             if (profile == null)
+            {
                 return NotFound();
+            }
 
             var result = new FileContentResult(profile.Content, profile.ContentType)
             {
@@ -69,7 +73,9 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
         public async Task<ActionResult<string[]>> GetProfiles(Iri activityId, DateTimeOffset? since = null)
         {
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             ICollection<ActivityProfileDocument> profiles = await _mediator.Send(new GetActivityProfilesQuery()
             {
@@ -78,7 +84,9 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             });
 
             if (profiles == null)
+            {
                 return Ok(new string[0]);
+            }
 
             IEnumerable<string> ids = profiles.Select(x => x.ProfileId);
             string lastModified = profiles.OrderByDescending(x => x.LastModified)
@@ -100,7 +108,9 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
         public async Task<IActionResult> SaveProfile([FromQuery]string profileId, [FromQuery]Iri activityId, [FromBody]byte[] document, [FromQuery]Guid? registration = null)
         {
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             string contentType = Request.ContentType;
 
@@ -137,7 +147,9 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 });
 
                 if (profile == null)
+                {
                     return NotFound();
+                }
 
                 await _mediator.Send(new DeleteActivityProfileCommand()
                 {

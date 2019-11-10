@@ -1,5 +1,5 @@
-﻿using Doctrina.Application.Common.Interfaces;
-using Doctrina.Application.Interfaces;
+﻿using AutoMapper;
+using Doctrina.Application.Common.Interfaces;
 using Doctrina.Application.Statements.Queries;
 using Doctrina.ExperienceApi.Data;
 using MediatR;
@@ -27,20 +27,27 @@ namespace Doctrina.Application.Statements.Commands
         {
             private readonly IDoctrinaDbContext _context;
             private readonly IMediator _mediator;
+            private readonly IMapper _mapper;
 
-            public Handler(IDoctrinaDbContext context, IMediator mediator)
+            public Handler(IDoctrinaDbContext context, IMediator mediator, IMapper mapper)
             {
                 _context = context;
                 _mediator = mediator;
+                _mapper = mapper;
             }
 
             public async Task<Unit> Handle(PutStatementCommand request, CancellationToken cancellationToken)
             {
                 Statement savedStatement = await _mediator.Send(GetStatementQuery.Create(request.StatementId), cancellationToken);
 
-                request.Statement.Id = request.StatementId;
+                if (!request.Statement.Id.HasValue)
+                {
+                    request.Statement.Id = request.StatementId;
+                }
 
-                await _mediator.Send(CreateStatementCommand.Create(request.Statement), cancellationToken);
+                var createStatementCommand = _mapper.Map<CreateStatementCommand>(request.Statement);
+
+                await _mediator.Send(createStatementCommand, cancellationToken);
 
                 await _context.SaveChangesAsync(cancellationToken);
 

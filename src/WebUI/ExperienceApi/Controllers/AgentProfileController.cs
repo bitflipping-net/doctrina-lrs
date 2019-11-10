@@ -21,7 +21,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
     [Produces("application/json")]
     public class AgentProfileController : ApiControllerBase
     {
-        private IMediator _mediator;
+        private readonly IMediator _mediator;
 
         public AgentProfileController(IMediator mediator)
         {
@@ -43,7 +43,9 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             }
 
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             Agent agent = new Agent(strAgent);
 
@@ -54,7 +56,9 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             });
 
             if (profile == null)
+            {
                 return NotFound();
+            }
 
             string lastModified = profile.LastModified?.ToString("o");
 
@@ -93,7 +97,9 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             ICollection<AgentProfileDocument> profiles = await _mediator.Send(new GetAgentProfilesQuery(agent, since));
 
             if (profiles == null)
+            {
                 return Ok(new Guid[] { });
+            }
 
             IEnumerable<string> ids = profiles.Select(x => x.ProfileId).ToList();
 
@@ -117,7 +123,9 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
         public async Task<ActionResult> SaveAgentProfileAsync(string profileId, [FromQuery(Name = "agent")]string strAgent, [FromBody]byte[] content)
         {
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             string contentType = Request.ContentType;
             Agent agent = new Agent(strAgent);
@@ -140,14 +148,18 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
         public async Task<ActionResult> DeleteProfileAsync(string profileId, [FromQuery(Name = "agent")]string strAgent)
         {
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             string contentType = Request.ContentType;
             Agent agent = new Agent(strAgent);
 
             var profile = await _mediator.Send(GetAgentProfileQuery.Create(agent, profileId));
             if (profile == null)
+            {
                 return NotFound();
+            }
 
             // TODO: Concurrency
 

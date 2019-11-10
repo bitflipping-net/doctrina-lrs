@@ -1,5 +1,4 @@
 ﻿using Doctrina.Application.Common.Interfaces;
-using Doctrina.Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
