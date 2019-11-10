@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/src/Doctrina.Web/Doctrina.Web.csproj"
+                "${workspaceFolder}/src/WebUI/WebUI.csproj"
             ],
             "problemMatcher": "$msCompile"
         }
