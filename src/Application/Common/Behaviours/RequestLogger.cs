@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Doctrina.Application.Infrastructure
+namespace Doctrina.Application.Common.Behaviours
 {
     public class RequestLogger<TRequest> : IRequestPreProcessor<TRequest>
     {

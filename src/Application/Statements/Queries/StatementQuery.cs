@@ -11,15 +11,15 @@ using System.Threading.Tasks;
 
 namespace Doctrina.Application.Statements.Queries
 {
-    public class GetStatementQuery : IRequest<Statement>
+    public class StatementQuery : IRequest<Statement>
     {
         public Guid StatementId { get; set; }
         public bool IncludeAttachments { get; set; }
         public ResultFormat Format { get; set; }
 
-        public static GetStatementQuery Create(Guid statementId, bool includeAttachments = false, ResultFormat format = ResultFormat.Exact)
+        public static StatementQuery Create(Guid statementId, bool includeAttachments = false, ResultFormat format = ResultFormat.Exact)
         {
-            return new GetStatementQuery()
+            return new StatementQuery()
             {
                 StatementId = statementId,
                 IncludeAttachments = includeAttachments,
@@ -27,7 +27,7 @@ namespace Doctrina.Application.Statements.Queries
             };
         }
 
-        public class Handler : IRequestHandler<GetStatementQuery, Statement>
+        public class Handler : IRequestHandler<StatementQuery, Statement>
         {
             private readonly IDoctrinaDbContext _context;
             private readonly IMapper _mapper;
@@ -38,7 +38,7 @@ namespace Doctrina.Application.Statements.Queries
                 _mapper = mapper;
             }
 
-            public async Task<Statement> Handle(GetStatementQuery request, CancellationToken cancellationToken)
+            public async Task<Statement> Handle(StatementQuery request, CancellationToken cancellationToken)
             {
                 var query = _context.Statements
                         .Where(x => x.StatementId == request.StatementId && x.Voided == false);

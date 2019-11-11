@@ -2,6 +2,7 @@
 using Doctrina.Application.Activities.Commands;
 using Doctrina.Application.Agents.Commands;
 using Doctrina.Application.Common.Interfaces;
+using Doctrina.Application.Statements.Models;
 using Doctrina.Application.SubStatements.Commands;
 using Doctrina.Application.Verbs.Commands;
 using Doctrina.Domain.Entities;
@@ -77,7 +78,7 @@ namespace Doctrina.Application.Statements.Commands
                 }
                 if(context.Team != null)
                 {
-                    context.Team = (AgentEntity)await _mediator.Send(MergeActorCommand.Create(request.Statement.Context.Instructor), cancellationToken);
+                    context.Team = (AgentEntity)await _mediator.Send(MergeActorCommand.Create(request.Statement.Context.Team), cancellationToken);
                 }
             }
 
@@ -101,6 +102,8 @@ namespace Doctrina.Application.Statements.Commands
             }
 
             _context.Statements.Add(newStatemnt);
+
+            await _mediator.Publish(StatementAdded.Create(newStatemnt), cancellationToken);
 
             return newStatemnt.StatementId;
         }

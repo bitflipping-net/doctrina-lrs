@@ -15,21 +15,13 @@ namespace Doctrina.Persistence.Configurations
                 .ValueGeneratedOnAdd();
             builder.HasKey(e => e.ContextActivitiesId);
 
-            builder.Property(e => e.Parent)
-                .HasConversion(new ContextActivityCollectionValueConverter())
-                .HasColumnType("ntext");
+            builder.OwnsMany(e => e.Parent);
 
-            builder.Property(e => e.Grouping)
-                .HasConversion(new ContextActivityCollectionValueConverter())
-                .HasColumnType("ntext");
+            builder.OwnsMany(e => e.Grouping);
 
-            builder.Property(e => e.Category)
-                 .HasConversion(new ContextActivityCollectionValueConverter())
-                 .HasColumnType("ntext");
+            builder.OwnsMany(e => e.Category);
 
-            builder.Property(e => e.Other)
-                 .HasConversion(new ContextActivityCollectionValueConverter())
-                 .HasColumnType("ntext");
+            builder.OwnsMany(e => e.Other);
         }
     }
 }
