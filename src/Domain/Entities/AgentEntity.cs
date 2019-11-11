@@ -4,7 +4,12 @@ namespace Doctrina.Domain.Entities
 {
     public class AgentEntity : IStatementObjectEntity, IAgentEntity
     {
-        public virtual EntityObjectType ObjectType { get; set; } = EntityObjectType.Agent;
+        public AgentEntity()
+        {
+            ObjectType = EntityObjectType.Agent;
+        }
+
+        public virtual EntityObjectType ObjectType { get; set; }
 
         public Guid AgentId { get; set; }
 

@@ -34,6 +34,20 @@ namespace Doctrina.Application.SubStatements
             subStatement.Verb = (VerbEntity)await _mediator.Send(MergeVerbCommand.Create(request.SubStatement.Verb));
             subStatement.Actor = (AgentEntity)await _mediator.Send(MergeActorCommand.Create(request.SubStatement.Actor));
 
+            if (subStatement.Context != null)
+            {
+                var context = subStatement.Context;
+                if (context.Instructor != null)
+                {
+                    context.Instructor = (AgentEntity)await _mediator.Send(MergeActorCommand.Create(request.SubStatement.Context.Instructor), cancellationToken);
+                }
+
+                if (context.Team != null)
+                {
+                    context.Team = (AgentEntity)await _mediator.Send(MergeActorCommand.Create(request.SubStatement.Context.Team), cancellationToken);
+                }
+            }
+
             var objType = subStatement.Object.ObjectType;
             if (objType == EntityObjectType.Activity)
             {

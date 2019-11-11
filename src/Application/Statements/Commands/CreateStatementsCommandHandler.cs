@@ -1,13 +1,11 @@
-﻿using AutoMapper;
-using Doctrina.Application.Common.Interfaces;
+﻿using Doctrina.Application.Common.Interfaces;
 using Doctrina.Application.Statements.Commands;
+using Doctrina.Application.Statements.Notifications;
 using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Linq;
-using Microsoft.Extensions.Logging;
 
 namespace Application.Statements.Commands
 {
@@ -15,27 +13,26 @@ namespace Application.Statements.Commands
     {
         private readonly IMediator _mediator;
         private readonly IDoctrinaDbContext _context;
-        private readonly IMapper _mapper;
-        private readonly ILogger _logger;
 
-        public CreateStatementsCommandHandler(IDoctrinaDbContext context, IMediator mediator, IMapper mapper, ILogger<CreateStatementsCommand> logger)
+        public CreateStatementsCommandHandler(IDoctrinaDbContext context, IMediator mediator)
         {
             _context = context;
             _mediator = mediator;
-            _mapper = mapper;
-            _logger = logger;
         }
 
         public async Task<ICollection<Guid>> Handle(CreateStatementsCommand request, CancellationToken cancellationToken)
         {
-            var ids = new HashSet<Guid>();
+            var tasks = new List<Task<Guid>>();
             foreach (var statement in request.Statements)
             {
-                var id = await _mediator.Send(CreateStatementCommand.Create(statement), cancellationToken);
-                ids.Add(id);
+                tasks.Add(_mediator.Send(CreateStatementCommand.Create(statement), cancellationToken));
             }
 
+            var ids = await Task.WhenAll(tasks);
+
             await _context.SaveChangesAsync(cancellationToken);
+
+            await _mediator.Publish(new StatementsSaved());
 
             return ids;
         }

@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Doctrina.Application.Infrastructure
+namespace Doctrina.Application.Common.Behaviours
 {
     public class RequestPerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     {

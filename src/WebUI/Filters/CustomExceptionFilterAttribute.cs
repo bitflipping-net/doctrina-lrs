@@ -1,4 +1,4 @@
-﻿using Doctrina.Application.Exceptions;
+﻿using Doctrina.Application.Common.Exceptions;
 using Doctrina.WebUI.ExperienceApi.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;

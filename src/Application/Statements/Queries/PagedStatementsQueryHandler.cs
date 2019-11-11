@@ -55,7 +55,8 @@ namespace Doctrina.Application.Statements.Queries
             if (request.Agent != null)
             {
                 var actor = _mapper.Map<AgentEntity>(request.Agent);
-                var currentAgent = await _context.Agents.Where(x => x.Hash == actor.Hash).FirstOrDefaultAsync(cancellationToken);
+                var currentAgent = await _context.Agents.AsNoTracking().FirstOrDefaultAsync(x => x.ObjectType == actor.ObjectType 
+                    && x.Hash == actor.Hash, cancellationToken);
                 if (currentAgent != null)
                 {
                     Guid agentId = currentAgent.AgentId;
@@ -104,10 +105,10 @@ namespace Doctrina.Application.Statements.Queries
                             (
                                 statement.Context != null && statement.Context.ContextActivities != null &&
                                 (
-                                    statement.Context.ContextActivities.Category.Contains(activityHash) ||
-                                    statement.Context.ContextActivities.Parent.Contains(activityHash) ||
-                                    statement.Context.ContextActivities.Grouping.Contains(activityHash) ||
-                                    statement.Context.ContextActivities.Other.Contains(activityHash)
+                                    statement.Context.ContextActivities.Category.Any(x=> x.Hash == activityHash) ||
+                                    statement.Context.ContextActivities.Parent.Any(x => x.Hash == activityHash) ||
+                                    statement.Context.ContextActivities.Grouping.Any(x => x.Hash == activityHash) ||
+                                    statement.Context.ContextActivities.Other.Any(x => x.Hash == activityHash)
                                 )
                             ) ||
                             (
@@ -152,39 +153,49 @@ namespace Doctrina.Application.Statements.Queries
             //    }
             //}
 
+            
+
+            int pageSize = request.Limit ?? 1000;
+
+            IQueryable<PagedQuery> pagedQuery = null;
+
             if (request.Attachments.GetValueOrDefault())
             {
-                query = query.Select(p => new StatementEntity
-                {
-                    StatementId = p.StatementId,
-                    FullStatement = p.FullStatement
+                pagedQuery = query.Select(p => new PagedQuery { 
+                    Statement = new StatementEntity
+                    {
+                        StatementId = p.StatementId,
+                        FullStatement = p.FullStatement
+                    },
+                    TotalCount = query.LongCount()
                 });
             }
             else
             {
-                query = query.Select(p => new StatementEntity
-                {
-                    StatementId = p.StatementId,
-                    FullStatement = p.FullStatement,
-                    Attachments = p.Attachments
+                pagedQuery = query.Select(p => new PagedQuery
+                { 
+                    Statement = new StatementEntity
+                    {
+                        StatementId = p.StatementId,
+                        FullStatement = p.FullStatement,
+                        Attachments = p.Attachments,
+                    },
+                    TotalCount = query.LongCount()
                 });
             }
 
-            int pageSize = request.Limit ?? 1000;
+            var result = await pagedQuery.Skip(skipRows).Take(pageSize)
+                .ToListAsync(cancellationToken);
 
-            var pagedQuery = await query.Skip(skipRows).Take(pageSize)
-                .GroupBy(p => new { TotalCount = query.Count() })
-                .FirstOrDefaultAsync(cancellationToken);
-
-            if (pagedQuery == null)
+            if (result == null)
             {
                 return new PagedStatementsResult();
             }
 
-            int totalCount = pagedQuery.Key.TotalCount;
+            long totalCount = result.FirstOrDefault()?.TotalCount ?? 0;
             int totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
 
-            List<Statement> statements = pagedQuery.Select(p => _mapper.Map<Statement>(p)).ToList();
+            List<Statement> statements = pagedQuery.Select(p => _mapper.Map<Statement>(p.Statement)).ToList();
 
             var statementCollection = new StatementCollection(statements);
 

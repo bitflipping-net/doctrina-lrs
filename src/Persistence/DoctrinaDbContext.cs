@@ -2,6 +2,9 @@
 using Doctrina.Domain.Entities;
 using Doctrina.Domain.Entities.Documents;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Doctrina.Persistence
 {
@@ -20,6 +23,11 @@ namespace Doctrina.Persistence
         public DbSet<AgentProfileEntity> AgentProfiles { get; set; }
         public DbSet<ActivityProfileEntity> ActivityProfiles { get; set; }
         public DbSet<ActivityStateEntity> ActivityStates { get; set; }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            return base.SaveChangesAsync(cancellationToken);
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

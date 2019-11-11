@@ -27,27 +27,21 @@ namespace Doctrina.Application.Statements.Commands
         {
             private readonly IDoctrinaDbContext _context;
             private readonly IMediator _mediator;
-            private readonly IMapper _mapper;
 
-            public Handler(IDoctrinaDbContext context, IMediator mediator, IMapper mapper)
+            public Handler(IDoctrinaDbContext context, IMediator mediator)
             {
                 _context = context;
                 _mediator = mediator;
-                _mapper = mapper;
             }
 
             public async Task<Unit> Handle(PutStatementCommand request, CancellationToken cancellationToken)
             {
-                Statement savedStatement = await _mediator.Send(GetStatementQuery.Create(request.StatementId), cancellationToken);
-
                 if (!request.Statement.Id.HasValue)
                 {
                     request.Statement.Id = request.StatementId;
                 }
 
-                var createStatementCommand = _mapper.Map<CreateStatementCommand>(request.Statement);
-
-                await _mediator.Send(createStatementCommand, cancellationToken);
+                await _mediator.Send(CreateStatementCommand.Create(request.Statement), cancellationToken);
 
                 await _context.SaveChangesAsync(cancellationToken);
 

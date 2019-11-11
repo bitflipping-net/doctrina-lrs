@@ -6,6 +6,7 @@ using Doctrina.Application.Mappings.ValueResolvers;
 using Doctrina.Domain.Entities;
 using Doctrina.ExperienceApi.Data;
 using System;
+using System.Collections.Generic;
 using Data = Doctrina.ExperienceApi.Data;
 
 namespace Doctrina.Application.Mappings
@@ -42,7 +43,7 @@ namespace Doctrina.Application.Mappings
                 .ForMember(x => x.Voided, opt => opt.Ignore())
                 .ForMember(x => x.FullStatement, opt => opt.Ignore());
 
-            configuration.CreateMap<IStatementEntity, Statement>()
+            configuration.CreateMap<StatementEntity, Statement>()
                 .ConvertUsing<StatementTypeConverter>();
 
             // Statement base
@@ -95,6 +96,12 @@ namespace Doctrina.Application.Mappings
             configuration.CreateMap<Context, ContextEntity>()
                 .ForMember(x => x.ContextId, opt => opt.Ignore())
                 .ForMember(x => x.ContextActivities, opt => opt.MapFrom(x => x.ContextActivities))
+                .ForMember(ent => ent.Instructor, opt => opt.MapFrom(x=> x.Instructor))
+                .ForMember(ent => ent.Language, opt => opt.MapFrom(x=> x.Language))
+                .ForMember(ent => ent.Revision, opt => opt.MapFrom(x=> x.Revision))
+                .ForMember(ent => ent.Platform, opt => opt.MapFrom(x=> x.Platform))
+                .ForMember(ent => ent.Team, opt => opt.MapFrom(x=> x.Team))
+                .ForMember(ent => ent.Extensions, opt => opt.MapFrom<ExtenstionsValueResolver, ExtensionsDictionary>(x => x.Extensions))
                 .ReverseMap();
 
             configuration.CreateMap<Attachment, AttachmentEntity>()
@@ -114,7 +121,9 @@ namespace Doctrina.Application.Mappings
                 .ForMember(x => x.Grouping, opt => opt.MapFrom(x => x.Grouping))
                 .ForMember(x => x.Other, opt => opt.MapFrom(x => x.Other));
 
-            configuration.CreateMap<ActivityCollection, ContextActivityCollection>();
+            configuration.CreateMap<Activity, ContextActivityTypeEntity>()
+                .ForMember(x => x.Hash, opt => opt.MapFrom(x => x.Id.ComputeHash()))
+                .ForMember(x => x.Id, opt => opt.MapFrom(x => x.Id));
         }
 
     }

@@ -13,7 +13,6 @@ namespace Application.Infrastructure.Automapper.Mappings
                 .ForMember(e => e.Id, opt => opt.MapFrom(x => x.Id.ToString()))
                 .ForMember(e => e.Hash, opt => opt.MapFrom(x => x.Id.ComputeHash()))
                 .ForMember(entity => entity.Definition, opt => opt.MapFrom(x => x.Definition))
-                //.ForMember(entity => entity.Definition, opt => opt.Ignore())
                 .ReverseMap();
         }
     }

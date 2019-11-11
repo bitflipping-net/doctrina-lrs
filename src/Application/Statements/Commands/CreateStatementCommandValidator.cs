@@ -19,7 +19,7 @@ namespace Doctrina.Application.Statements.Commands
                 {
                     RuleFor(x => x).MustAsync(async (cmd, cancellationToken) =>
                     {
-                        var savedStatement = await _mediator.Send(GetStatementQuery.Create(cmd.Statement.Id.Value), cancellationToken);
+                        var savedStatement = await _mediator.Send(Queries.StatementQuery.Create(cmd.Statement.Id.Value), cancellationToken);
 
                         return savedStatement == null || cmd.Equals(savedStatement);
                     })

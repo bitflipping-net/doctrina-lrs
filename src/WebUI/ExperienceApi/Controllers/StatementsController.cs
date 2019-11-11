@@ -46,7 +46,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             [FromQuery(Name = "attachments")]bool includeAttachments = false,
             [FromQuery]ResultFormat format = ResultFormat.Exact)
         {
-            Statement statement = await _mediator.Send(GetStatementQuery.Create(statementId, includeAttachments, format));
+            Statement statement = await _mediator.Send(Application.Statements.Queries.StatementQuery.Create(statementId, includeAttachments, format));
 
             if (statement == null)
             {
@@ -87,7 +87,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             [FromQuery(Name = "attachments")]bool includeAttachments = false,
             [FromQuery]ResultFormat format = ResultFormat.Exact)
         {
-            Statement statement = await _mediator.Send(GetVoidedStatemetQuery.Create(voidedStatementId, includeAttachments, format));
+            Statement statement = await _mediator.Send(VoidedStatemetQuery.Create(voidedStatementId, includeAttachments, format));
 
             if (statement == null)
             {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Doctrina.Application.Exceptions
+namespace Doctrina.Application.Common.Exceptions
 {
     public class NotFoundException : Exception
     {
