@@ -3,7 +3,6 @@ using Doctrina.Application.Statements.Queries;
 using Doctrina.ExperienceApi.Client.Http;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using System;
 using System.Threading.Tasks;
 
 namespace Doctrina.WebUI.ExperienceApi.Routing
@@ -17,11 +16,8 @@ namespace Doctrina.WebUI.ExperienceApi.Routing
             _next = next;
         }
 
-        public async Task InvokeAsync(HttpContext context, IDoctrinaAppContext appContext)
+        public async Task InvokeAsync(HttpContext context, IMediator mediator)
         {
-            // Execute next
-            await _next(context);
-
             if (context.Request.Path.HasValue && context.Request.Path.StartsWithSegments("/xapi"))
             {
                 string headerKey = ApiHeaders.XExperienceApiConsistentThrough;
@@ -31,10 +27,16 @@ namespace Doctrina.WebUI.ExperienceApi.Routing
                 {
                     if (!headers.ContainsKey(headerKey))
                     {
-                        headers.Add(headerKey, appContext.ConsistentThroughDate.ToString("o"));
+                        var consistentThroughDate = await mediator.Send(new ConsistentThroughQuery());
+                        headers.Add(headerKey, consistentThroughDate.ToString("o"));
                     }
                 }
             }
+
+            // Execute next
+            await _next(context);
+
+            // We cannot modify response headers after
         }
     }
 }

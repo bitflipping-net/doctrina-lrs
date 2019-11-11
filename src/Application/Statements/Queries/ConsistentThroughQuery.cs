@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Doctrina.Application.Statements.Queries
 {
-    public class ConsistentThroughQuery : IRequest<DateTimeOffset?>
+    public class ConsistentThroughQuery : IRequest<DateTimeOffset>
     {
-        public class Handler : IRequestHandler<ConsistentThroughQuery, DateTimeOffset?>
+        public class Handler : IRequestHandler<ConsistentThroughQuery, DateTimeOffset>
         {
             private readonly IDoctrinaDbContext _context;
             private readonly IDoctrinaAppContext _appContext;
@@ -21,12 +21,15 @@ namespace Doctrina.Application.Statements.Queries
                 _appContext = appContext;
             }
 
-            public async Task<DateTimeOffset?> Handle(ConsistentThroughQuery request, CancellationToken cancellationToken)
+            public async Task<DateTimeOffset> Handle(ConsistentThroughQuery request, CancellationToken cancellationToken)
             {
-                var first = await _context.Statements.OrderByDescending(x => x.Stored)
-                    .FirstOrDefaultAsync(cancellationToken);
-                _appContext.ConsistentThroughDate = first?.Stored ?? DateTimeOffset.UtcNow;
-                return _appContext.ConsistentThroughDate;
+                if (!_appContext.ConsistentThroughDate.HasValue)
+                {
+                    var first = await _context.Statements.OrderByDescending(x => x.Stored)
+                        .FirstOrDefaultAsync(cancellationToken);
+                    _appContext.ConsistentThroughDate = first?.Stored ?? DateTimeOffset.UtcNow;
+                }
+                return _appContext.ConsistentThroughDate.Value;
             }
         }
     }

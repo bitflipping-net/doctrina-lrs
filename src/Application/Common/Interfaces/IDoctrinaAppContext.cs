@@ -7,6 +7,6 @@ namespace Doctrina.Application.Common.Interfaces
     /// </summary>
     public interface IDoctrinaAppContext
     {
-        DateTimeOffset ConsistentThroughDate { get; set; }
+        DateTimeOffset? ConsistentThroughDate { get; set; }
     }
 }
