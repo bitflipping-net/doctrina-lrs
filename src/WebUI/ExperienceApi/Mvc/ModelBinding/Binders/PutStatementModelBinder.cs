@@ -1,6 +1,6 @@
-﻿using Doctrina.ExperienceApi.Client;
+﻿using Doctrina.Application.Common.Exceptions;
+using Doctrina.ExperienceApi.Client;
 using Doctrina.ExperienceApi.Data;
-using Doctrina.WebUI.ExperienceApi.Exceptions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
 using System.Net.Http.Headers;

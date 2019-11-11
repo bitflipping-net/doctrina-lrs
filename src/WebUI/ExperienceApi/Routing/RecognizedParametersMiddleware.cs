@@ -1,4 +1,4 @@
-﻿using Doctrina.WebUI.ExperienceApi.Exceptions;
+﻿using Doctrina.Application.Common.Exceptions;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Linq;
