@@ -62,19 +62,18 @@ namespace Doctrina.Application.Statements.Commands
                 // TODO: Validate authority
             }
 
-            StatementEntity newStatemnt = _mapper.Map<StatementEntity>(request.Statement);
-            newStatemnt.FullStatement = request.Statement.ToJson();
-            newStatemnt.Verb = (VerbEntity)await _mediator.Send(MergeVerbCommand.Create(request.Statement.Verb), cancellationToken);
-            newStatemnt.Actor = (AgentEntity)await _mediator.Send(MergeActorCommand.Create(request.Statement.Actor), cancellationToken);
-            newStatemnt.Authority = (AgentEntity)await _mediator.Send(MergeActorCommand.Create(request.Statement.Authority), cancellationToken);
+            StatementEntity newStatement = _mapper.Map<StatementEntity>(request.Statement);
+            newStatement.Verb = (VerbEntity)await _mediator.Send(MergeVerbCommand.Create(request.Statement.Verb), cancellationToken).ConfigureAwait(false);
+            newStatement.Actor = (AgentEntity)await _mediator.Send(MergeActorCommand.Create(request.Statement.Actor), cancellationToken).ConfigureAwait(false);
+            newStatement.Authority = (AgentEntity)await _mediator.Send(MergeActorCommand.Create(request.Statement.Authority), cancellationToken).ConfigureAwait(false);
 
-            if(newStatemnt.Context != null)
+            if(newStatement.Context != null)
             {
-                var context = newStatemnt.Context;
+                var context = newStatement.Context;
                 if(context.Instructor != null)
                 {
                     context.Instructor = (AgentEntity)await _mediator.Send(MergeActorCommand.Create(request.Statement.Context.Instructor), cancellationToken);
-                    
+
                 }
                 if(context.Team != null)
                 {
@@ -82,18 +81,18 @@ namespace Doctrina.Application.Statements.Commands
                 }
             }
 
-            var objType = newStatemnt.Object.ObjectType;
+            var objType = newStatement.Object.ObjectType;
             if (objType == EntityObjectType.Activity)
             {
-                newStatemnt.Object.Activity = (ActivityEntity)await _mediator.Send(MergeActivityCommand.Create((IActivity)request.Statement.Object));
+                newStatement.Object.Activity = (ActivityEntity)await _mediator.Send(MergeActivityCommand.Create((IActivity)request.Statement.Object));
             }
             else if (objType == EntityObjectType.Agent || objType == EntityObjectType.Group)
             {
-                newStatemnt.Object.Agent = (AgentEntity)await _mediator.Send(MergeActorCommand.Create((IAgent)request.Statement.Object));
+                newStatement.Object.Agent = (AgentEntity)await _mediator.Send(MergeActorCommand.Create((IAgent)request.Statement.Object));
             }
             else if (objType == EntityObjectType.SubStatement)
             {
-                newStatemnt.Object.SubStatement = (SubStatementEntity)await _mediator.Send(CreateSubStatementCommand.Create((ISubStatement)request.Statement.Object));
+                newStatement.Object.SubStatement = (SubStatementEntity)await _mediator.Send(CreateSubStatementCommand.Create((ISubStatement)request.Statement.Object));
             }
             else if (objType == EntityObjectType.StatementRef)
             {
@@ -101,11 +100,13 @@ namespace Doctrina.Application.Statements.Commands
                 // TODO: Additional logic should be performed here
             }
 
-            _context.Statements.Add(newStatemnt);
+            newStatement.FullStatement = request.Statement.ToJson();
 
-            await _mediator.Publish(StatementAdded.Create(newStatemnt), cancellationToken);
+            _context.Statements.Add(newStatement);
 
-            return newStatemnt.StatementId;
+            await _mediator.Publish(StatementAdded.Create(newStatement), cancellationToken);
+
+            return newStatement.StatementId;
         }
     }
 }
