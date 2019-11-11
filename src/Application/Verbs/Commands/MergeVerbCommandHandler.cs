@@ -29,15 +29,19 @@ namespace Doctrina.Application.Verbs.Commands
             if (verb != null)
             {
                 // TODO: Update verb Display language maps
-                foreach (var dis in request.Verb.Display)
+                // We MAY rollback any changes 
+                if(request.Verb.Display != null)
                 {
-                    if (verb.Display.ContainsKey(dis.Key))
+                    foreach (var dis in request.Verb.Display)
                     {
-                        verb.Display[dis.Key] = dis.Value;
-                    }
-                    else
-                    {
-                        verb.Display.Add(dis);
+                        if (verb.Display.ContainsKey(dis.Key))
+                        {
+                            verb.Display[dis.Key] = dis.Value;
+                        }
+                        else
+                        {
+                            verb.Display.Add(dis);
+                        }
                     }
                 }
             }
