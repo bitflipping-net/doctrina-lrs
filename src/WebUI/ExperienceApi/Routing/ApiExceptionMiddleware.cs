@@ -52,13 +52,14 @@ namespace Doctrina.WebUI.ExperienceApi.Routing
                 }
                 else
                 {
-                    logger.LogError(ex, "Request failed.");
+                    logger.LogError(ex, "Request failed");
 
                     context.Response.ContentType = "application/json";
                     context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                     await context.Response.WriteJsonAsync(new
                     {
                         error = new[] { ex.InnerException?.Message ?? ex.Message },
+                        type = ex.GetType().Name,
                         stackTrace = ex.StackTrace
                     });
                 }

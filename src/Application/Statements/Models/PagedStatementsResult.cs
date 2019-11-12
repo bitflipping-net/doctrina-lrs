@@ -10,7 +10,7 @@ namespace Doctrina.Application.Statements.Models
             MoreToken = null;
         }
 
-        public PagedStatementsResult(StatementCollection statements, string token)
+        public PagedStatementsResult(StatementCollection statements, string token = null)
         {
             Statements = statements;
             MoreToken = token;

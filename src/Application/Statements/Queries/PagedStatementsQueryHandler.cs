@@ -4,9 +4,8 @@ using Doctrina.Application.Statements.Models;
 using Doctrina.Domain.Entities;
 using Doctrina.ExperienceApi.Data;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Caching.Distributed;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,33 +17,27 @@ namespace Doctrina.Application.Statements.Queries
     public class PagedStatementsQueryHandler : IRequestHandler<PagedStatementsQuery, PagedStatementsResult>
     {
         private readonly IDoctrinaDbContext _context;
-        private readonly IMediator _mediator;
         private readonly IMapper _mapper;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IMemoryCache _cache;
+        private readonly IDistributedCache _distributedCache;
 
-        public PagedStatementsQueryHandler(IDoctrinaDbContext context, IMediator mediator, IMapper mapper, IHttpContextAccessor httpContextAccessor, IMemoryCache cache)
+        public PagedStatementsQueryHandler(IDoctrinaDbContext context, IMapper mapper, IDistributedCache distributedCache)
         {
             _context = context;
-            _mediator = mediator;
             _mapper = mapper;
-            _httpContextAccessor = httpContextAccessor;
-            _cache = cache;
+            _distributedCache = distributedCache;
         }
 
         public async Task<PagedStatementsResult> Handle(PagedStatementsQuery request, CancellationToken cancellationToken)
         {
+            if (!string.IsNullOrWhiteSpace(request.MoreToken))
+            {
+                string token = request.MoreToken;
+                string jsonString = await _distributedCache.GetStringAsync(token, cancellationToken);
+                request = PagedStatementsQuery.FromJson(jsonString);
+                request.MoreToken = null;
+            }
+
             var query = _context.Statements.AsNoTracking();
-
-            //if(request.VoidedStatementId.HasValue)
-            //{
-            //    query = query.Where(x => x.StatementId == request.VoidedStatementId.Value && x.Voided);
-            //}
-
-            //if (request.StatementId.HasValue)
-            //{
-            //    query = query.Where(x => x.StatementId == request.StatementId.Value && !x.Voided);
-            //}
 
             if (request.VerbId != null)
             {
@@ -137,29 +130,29 @@ namespace Doctrina.Application.Statements.Queries
 
             if (request.Ascending.GetValueOrDefault())
             {
-                query = query.OrderBy(x => x.Timestamp);
+                query = query.OrderBy(x => x.Stored);
             }
             else
             {
-                query = query.OrderByDescending(x => x.Timestamp);
+                query = query.OrderByDescending(x => x.Stored);
             }
 
-            int skipRows = 0;
-            //if (!string.IsNullOrEmpty(request.MoreToken))
-            //{
-            //    if(_cache.TryGetValue(request.MoreToken, out int skipRows))
-            //    {
-            //        skipRows += request.Limit.Value;
-            //    }
-            //}
+            if (request.Since.HasValue)
+            {
+                query = query.Where(x => x.Stored >= request.Since.Value);
+            }
 
-            
+            if (request.Until.HasValue)
+            {
+                query = query.Where(x => x.Stored <= request.Until.Value);
+            }
 
             int pageSize = request.Limit ?? 1000;
+            int skipRows = request.PageIndex * pageSize;
 
             IQueryable<PagedQuery> pagedQuery = null;
 
-            if (request.Attachments.GetValueOrDefault())
+            if (!request.Attachments.GetValueOrDefault())
             {
                 pagedQuery = query.Select(p => new PagedQuery { 
                     Statement = new StatementEntity
@@ -193,16 +186,28 @@ namespace Doctrina.Application.Statements.Queries
             }
 
             long totalCount = result.FirstOrDefault()?.TotalCount ?? 0;
-            int totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+            int totalPagesIndex = (int)Math.Floor((double)totalCount / pageSize);
 
-            List<Statement> statements = pagedQuery.Select(p => _mapper.Map<Statement>(p.Statement)).ToList();
+            List<Statement> statements = result.Select(p => _mapper.Map<Statement>(p.Statement)).ToList();
 
             var statementCollection = new StatementCollection(statements);
 
-            string moreToken = totalPages > 1 ? Guid.NewGuid().ToString() : null;
-            // TODO: Save query
+            if (request.PageIndex < totalPagesIndex)
+            {
+                request.MoreToken = Guid.NewGuid().ToString();
+                request.PageIndex = request.PageIndex++;
+                if (!request.Until.HasValue)
+                {
+                    request.Until = DateTimeOffset.UtcNow;
+                }
+                var options = new DistributedCacheEntryOptions()
+                    .SetSlidingExpiration(TimeSpan.FromSeconds(60 * 10));
+                await _distributedCache.SetStringAsync(request.MoreToken, request.ToJson(), options, cancellationToken);
 
-            return new PagedStatementsResult(statementCollection, moreToken);
+                return new PagedStatementsResult(statementCollection, request.MoreToken);
+            }
+
+            return new PagedStatementsResult(statementCollection);
         }
     }
 }

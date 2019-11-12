@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Doctrina.Application.Common.Interfaces;
 using Doctrina.Domain.Entities;
+using Doctrina.Domain.Entities.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,4 +1,4 @@
-﻿namespace Doctrina.Domain.Entities
+﻿namespace Doctrina.Domain.Entities.Interfaces
 {
     public interface IStatementObjectEntity
     {

@@ -27,7 +27,8 @@ namespace Doctrina.WebUI.ExperienceApi.Routing
             "ascending",
             "skip",
             "activityId",
-            "stateId"
+            "stateId",
+            "more"
         };
 
         private readonly RequestDelegate _next;

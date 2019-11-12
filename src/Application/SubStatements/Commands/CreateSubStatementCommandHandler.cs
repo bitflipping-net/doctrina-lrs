@@ -5,6 +5,7 @@ using Doctrina.Application.Common.Interfaces;
 using Doctrina.Application.SubStatements.Commands;
 using Doctrina.Application.Verbs.Commands;
 using Doctrina.Domain.Entities;
+using Doctrina.Domain.Entities.Interfaces;
 using Doctrina.ExperienceApi.Data;
 using MediatR;
 using System;

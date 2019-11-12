@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Doctrina.Domain.Entities;
+using Doctrina.Domain.Entities.Interfaces;
 using Doctrina.ExperienceApi.Data;
 
 namespace Doctrina.Application.Infrastructure.Automapper.Mappings.TypeConverters

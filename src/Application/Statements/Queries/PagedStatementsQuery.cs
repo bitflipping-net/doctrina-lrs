@@ -3,21 +3,24 @@ using Doctrina.ExperienceApi.Client.Http;
 using Doctrina.ExperienceApi.Data;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Specialized;
 
 namespace Doctrina.Application.Statements.Queries
 {
-    public class PagedStatementsQuery : ExperienceApi.Data.StatementsQuery, IRequest<PagedStatementsResult>
+    public class PagedStatementsQuery : StatementsQuery, IRequest<PagedStatementsResult>
     {
-        [FromQuery(Name = "token")]
-        public string Token { get; set; }
+        [FromQuery(Name = "more")]
+        public string MoreToken { get; set; }
 
         [FromHeader(Name = ApiHeaders.XExperienceApiVersion)]
         public string Version { get; set; }
 
         [FromHeader(Name = "Accept-Languge")]
         public string AcceptLanguage { get; set; }
+
+        public int PageIndex { get; set; }
 
         public override NameValueCollection ToParameterMap(ApiVersion version)
         {
@@ -27,11 +30,25 @@ namespace Doctrina.Application.Statements.Queries
             }
 
             var values = base.ToParameterMap(version);
-            if (!string.IsNullOrEmpty(Token))
+            if (!string.IsNullOrEmpty(MoreToken))
             {
-                values.Add("token", Token);
+                values.Add("more", MoreToken);
             }
             return values;
+        }
+
+        public string ToJson()
+        {
+            var settings = new JsonSerializerSettings()
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            };
+            return JsonConvert.SerializeObject(this, settings);
+        }
+
+        public static PagedStatementsQuery FromJson(string jsonString)
+        {
+            return JsonConvert.DeserializeObject<PagedStatementsQuery>(jsonString);
         }
     }
 }

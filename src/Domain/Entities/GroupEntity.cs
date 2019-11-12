@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Doctrina.Domain.Entities.Interfaces;
+using System.Collections.Generic;
 
 namespace Doctrina.Domain.Entities
 {

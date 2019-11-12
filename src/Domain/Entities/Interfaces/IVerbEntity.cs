@@ -1,7 +1,7 @@
 using Doctrina.Domain.Entities.OwnedTypes;
 using System;
 
-namespace Doctrina.Domain.Entities
+namespace Doctrina.Domain.Entities.Interfaces
 {
     public interface IVerbEntity
     {

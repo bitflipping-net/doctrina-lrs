@@ -183,7 +183,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             // Generate more url
             if (!string.IsNullOrEmpty(pagedResult.MoreToken))
             {
-                result.More = new Uri(Url.Action("GetStatements") + $"?token={pagedResult.MoreToken}", UriKind.Relative);
+                result.More = new Uri($"/xapi/statements?more={pagedResult.MoreToken}", UriKind.Relative);
             }
 
             if (parameters.Attachments.GetValueOrDefault())

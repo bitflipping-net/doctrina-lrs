@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Doctrina.Domain.Entities.Interfaces;
+using System;
 using System.Collections.Generic;
 
 namespace Doctrina.Domain.Entities

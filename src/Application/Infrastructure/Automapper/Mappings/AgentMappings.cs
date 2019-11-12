@@ -1,6 +1,7 @@
 using AutoMapper;
 using Doctrina.Application.Interfaces.Mapping;
 using Doctrina.Domain.Entities;
+using Doctrina.Domain.Entities.Interfaces;
 using Doctrina.ExperienceApi.Data;
 
 public class AgentMppings : IHaveCustomMapping

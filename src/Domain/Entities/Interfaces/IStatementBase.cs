@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Doctrina.Domain.Entities
+namespace Doctrina.Domain.Entities.Interfaces
 {
     public interface IStatementEntityBase
     {
