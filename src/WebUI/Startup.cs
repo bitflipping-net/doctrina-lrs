@@ -4,7 +4,6 @@ using Doctrina.Infrastructure;
 using Doctrina.Persistence;
 using Doctrina.WebUI.Data;
 using Doctrina.WebUI.ExperienceApi.Builder;
-using Doctrina.WebUI.Filters;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -15,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.IO;
+using Serilog;
 
 namespace Doctrina.WebUI
 {
@@ -42,7 +42,9 @@ namespace Doctrina.WebUI
 
             services.AddHttpContextAccessor();
 
-            services.AddControllers(options => options.Filters.Add(typeof(CustomExceptionFilterAttribute)))
+            services.AddLearningRecordStore();
+
+            services.AddControllers()
                 .AddNewtonsoftJson()
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<CreateStatementsCommandValidator>())
                 .AddExperienceApi();
@@ -63,8 +65,6 @@ namespace Doctrina.WebUI
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
-
-            services.AddLearningRecordStore();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -73,14 +73,18 @@ namespace Doctrina.WebUI
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseExceptionMiddleware();
                 app.UseDatabaseErrorPage();
             }
             else
             {
+                app.UseExceptionMiddleware();
                 app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseAlternateRequestSyntax();
 
             // Handle Lets Encrypt Route (before MVC processing!)
             app.UseRouter(wellKnown =>
@@ -93,6 +97,8 @@ namespace Doctrina.WebUI
                 });
             });
 
+
+            app.UseSerilogRequestLogging();
 
             app.UseHealthChecks("/health");
             if (!Environment.IsDevelopment())
@@ -109,7 +115,6 @@ namespace Doctrina.WebUI
                 //settings.DocumentPath = "/api/specification.json";
             });
 
-
             app.UseRouting();
 
             app.UseAuthentication();
@@ -124,9 +129,6 @@ namespace Doctrina.WebUI
                     name: "default",
                     pattern: "{controller}/{action=index}/{id?}");
                 endpoints.MapControllers();
-                //endpoints.MapSpaFallbackRoute(
-                //    name: "spa-fallback",
-                //    defaults: new { controller = "Home", action = "Index" });
             });
 
             app.UseEndpoints(endpoints =>

@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 
 namespace Doctrina.Application.Statements.Queries
 {
+    /// <summary>
+    /// Request a single statement
+    /// </summary>
     public class StatementQuery : IRequest<Statement>
     {
         public Guid StatementId { get; set; }

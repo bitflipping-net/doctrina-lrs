@@ -35,14 +35,19 @@ namespace Doctrina.WebUI.Mvc.ModelBinders
             {
                 var jsonModelReader = new JsonModelReader(contentType, request.Body);
                 Statement statement = await jsonModelReader.ReadAs<Statement>();
-                bindingContext.Result = ModelBindingResult.Success(statement);
+                if(statement != null)
+                {
+                    bindingContext.Result = ModelBindingResult.Success(statement);
+                }
+                else
+                {
+                    bindingContext.Result = ModelBindingResult.Failed();
+                }
             }
             catch (JsonModelReaderException ex)
             {
                 throw new BadRequestException(ex.Message);
             }
-
-            bindingContext.Result = ModelBindingResult.Failed();
         }
     }
 }

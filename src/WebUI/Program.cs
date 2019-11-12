@@ -59,41 +59,45 @@ namespace Doctrina.WebUI
             }
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-             Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.ConfigureAppConfiguration((hostingContext, config) =>
-                    {
-                        var env = hostingContext.HostingEnvironment;
-                        config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                              .AddJsonFile($"appsettings.Local.json", optional: true, reloadOnChange: true)
-                              .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
+        public static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            return Host.CreateDefaultBuilder(args)
+               .ConfigureWebHostDefaults(webBuilder =>
+               {
 
-                        if (env.IsDevelopment())
-                        {
-                            var appAssembly = Assembly.Load(new AssemblyName(env.ApplicationName));
-                            if (appAssembly != null)
-                            {
-                                config.AddUserSecrets(appAssembly, optional: true);
-                            }
-                        }
+                   webBuilder.ConfigureAppConfiguration((hostingContext, config) =>
+                   {
+                       var env = hostingContext.HostingEnvironment;
+                       config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                             .AddJsonFile($"appsettings.Local.json", optional: true, reloadOnChange: true)
+                             .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
 
-                        config.AddEnvironmentVariables();
+                       if (env.IsDevelopment())
+                       {
+                           var appAssembly = Assembly.Load(new AssemblyName(env.ApplicationName));
+                           if (appAssembly != null)
+                           {
+                               config.AddUserSecrets(appAssembly, optional: true);
+                           }
+                       }
 
-                        if (args != null)
-                        {
-                            config.AddCommandLine(args);
-                        }
-                    });
+                       config.AddEnvironmentVariables();
 
-                    // webBuilder.ConfigureLogging((context, logging) =>
-                    //  {
-                    //      // Clear our default providers
-                    //      logging.ClearProviders();
-                    //  });
-                    webBuilder.UseStartup<Startup>();
-                    webBuilder.UseSerilog();
-                });
+                       if (args != null)
+                       {
+                           config.AddCommandLine(args);
+                       }
+                   });
+                   // webBuilder.ConfigureLogging((context, logging) =>
+                   //  {
+                   //      // Clear our default providers
+                   //      logging.ClearProviders();
+                   //  });
+
+                   webBuilder.UseSerilog();
+
+                   webBuilder.UseStartup<Startup>();
+               });
+        }
     }
 }

@@ -8,7 +8,7 @@ using System.Collections.Specialized;
 
 namespace Doctrina.Application.Statements.Queries
 {
-    public class PagedStatementsQuery : StatementsQuery, IRequest<PagedStatementsResult>
+    public class PagedStatementsQuery : ExperienceApi.Data.StatementsQuery, IRequest<PagedStatementsResult>
     {
         [FromQuery(Name = "token")]
         public string Token { get; set; }

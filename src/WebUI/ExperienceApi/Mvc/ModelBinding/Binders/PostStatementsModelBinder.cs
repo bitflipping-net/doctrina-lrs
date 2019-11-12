@@ -39,7 +39,7 @@ namespace Doctrina.WebUI.ExperienceApi.Mvc.ModelBinding
             }
             catch (JsonModelReaderException ex)
             {
-                throw new BadRequestException(ex.Message);
+                throw new BadRequestException(ex.InnerException?.Message ?? ex.Message, ex);
             }
 
             if (model.Statements == null)

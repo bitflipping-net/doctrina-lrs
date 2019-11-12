@@ -46,6 +46,12 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             [FromQuery(Name = "attachments")]bool includeAttachments = false,
             [FromQuery]ResultFormat format = ResultFormat.Exact)
         {
+            var allowedKeys = new string[]{ "statementId", "attachments", "format" };
+            if(Request.Query.Count(x => !allowedKeys.Contains(x.Key)) > 0)
+            {
+                return BadRequest("Only attachments and format parameters are allowed when using statementId");
+            }
+
             Statement statement = await _mediator.Send(Application.Statements.Queries.StatementQuery.Create(statementId, includeAttachments, format));
 
             if (statement == null)
@@ -87,6 +93,12 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             [FromQuery(Name = "attachments")]bool includeAttachments = false,
             [FromQuery]ResultFormat format = ResultFormat.Exact)
         {
+            var allowedKeys = new string[] { "voidedStatementId", "attachments", "format" };
+            if (Request.Query.Count(x => !allowedKeys.Contains(x.Key)) > 0)
+            {
+                return BadRequest("Only attachments and format parameters are allowed when using voidedStatementId");
+            }
+
             Statement statement = await _mediator.Send(VoidedStatemetQuery.Create(voidedStatementId, includeAttachments, format));
 
             if (statement == null)
