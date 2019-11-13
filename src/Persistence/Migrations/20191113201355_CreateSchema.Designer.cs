@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Doctrina.Persistence.Migrations
 {
     [DbContext(typeof(DoctrinaDbContext))]
-    [Migration("20191110121941_ContextActivities")]
-    partial class ContextActivities
+    [Migration("20191113201355_CreateSchema")]
+    partial class CreateSchema
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -657,13 +657,17 @@ namespace Doctrina.Persistence.Migrations
 
             modelBuilder.Entity("Doctrina.Domain.Entities.ContextActivitiesEntity", b =>
                 {
-                    b.OwnsMany("Doctrina.Domain.Entities.ContextActivityTypeEntity", "Category", b1 =>
+                    b.OwnsMany("Doctrina.Domain.Entities.OwnedTypes.ContextActivityTypeEntity", "Category", b1 =>
                         {
                             b1.Property<Guid>("ContextActivitiesEntityContextActivitiesId")
                                 .HasColumnType("uniqueidentifier");
 
-                            b1.Property<string>("Id")
-                                .HasColumnType("nvarchar(450)");
+                            b1.Property<Guid>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("ActivityId")
+                                .HasColumnType("nvarchar(max)");
 
                             b1.Property<string>("Hash")
                                 .HasColumnType("nvarchar(max)");
@@ -676,13 +680,17 @@ namespace Doctrina.Persistence.Migrations
                                 .HasForeignKey("ContextActivitiesEntityContextActivitiesId");
                         });
 
-                    b.OwnsMany("Doctrina.Domain.Entities.ContextActivityTypeEntity", "Grouping", b1 =>
+                    b.OwnsMany("Doctrina.Domain.Entities.OwnedTypes.ContextActivityTypeEntity", "Grouping", b1 =>
                         {
                             b1.Property<Guid>("ContextActivitiesEntityContextActivitiesId")
                                 .HasColumnType("uniqueidentifier");
 
-                            b1.Property<string>("Id")
-                                .HasColumnType("nvarchar(450)");
+                            b1.Property<Guid>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("ActivityId")
+                                .HasColumnType("nvarchar(max)");
 
                             b1.Property<string>("Hash")
                                 .HasColumnType("nvarchar(max)");
@@ -695,13 +703,17 @@ namespace Doctrina.Persistence.Migrations
                                 .HasForeignKey("ContextActivitiesEntityContextActivitiesId");
                         });
 
-                    b.OwnsMany("Doctrina.Domain.Entities.ContextActivityTypeEntity", "Other", b1 =>
+                    b.OwnsMany("Doctrina.Domain.Entities.OwnedTypes.ContextActivityTypeEntity", "Other", b1 =>
                         {
                             b1.Property<Guid>("ContextActivitiesEntityContextActivitiesId")
                                 .HasColumnType("uniqueidentifier");
 
-                            b1.Property<string>("Id")
-                                .HasColumnType("nvarchar(450)");
+                            b1.Property<Guid>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("ActivityId")
+                                .HasColumnType("nvarchar(max)");
 
                             b1.Property<string>("Hash")
                                 .HasColumnType("nvarchar(max)");
@@ -714,13 +726,17 @@ namespace Doctrina.Persistence.Migrations
                                 .HasForeignKey("ContextActivitiesEntityContextActivitiesId");
                         });
 
-                    b.OwnsMany("Doctrina.Domain.Entities.ContextActivityTypeEntity", "Parent", b1 =>
+                    b.OwnsMany("Doctrina.Domain.Entities.OwnedTypes.ContextActivityTypeEntity", "Parent", b1 =>
                         {
                             b1.Property<Guid>("ContextActivitiesEntityContextActivitiesId")
                                 .HasColumnType("uniqueidentifier");
 
-                            b1.Property<string>("Id")
-                                .HasColumnType("nvarchar(450)");
+                            b1.Property<Guid>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("ActivityId")
+                                .HasColumnType("nvarchar(max)");
 
                             b1.Property<string>("Hash")
                                 .HasColumnType("nvarchar(max)");

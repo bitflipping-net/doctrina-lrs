@@ -4,6 +4,7 @@ using Doctrina.Application.Infrastructure.Automapper.Mappings.TypeConverters;
 using Doctrina.Application.Interfaces.Mapping;
 using Doctrina.Application.Mappings.ValueResolvers;
 using Doctrina.Domain.Entities;
+using Doctrina.Domain.Entities.OwnedTypes;
 using Doctrina.ExperienceApi.Data;
 using System;
 using System.Collections.Generic;
@@ -122,8 +123,9 @@ namespace Doctrina.Application.Mappings
                 .ForMember(x => x.Other, opt => opt.MapFrom(x => x.Other));
 
             configuration.CreateMap<Activity, ContextActivityTypeEntity>()
+                .ForMember(x=> x.Id, opt => opt.Ignore())
                 .ForMember(x => x.Hash, opt => opt.MapFrom(x => x.Id.ComputeHash()))
-                .ForMember(x => x.Id, opt => opt.MapFrom(x => x.Id));
+                .ForMember(x => x.ActivityId, opt => opt.MapFrom(x => x.Id));
         }
 
     }

@@ -24,11 +24,7 @@ namespace Doctrina.Persistence.Migrations
                 name: "ContextActivities",
                 columns: table => new
                 {
-                    ContextActivitiesId = table.Column<Guid>(nullable: false),
-                    Parent = table.Column<string>(type: "ntext", nullable: true),
-                    Grouping = table.Column<string>(type: "ntext", nullable: true),
-                    Category = table.Column<string>(type: "ntext", nullable: true),
-                    Other = table.Column<string>(type: "ntext", nullable: true)
+                    ContextActivitiesId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -130,6 +126,86 @@ namespace Doctrina.Persistence.Migrations
                         principalTable: "Agents",
                         principalColumn: "AgentId",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ContextActivities_Category",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    ContextActivitiesEntityContextActivitiesId = table.Column<Guid>(nullable: false),
+                    ActivityId = table.Column<string>(nullable: true),
+                    Hash = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ContextActivities_Category", x => new { x.ContextActivitiesEntityContextActivitiesId, x.Id });
+                    table.ForeignKey(
+                        name: "FK_ContextActivities_Category_ContextActivities_ContextActivitiesEntityContextActivitiesId",
+                        column: x => x.ContextActivitiesEntityContextActivitiesId,
+                        principalTable: "ContextActivities",
+                        principalColumn: "ContextActivitiesId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ContextActivities_Grouping",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    ContextActivitiesEntityContextActivitiesId = table.Column<Guid>(nullable: false),
+                    ActivityId = table.Column<string>(nullable: true),
+                    Hash = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ContextActivities_Grouping", x => new { x.ContextActivitiesEntityContextActivitiesId, x.Id });
+                    table.ForeignKey(
+                        name: "FK_ContextActivities_Grouping_ContextActivities_ContextActivitiesEntityContextActivitiesId",
+                        column: x => x.ContextActivitiesEntityContextActivitiesId,
+                        principalTable: "ContextActivities",
+                        principalColumn: "ContextActivitiesId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ContextActivities_Other",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    ContextActivitiesEntityContextActivitiesId = table.Column<Guid>(nullable: false),
+                    ActivityId = table.Column<string>(nullable: true),
+                    Hash = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ContextActivities_Other", x => new { x.ContextActivitiesEntityContextActivitiesId, x.Id });
+                    table.ForeignKey(
+                        name: "FK_ContextActivities_Other_ContextActivities_ContextActivitiesEntityContextActivitiesId",
+                        column: x => x.ContextActivitiesEntityContextActivitiesId,
+                        principalTable: "ContextActivities",
+                        principalColumn: "ContextActivitiesId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ContextActivities_Parent",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    ContextActivitiesEntityContextActivitiesId = table.Column<Guid>(nullable: false),
+                    ActivityId = table.Column<string>(nullable: true),
+                    Hash = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ContextActivities_Parent", x => new { x.ContextActivitiesEntityContextActivitiesId, x.Id });
+                    table.ForeignKey(
+                        name: "FK_ContextActivities_Parent_ContextActivities_ContextActivitiesEntityContextActivitiesId",
+                        column: x => x.ContextActivitiesEntityContextActivitiesId,
+                        principalTable: "ContextActivities",
+                        principalColumn: "ContextActivitiesId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -668,6 +744,18 @@ namespace Doctrina.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "AttachmentEntity");
+
+            migrationBuilder.DropTable(
+                name: "ContextActivities_Category");
+
+            migrationBuilder.DropTable(
+                name: "ContextActivities_Grouping");
+
+            migrationBuilder.DropTable(
+                name: "ContextActivities_Other");
+
+            migrationBuilder.DropTable(
+                name: "ContextActivities_Parent");
 
             migrationBuilder.DropTable(
                 name: "Statements");

@@ -1,0 +1,43 @@
+### The JWS signature MUST have a payload of a valid JSON serialization of the complete Statement before the signature was added. (Data 2.6.s4.b3, XAPI-00116)
+POST /xapi/statements HTTP/1.1
+Content-Type: multipart/mixed; boundary=-------------1339291747
+X-Experience-API-Version: 1.0.3
+Authorization: Basic YWRtaW5AZXhhbXBsZS5jb206ektSNGdrWU5IUDV0dkg=
+host: localhost:52209
+content-length: 1708
+Connection: close
+
+
+---------------1339291747
+Content-Type:application/json
+
+{"actor":{"objectType":"Agent","name":"xAPI mbox","mbox":"mailto:xapi@adlnet.gov"},"verb":{"id":"http://adlnet.gov/expapi/verbs/attended","display":{"en-GB":"attended","en-US":"attended"}},"object":{"objectType":"Activity","id":"http://www.example.com/meetings/occurances/34534"},"id":"7293c64d-e833-4f60-a062-883d41ee2daa","attachments":[{"usageType":"http://adlnet.gov/expapi/attachments/signature","display":{"en-US":"Signed by the Test Suite"},"description":{"en-US":"Signed by the Test Suite"},"contentType":"application/octet-stream","length":796,"sha2":"e9d09a57a39a6b620fbd9b33feb8c31752958749e1d142bedd4767e41522e82a"}]}
+---------------1339291747
+Content-Type:application/octet-stream
+Content-Transfer-Encoding:binary
+X-Experience-API-Hash:e9d09a57a39a6b620fbd9b33feb8c31752958749e1d142bedd4767e41522e82a
+
+eyJhbGciOiJSUzI1NiJ9.eydhY3RvciI6eyJvYmplY3RUeXBlIjoiQWdlbnQiLCJuYW1lIjoieEFQSSBtYm94IiwibWJveCI6Im1haWx0bzp4YXBpQGFkbG5ldC5nb3YifSwidmVyYiI6eyJpZCI6Imh0dHA6Ly9hZGxuZXQuZ292L2V4cGFwaS92ZXJicy9hdHRlbmRlZCIsImRpc3BsYXkiOnsiZW4tR0IiOiJhdHRlbmRlZCIsImVuLVVTIjoiYXR0ZW5kZWQifX0sIm9iamVjdCI6eyJvYmplY3RUeXBlIjoiQWN0aXZpdHkiLCJpZCI6Imh0dHA6Ly93d3cuZXhhbXBsZS5jb20vbWVldGluZ3Mvb2NjdXJhbmNlcy8zNDUzNCJ9LCJpZCI6IjcyOTNjNjRkLWU4MzMtNGY2MC1hMDYyLTg4M2Q0MWVlMmRhYSJ9.kMWiSoyxGqN9e3PRcjcj7Z4RAcVKrafVaNlNMmYV92UE2nUB0nfKxhO4UICRG92EAaTAfnTtJyaDo8nERXOirYI6b3OYtMh5gZg9EYuDWAjOi5bLu_u1aTN59VYMCJsyHwaChMfj7PdhroJeQYbGKCDV6d9SAClPPxGU1VERaI73pz-IY1Qk7vRM1xwMuUFcdVx3eY0LkBYLnoKX6x2qPInknb5OBNIpzBJR9tChiOUeQZbEAKy1YiWn9BRKXrHBm-32FoM0K5To85eX0cV7DERlKnGtxBbrB456v5CCVKmcisoSq1JBSHevO1OouShsI5_kxifJKOn9b8Ir4_5piw
+---------------1339291747--
+
+### The JWS signature MUST use an algorithm of \"RS256\", \"RS384\", or \"RS512\". (Data 2.6.s4.b4, XAPI-00117)
+POST /xapi/statements HTTP/1.1
+Content-Type: multipart/mixed; boundary=-------------2060259533
+X-Experience-API-Version: 1.0.3
+Authorization: Basic YWRtaW5AZXhhbXBsZS5jb206ektSNGdrWU5IUDV0dkg=
+host: localhost:52209
+content-length: 1409
+Connection: close
+
+
+---------------2060259533
+Content-Type:application/json
+
+{"actor":{"objectType":"Agent","name":"xAPI mbox","mbox":"mailto:xapi@adlnet.gov"},"verb":{"id":"http://adlnet.gov/expapi/verbs/attended","display":{"en-GB":"attended","en-US":"attended"}},"object":{"objectType":"Activity","id":"http://www.example.com/meetings/occurances/34534"},"id":"3c5ced30-cb0d-40ea-9036-4ace482e2009","attachments":[{"usageType":"http://adlnet.gov/expapi/attachments/signature","display":{"en-US":"Signed by the Test Suite"},"description":{"en-US":"Signed by the Test Suite"},"contentType":"application/octet-stream","length":497,"sha2":"0e3c7a76614c554479b2276ccd3777cf29612497d8f0999d00bdf32ba3f0ef2d"}]}
+---------------2060259533
+Content-Type:application/octet-stream
+Content-Transfer-Encoding:binary
+X-Experience-API-Hash:0e3c7a76614c554479b2276ccd3777cf29612497d8f0999d00bdf32ba3f0ef2d
+
+eyJhbGciOiJIUzI1NiJ9.eyJhY3RvciI6eyJvYmplY3RUeXBlIjoiQWdlbnQiLCJuYW1lIjoieEFQSSBtYm94IiwibWJveCI6Im1haWx0bzp4YXBpQGFkbG5ldC5nb3YifSwidmVyYiI6eyJpZCI6Imh0dHA6Ly9hZGxuZXQuZ292L2V4cGFwaS92ZXJicy9hdHRlbmRlZCIsImRpc3BsYXkiOnsiZW4tR0IiOiJhdHRlbmRlZCIsImVuLVVTIjoiYXR0ZW5kZWQifX0sIm9iamVjdCI6eyJvYmplY3RUeXBlIjoiQWN0aXZpdHkiLCJpZCI6Imh0dHA6Ly93d3cuZXhhbXBsZS5jb20vbWVldGluZ3Mvb2NjdXJhbmNlcy8zNDUzNCJ9LCJpZCI6IjNjNWNlZDMwLWNiMGQtNDBlYS05MDM2LTRhY2U0ODJlMjAwOSJ9.LFqxDP0oqdvCOTOKxQQbEmh6aGPVO1zXGfAtn1Xsl3I
+---------------2060259533--

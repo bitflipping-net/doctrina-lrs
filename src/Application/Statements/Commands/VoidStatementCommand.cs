@@ -1,4 +1,5 @@
-﻿using Doctrina.Application.Common.Interfaces;
+﻿using Doctrina.Application.Common.Exceptions;
+using Doctrina.Application.Common.Interfaces;
 using Doctrina.Domain.Entities;
 using Doctrina.Domain.Entities.Interfaces;
 using MediatR;
@@ -48,7 +49,7 @@ namespace Doctrina.Application.Statements.Commands
                 // voidedStatement has been voided, return.
                 if (voidedStatement.Voided)
                 {
-                    await Task.CompletedTask; // Soft
+                    throw new BadRequestException("should not void an already voided statement");
                 }
 
                 voidedStatement.Voided = true;
