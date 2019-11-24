@@ -9,6 +9,8 @@ namespace Doctrina.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<AttachmentEntity> builder)
         {
+            builder.ToTable("Attachments");
+
             builder.Property(e => e.UsageType)
                 .IsRequired()
                 .HasMaxLength(Constants.MAX_URL_LENGTH);
