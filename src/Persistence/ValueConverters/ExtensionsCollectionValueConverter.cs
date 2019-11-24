@@ -18,12 +18,22 @@ namespace Doctrina.Persistence.ValueConverters
 
         public static string ToDataStore(ExtensionsCollection extensions)
         {
-            return JsonConvert.SerializeObject(extensions);
+            if (extensions != null && extensions.Count > 0)
+            {
+                return JsonConvert.SerializeObject(extensions);
+            }
+
+            return null;
         }
 
         public static ExtensionsCollection FromDataStore(string strExtesions)
         {
-            return JsonConvert.DeserializeObject<ExtensionsCollection>(strExtesions);
+            if (!string.IsNullOrWhiteSpace(strExtesions))
+            {
+                return JsonConvert.DeserializeObject<ExtensionsCollection>(strExtesions);
+            }
+
+            return null;
         }
     }
 }
