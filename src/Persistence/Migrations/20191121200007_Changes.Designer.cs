@@ -5,14 +5,16 @@ using Doctrina.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Doctrina.Persistence.Migrations
 {
     [DbContext(typeof(DoctrinaDbContext))]
-    partial class DoctrinaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191121200007_Changes")]
+    partial class Changes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

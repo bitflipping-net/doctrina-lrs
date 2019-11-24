@@ -4,6 +4,7 @@ using Doctrina.ExperienceApi.Data;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Specialized;
 
@@ -39,9 +40,13 @@ namespace Doctrina.Application.Statements.Queries
 
         public string ToJson()
         {
+            var contractResolver = new DefaultContractResolver();
+            contractResolver.IgnoreSerializableInterface = false;
+            contractResolver.IgnoreSerializableAttribute = false;
             var settings = new JsonSerializerSettings()
             {
-                NullValueHandling = NullValueHandling.Ignore
+                NullValueHandling = NullValueHandling.Ignore,
+                ContractResolver = contractResolver
             };
             return JsonConvert.SerializeObject(this, settings);
         }

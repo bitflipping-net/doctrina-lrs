@@ -1,10 +1,8 @@
 ﻿using Doctrina.Application.Statements.Commands;
 using Doctrina.Application.Statements.Models;
-using Doctrina.Application.Statements.Queries;
-using Doctrina.ExperienceApi.Client.Http;
 using Doctrina.ExperienceApi.Data;
-using Doctrina.ExperienceApi.Data.Json;
 using Doctrina.WebUI.ExperienceApi.Models;
+using Doctrina.WebUI.ExperienceApi.Mvc.ActionResults;
 using Doctrina.WebUI.ExperienceApi.Mvc.Filters;
 using Doctrina.WebUI.Mvc.ModelBinders;
 using MediatR;
@@ -13,11 +11,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
+using Queries = Doctrina.Application.Statements.Queries;
 
 namespace Doctrina.WebUI.ExperienceApi.Controllers
 {
@@ -39,100 +34,6 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             _logger = logger;
         }
 
-        [HttpGet(Order = 1)]
-        [Produces("application/json", "multipart/mixed")]
-        private async Task<IActionResult> GetStatement(
-            [FromQuery]Guid statementId,
-            [FromQuery(Name = "attachments")]bool includeAttachments = false,
-            [FromQuery]ResultFormat format = ResultFormat.Exact)
-        {
-            var allowedKeys = new string[]{ "statementId", "attachments", "format" };
-            if(Request.Query.Count(x => !allowedKeys.Contains(x.Key)) > 0)
-            {
-                return BadRequest("Only attachments and format parameters are allowed when using statementId");
-            }
-
-            Statement statement = await _mediator.Send(Application.Statements.Queries.StatementQuery.Create(statementId, includeAttachments, format));
-
-            if (statement == null)
-            {
-                return NotFound();
-            }
-
-            string statementJson = statement.ToJson(format);
-
-            if (includeAttachments && statement.Attachments.Any(x => x.Payload != null))
-            {
-                var multipart = new MultipartContent("mixed")
-                    {
-                        new StringContent(statementJson, Encoding.UTF8, MediaTypes.Application.Json)
-                    };
-                foreach (var attachment in statement.Attachments)
-                {
-                    if (attachment.Payload != null)
-                    {
-                        var byteArrayContent = new ByteArrayContent(attachment.Payload);
-                        byteArrayContent.Headers.ContentType = new MediaTypeHeaderValue(attachment.ContentType);
-                        byteArrayContent.Headers.Add(ApiHeaders.ContentTransferEncoding, "binary");
-                        byteArrayContent.Headers.Add(ApiHeaders.XExperienceApiHash, attachment.SHA2);
-                        multipart.Add(byteArrayContent);
-                    }
-                }
-                var strMultipart = await multipart.ReadAsStringAsync();
-                return Content(strMultipart, MediaTypes.Multipart.Mixed);
-            }
-
-            return Content(statementJson, MediaTypes.Application.Json);
-
-        }
-
-        [HttpGet(Order = 2)]
-        [Produces("application/json", "multipart/mixed")]
-        private async Task<IActionResult> GetVoidedStatement(
-            [FromQuery]Guid voidedStatementId,
-            [FromQuery(Name = "attachments")]bool includeAttachments = false,
-            [FromQuery]ResultFormat format = ResultFormat.Exact)
-        {
-            var allowedKeys = new string[] { "voidedStatementId", "attachments", "format" };
-            if (Request.Query.Count(x => !allowedKeys.Contains(x.Key)) > 0)
-            {
-                return BadRequest("Only attachments and format parameters are allowed when using voidedStatementId");
-            }
-
-            Statement statement = await _mediator.Send(VoidedStatemetQuery.Create(voidedStatementId, includeAttachments, format));
-
-            if (statement == null)
-            {
-                return NotFound();
-            }
-
-            string fullStatement = statement.ToJson(format);
-
-            if (includeAttachments && statement.Attachments.Any(x => x.Payload != null))
-            {
-                var multipart = new MultipartContent("mixed")
-                    {
-                        new StringContent(fullStatement, Encoding.UTF8, MediaTypes.Application.Json)
-                    };
-                foreach (var attachment in statement.Attachments)
-                {
-                    if (attachment.Payload != null)
-                    {
-                        var byteArrayContent = new ByteArrayContent(attachment.Payload);
-                        byteArrayContent.Headers.ContentType = new MediaTypeHeaderValue(attachment.ContentType);
-                        byteArrayContent.Headers.Add(ApiHeaders.ContentTransferEncoding, "binary");
-                        byteArrayContent.Headers.Add(ApiHeaders.XExperienceApiHash, attachment.SHA2);
-                        multipart.Add(byteArrayContent);
-                    }
-                }
-
-                return Content(await multipart.ReadAsStringAsync(), MediaTypes.Multipart.Mixed);
-            }
-
-            return Content(fullStatement, MediaTypes.Application.Json);
-
-        }
-
         /// <summary>
         /// Get statements
         /// </summary>
@@ -140,45 +41,46 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
         /// <returns></returns>
         [AcceptVerbs("GET", "HEAD", Order = 3)]
         [Produces("application/json", "multipart/mixed")]
-        public async Task<IActionResult> GetStatements([FromQuery]PagedStatementsQuery parameters)
+        public async Task<IActionResult> GetStatements([FromQuery]Queries.PagedStatementsQuery parameters)
         {
-            ResultFormat format = parameters.Format ?? ResultFormat.Exact;
-
-            // Validate parameters for combinations
-            if (parameters.StatementId.HasValue || parameters.VoidedStatementId.HasValue)
+            if (!ModelState.IsValid)
             {
-                var otherParameters = parameters.ToParameterMap(ApiVersion.GetLatest());
-                otherParameters.Remove("attachments");
-                otherParameters.Remove("format");
-                if (otherParameters.Count > 0)
-                {
-                    return BadRequest("Only attachments and format parameters are allowed with using statementId or voidedStatementId");
-                }
-
-                bool attachments = parameters.Attachments.GetValueOrDefault();
-
-                if (parameters.StatementId.HasValue)
-                {
-                    return await GetStatement(
-                        parameters.StatementId.Value,
-                        attachments,
-                        format);
-                }
-
-                if (parameters.VoidedStatementId.HasValue)
-                {
-                    return await GetVoidedStatement(
-                        parameters.VoidedStatementId.Value,
-                        attachments,
-                        format);
-                }
+                return BadRequest(ModelState);
             }
 
-            StatementsResult result = new StatementsResult();
-            PagedStatementsResult pagedResult = await _mediator.Send(parameters);
+            ResultFormat format = parameters.Format ?? ResultFormat.Exact;
 
-            // Derserialize to json statement object
-            result.Statements = pagedResult.Statements;
+            if (parameters.StatementId.HasValue || parameters.VoidedStatementId.HasValue)
+            {
+                bool attachments = parameters.Attachments.GetValueOrDefault();
+
+                IRequest<Statement> requestQuery = null;
+                if (parameters.StatementId.HasValue)
+                {
+                    Guid statementId = parameters.StatementId.Value;
+                    requestQuery = Queries.StatementQuery.Create(statementId, attachments, format);
+                }
+                else if (parameters.VoidedStatementId.HasValue)
+                {
+                    Guid voidedStatementId = parameters.VoidedStatementId.Value;
+                    requestQuery = Queries.VoidedStatemetQuery.Create(voidedStatementId, attachments, format);
+                }
+
+                Statement statement = await _mediator.Send(requestQuery);
+
+                if (statement == null)
+                {
+                    return NotFound();
+                }
+
+                return new StatementActionResult(statement, format);
+            }
+
+            PagedStatementsResult pagedResult = await _mediator.Send(parameters);
+            StatementsResult result = new StatementsResult
+            {
+                Statements = pagedResult.Statements
+            };
 
             // Generate more url
             if (!string.IsNullOrEmpty(pagedResult.MoreToken))
@@ -186,36 +88,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 result.More = new Uri($"/xapi/statements?more={pagedResult.MoreToken}", UriKind.Relative);
             }
 
-            if (parameters.Attachments.GetValueOrDefault())
-            {
-                // TODO: If the "attachment" property of a GET Statement is used and is set to true, the LRS MUST use the multipart response format and include all Attachments as described in Part Two.
-                // Include attachment data, and return mutlipart/mixed
-                return await MultipartResult(result, format, result.Statements);
-            }
-
-            return Content(result.ToJson(format), MediaTypes.Application.Json);
-        }
-
-        private async Task<IActionResult> MultipartResult(JsonModel result, ResultFormat format, ICollection<Statement> statements)
-        {
-            Response.ContentType = MediaTypes.Multipart.Mixed;
-            var attachmentsWithPayload = statements.SelectMany(x => x.Attachments.Where(a => a.Payload != null));
-
-            using var multipart = new MultipartContent("mixed")
-            {
-                new StringContent(result.ToJson(format), Encoding.UTF8, MediaTypes.Application.Json)
-            };
-
-            foreach (var attachment in attachmentsWithPayload)
-            {
-                var byteArrayContent = new ByteArrayContent(attachment.Payload);
-                byteArrayContent.Headers.ContentType = new MediaTypeHeaderValue(attachment.ContentType);
-                byteArrayContent.Headers.Add(ApiHeaders.ContentTransferEncoding, "binary");
-                byteArrayContent.Headers.Add(ApiHeaders.XExperienceApiHash, attachment.SHA2);
-                multipart.Add(byteArrayContent);
-            }
-            var strMultipartContent = await multipart.ReadAsStringAsync();
-            return Content(strMultipartContent, MediaTypes.Multipart.Mixed);
+            return new StatementsActionResult(result, format);
         }
 
         /// <summary>

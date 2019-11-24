@@ -1,6 +1,7 @@
 ﻿using Doctrina.Application.Common.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -36,7 +37,10 @@ namespace Doctrina.WebUI.ExperienceApi.Routing
                     await context.Response.WriteJsonAsync(new { failures = ((ValidationException)ex).Failures });
                     return;
                 }
-                else if (ex is BadRequestException)
+                else if (ex is BadRequestException 
+                    || ex is IOException // Invalid formattet HTTP requests
+                    || ex is InvalidDataException // Form section has invalid Content-Disposition value:
+                    )
                 {
                     context.Response.ContentType = "application/json";
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;

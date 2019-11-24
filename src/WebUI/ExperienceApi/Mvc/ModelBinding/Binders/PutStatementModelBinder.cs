@@ -1,5 +1,6 @@
 ﻿using Doctrina.Application.Common.Exceptions;
 using Doctrina.ExperienceApi.Client;
+using Doctrina.ExperienceApi.Client.Exceptions;
 using Doctrina.ExperienceApi.Data;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
@@ -29,11 +30,9 @@ namespace Doctrina.WebUI.Mvc.ModelBinders
 
             var request = bindingContext.ActionContext.HttpContext.Request;
 
-            var contentType = MediaTypeHeaderValue.Parse(request.ContentType);
-
             try
             {
-                var jsonModelReader = new JsonModelReader(contentType, request.Body);
+                var jsonModelReader = new JsonModelReader(request.Headers, request.Body);
                 Statement statement = await jsonModelReader.ReadAs<Statement>();
                 if(statement != null)
                 {
