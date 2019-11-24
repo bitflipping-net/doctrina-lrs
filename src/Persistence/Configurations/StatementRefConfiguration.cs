@@ -8,6 +8,8 @@ namespace Doctrina.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<StatementRefEntity> builder)
         {
+            builder.ToTable("StatementRefs");
+
             builder.Property(x => x.StatementRefId)
                 .ValueGeneratedOnAdd();
             builder.HasKey(x => x.StatementRefId);
