@@ -53,6 +53,11 @@ namespace Doctrina.Application.Statements.Queries
 
         public static PagedStatementsQuery FromJson(string jsonString)
         {
+            if (string.IsNullOrWhiteSpace(jsonString))
+            {
+                throw new ArgumentNullException(nameof(jsonString));
+            }
+
             return JsonConvert.DeserializeObject<PagedStatementsQuery>(jsonString);
         }
     }
