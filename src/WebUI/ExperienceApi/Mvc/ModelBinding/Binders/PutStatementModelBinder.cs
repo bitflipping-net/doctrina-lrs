@@ -37,16 +37,14 @@ namespace Doctrina.WebUI.Mvc.ModelBinders
                 if(statement != null)
                 {
                     bindingContext.Result = ModelBindingResult.Success(statement);
-                }
-                else
-                {
-                    bindingContext.Result = ModelBindingResult.Failed();
+                    return;
                 }
             }
             catch (JsonModelReaderException ex)
             {
-                throw new BadRequestException(ex.Message);
+                bindingContext.ModelState.TryAddModelException("", ex);
             }
+            bindingContext.Result = ModelBindingResult.Failed();
         }
     }
 }

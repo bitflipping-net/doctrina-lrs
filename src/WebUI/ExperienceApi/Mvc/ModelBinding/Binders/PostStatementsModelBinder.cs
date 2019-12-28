@@ -20,39 +20,25 @@ namespace Doctrina.WebUI.ExperienceApi.Mvc.ModelBinding
                 return;
             }
 
-            var model = new PostStatementContent();
-
-            var request = bindingContext.ActionContext.HttpContext.Request;
-
-            //string strContentType = request.ContentType ?? MediaTypes.Application.Json;
-
-            //try
-            //{
-            //    var mediaTypeHeaderValue = MediaTypeHeaderValue.Parse(strContentType);
-            //}
-            //catch (FormatException ex)
-            //{
-            //    throw new BadRequestException(ex.InnerException?.Message ?? ex.Message, ex);
-            //}
-
             try
             {
+                var request = bindingContext.ActionContext.HttpContext.Request;
                 var jsonModelReader = new JsonModelReader(request.Headers, request.Body);
-                model.Statements = await jsonModelReader.ReadAs<StatementCollection>();
+
+                var model = new PostStatementContent
+                {
+                    Statements = await jsonModelReader.ReadAs<StatementCollection>()
+                };
+
+                bindingContext.Result = ModelBindingResult.Success(model);
+                return;
             }
             catch (JsonModelReaderException ex)
             {
-                throw new BadRequestException(ex.InnerException?.Message ?? ex.Message, ex);
+                bindingContext.ModelState.TryAddModelException<PostStatementContent>(x=> x, ex);
             }
 
-            if (model.Statements == null)
-            {
-                bindingContext.Result = ModelBindingResult.Failed();
-            }
-            else
-            {
-                bindingContext.Result = ModelBindingResult.Success(model);
-            }
+            bindingContext.Result = ModelBindingResult.Failed();
         }
     }
 }
