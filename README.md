@@ -37,7 +37,7 @@ Follow these steps to get your development environment set up:
      ```
      dotnet build .\Doctrina.sln --no-restore
      ```
-  4. Next, within the `.\src\Doctrina.WebUI\` start the server by running:
+  4. Next, within the `.\src\WebUI\` start the server by running:
      ```
 	  dotnet run
 	  ```
@@ -52,7 +52,7 @@ Follow these steps to get your development environment set up:
 3. Launch [https://localhost:44393/](https://localhost:44393/) to see Blazor application.
 4. Launch [https://localhost:44393/xapi/about](https://localhost:44393/xapi/about) in your browser to view the xAPI about resource
 
-5. Try posting a statem
+5. Try posting a statement
 
 ### Testing
 After following the steps for setup, do the following to run the `lrs-conformance-test-suite`
@@ -61,12 +61,9 @@ After following the steps for setup, do the following to run the `lrs-conformanc
    ```
    npm install
    ```
-1.1 If installation fails, do the following:
+   1. If installation fails, do the following:
    ```
    npm update
-   ```
-1.2
-   ```
    npm audit fix
    ```
 2. After npm packages have been installed, run the following:
