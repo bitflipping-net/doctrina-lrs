@@ -13,7 +13,7 @@ pr:
     - release/*
 
 stages:
-  stage: "Build"
+- stage: "Build"
   jobs:
   - job: "Windows job"
     timeoutInMinutes: 10
