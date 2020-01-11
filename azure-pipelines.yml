@@ -3,14 +3,13 @@ trigger:
   branches:
     include:
     - master
-    - release/*
+    - develop
 
 pr:
   branches:
     include:
     - master
     - develop
-    - release/*
 
 stages:
 - stage: 'Build'
