@@ -15,7 +15,7 @@ pr:
 stages:
 - stage: 'Build'
   jobs:
-  - job: 'Windows job'
+  - job: 'Windows_job'
     timeoutInMinutes: 10
     pool:
       vmImage: 'windows-latest'
