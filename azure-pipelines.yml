@@ -29,9 +29,11 @@ steps:
   inputs:
     command: 'restore'
     projects: '$(solution)'
+  displayName: "Restore .sln"
 
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
     projects: '$(solution)'
     arguments: '--configuration $(buildConfiguration) --no-restore'
+  displayName: "Build .sln"
