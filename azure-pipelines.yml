@@ -3,37 +3,41 @@ trigger:
   branches:
     include:
     - master
-    - release/*
+    - develop
 
 pr:
   branches:
     include:
     - master
     - develop
-    - release/*
 
-pool:
-  vmImage: 'windows-latest'
+stages:
+- stage: 'Build'
+  jobs:
+  - job: 'Windows_job'
+    timeoutInMinutes: 10
+    pool:
+      vmImage: 'windows-latest'
 
-variables:
-  solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
+    variables:
+      solution: '**/*.sln'
+      buildPlatform: 'Any CPU'
+      buildConfiguration: 'Release'
 
-steps:
-- checkout: self
-  lfs: true
-  submodules: true
+    steps:
+    - checkout: self
+      lfs: true
+      submodules: true
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'restore'
-    projects: '$(solution)'
-  displayName: "Restore .sln"
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'restore'
+        projects: '$(solution)'
+      displayName: "Restore .sln"
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'build'
-    projects: '$(solution)'
-    arguments: '--configuration $(buildConfiguration) --no-restore'
-  displayName: "Build .sln"
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'build'
+        projects: '$(solution)'
+        arguments: '--configuration $(buildConfiguration) --no-restore'
+      displayName: "Build .sln"
