@@ -5,6 +5,7 @@ using Doctrina.WebUI.ExperienceApi.Mvc.ModelBinding.Providers;
 using Doctrina.WebUI.ExperienceApi.Routing;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 
 namespace Doctrina.WebUI.ExperienceApi.Builder
 {
@@ -41,19 +42,19 @@ namespace Doctrina.WebUI.ExperienceApi.Builder
             return services;
         }
 
-        public static IApplicationBuilder UseAlternateRequestSyntax(this IApplicationBuilder builder)
-        {
-            builder.UseMiddleware<AlternateRequestMiddleware>();
+        //public static IApplicationBuilder UseAlternateRequestSyntax(this IApplicationBuilder builder)
+        //{
+        //    builder.UseMiddleware<AlternateRequestMiddleware>();
 
-            return builder;
-        }
+        //    return builder;
+        //}
 
-        public static IApplicationBuilder UseExceptionMiddleware(this IApplicationBuilder builder)
-        {
-            builder.UseMiddleware<ApiExceptionMiddleware>();
+        //public static IApplicationBuilder UseExceptionMiddleware(this IApplicationBuilder builder)
+        //{
+        //    builder.UseMiddleware<ApiExceptionMiddleware>();
 
-            return builder;
-        }
+        //    return builder;
+        //}
 
         /// <summary>
         /// Maps required middleware for Experience API
@@ -64,6 +65,10 @@ namespace Doctrina.WebUI.ExperienceApi.Builder
         {
             builder.MapWhen(context => context.Request.Path.StartsWithSegments("/xapi"), xapiBuilder =>
             {
+                xapiBuilder.UseMiddleware<ApiExceptionMiddleware>();
+
+                xapiBuilder.UseMiddleware<AlternateRequestMiddleware>();
+
                 xapiBuilder.UseRequestLocalization();
 
                 xapiBuilder.UseAuthentication();
