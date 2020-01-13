@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Doctrina.Application.Common.Interfaces;
+using Doctrina.Application.Statements.Notifications;
 using Doctrina.Application.Statements.Queries;
 using Doctrina.ExperienceApi.Data;
 using MediatR;
@@ -41,9 +42,12 @@ namespace Doctrina.Application.Statements.Commands
                     request.Statement.Id = request.StatementId;
                 }
 
-                await _mediator.Send(CreateStatementCommand.Create(request.Statement), cancellationToken);
+                var saved = await _mediator.Send(CreateStatementCommand.Create(request.Statement), cancellationToken);
+
 
                 await _context.SaveChangesAsync(cancellationToken);
+
+                await _mediator.Publish(StatementsSaved.Create(saved));
 
                 return await Unit.Task;
             }

@@ -1,3 +1,4 @@
+using Doctrina.Application.Common.Interfaces;
 using Doctrina.Application.System.Commands.SeedSampleData;
 using Doctrina.Infrastructure.Identity;
 using Doctrina.Persistence;
@@ -44,6 +45,9 @@ namespace Doctrina.WebUI
 
                     var mediator = services.GetRequiredService<IMediator>();
                     await mediator.Send(new SeedSampleDataCommand(), CancellationToken.None);
+
+                    var searchManager = services.GetRequiredService<ISearchManager>();
+                    await searchManager.RebuildIndexesAsync();
 
                     await host.RunAsync();
                 }

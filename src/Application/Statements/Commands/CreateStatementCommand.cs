@@ -1,4 +1,5 @@
-﻿using Doctrina.ExperienceApi.Data;
+﻿using Doctrina.Domain.Entities;
+using Doctrina.ExperienceApi.Data;
 using MediatR;
 using System;
 
@@ -7,7 +8,7 @@ namespace Doctrina.Application.Statements.Commands
     /// <summary>
     /// Creates statement without saving to database
     /// </summary>
-    public class CreateStatementCommand : IRequest<Guid>
+    public class CreateStatementCommand : IRequest<StatementEntity>
     {
         public IStatement Statement { get; private set; }
 

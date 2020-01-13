@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace Doctrina.Application.Statements.Models
 {
-    public class VoidStatementHandler : INotificationHandler<StatementAdded>
+    public class VoidStatementNotificationHandler : INotificationHandler<StatementAdded>
     {
         private readonly IDoctrinaDbContext _context;
         private readonly IMediator _mediator;
 
-        public VoidStatementHandler(IDoctrinaDbContext context, IMediator mediator)
+        public VoidStatementNotificationHandler(IDoctrinaDbContext context, IMediator mediator)
         {
             _context = context;
             _mediator = mediator;

@@ -41,9 +41,13 @@ Follow these steps to get your development environment set up:
      ```
 	  dotnet run
 	  ```
-  5. Launch [http://localhost:5000/](http://localhost:5000/) in your browser to view the React SPA
+  6. Start redis server:
+     ```
+     redis-server
+     ```
+  7. Launch [http://localhost:5000/](http://localhost:5000/) in your browser to view the React SPA
 
-  6. Launch [https://localhost:5001/xapi/about](https://localhost:5001/xapi/about) in your browser to view the xAPI about resource
+  8. Launch [https://localhost:5001/xapi/about](https://localhost:5001/xapi/about) in your browser to view the xAPI about resource
 
 #### Visual Studio
 Follow these steps to get your development environment set up:

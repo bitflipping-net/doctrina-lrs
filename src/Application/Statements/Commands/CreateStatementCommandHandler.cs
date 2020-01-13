@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Doctrina.Application.Statements.Commands
 {
-    public class CreateStatementCommandHandler : IRequestHandler<CreateStatementCommand, Guid>
+    public class CreateStatementCommandHandler : IRequestHandler<CreateStatementCommand, StatementEntity>
     {
         private readonly IDoctrinaDbContext _context;
         private readonly IMediator _mediator;
@@ -36,14 +36,14 @@ namespace Doctrina.Application.Statements.Commands
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns>Guid of the created statement</returns>
-        public async Task<Guid> Handle(CreateStatementCommand request, CancellationToken cancellationToken)
+        public async Task<StatementEntity> Handle(CreateStatementCommand request, CancellationToken cancellationToken)
         {
             if (request.Statement.Id.HasValue)
             {
-                int count = await _context.Statements.CountAsync(x => x.StatementId == request.Statement.Id, cancellationToken);
-                if (count > 0)
+                var match = await _context.Statements.FindAsync(request.Statement.Id.Value, cancellationToken);
+                if (match != null)
                 {
-                    return request.Statement.Id.Value;
+                    return match;
                 }
             }
 
@@ -106,7 +106,7 @@ namespace Doctrina.Application.Statements.Commands
 
             await _mediator.Publish(StatementAdded.Create(newStatement), cancellationToken);
 
-            return newStatement.StatementId;
+            return newStatement;
         }
     }
 }

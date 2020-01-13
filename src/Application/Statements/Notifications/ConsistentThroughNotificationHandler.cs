@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Doctrina.Application.Statements.Notifications
 {
-    public class ConsistentThroughHandler : INotificationHandler<StatementsSaved>
+    public class ConsistentThroughNotificationHandler : INotificationHandler<StatementsSaved>
     {
         private readonly IDoctrinaAppContext _doctrinaAppContext;
 
-        public ConsistentThroughHandler(IDoctrinaAppContext doctrinaAppContext)
+        public ConsistentThroughNotificationHandler(IDoctrinaAppContext doctrinaAppContext)
         {
             _doctrinaAppContext = doctrinaAppContext;
         }

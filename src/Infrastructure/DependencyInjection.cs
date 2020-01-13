@@ -1,4 +1,5 @@
 ﻿using Doctrina.Application.Common.Interfaces;
+using Doctrina.Application.Infrastructure.Search;
 using Doctrina.Common;
 using Doctrina.Infrastructure.Identity;
 using IdentityModel;
@@ -23,6 +24,7 @@ namespace Doctrina.Infrastructure
             string connectionString = configuration.GetConnectionString("DoctrinaAuthorizationDatabase");
             var migrationsAssemblyName = typeof(DependencyInjection).GetTypeInfo().Assembly.GetName().Name;
 
+            services.AddScoped<ISearchManager, SearchManager>();
             services.AddScoped<IUserManager, UserManagerService>();
             services.AddTransient<IDateTime, MachineDateTime>();
 
@@ -31,6 +33,7 @@ namespace Doctrina.Infrastructure
 
             services.AddDefaultIdentity<DoctrinaUser>()
                 .AddEntityFrameworkStores<DoctrinaAuthorizationDbContext>();
+
 
             if (environment.IsEnvironment("Test"))
             {
