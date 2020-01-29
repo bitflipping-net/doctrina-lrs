@@ -32,7 +32,10 @@ namespace Doctrina.Application.Agents.Queries
 
                 var agentEntity = _mapper.Map<AgentEntity>(request.Agent);
 
-                agentEntity = await _context.Agents.Where(x => x.Hash == agentEntity.Hash).FirstOrDefaultAsync(cancellationToken);
+                agentEntity = await _context.Agents.FirstOrDefaultAsync(x => 
+                    x.ObjectType == EntityObjectType.Agent 
+                    && x.Hash == agentEntity.Hash, 
+                    cancellationToken);
 
                 if (agentEntity != null)
                 {

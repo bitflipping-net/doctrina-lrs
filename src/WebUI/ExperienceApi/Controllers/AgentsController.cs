@@ -27,32 +27,22 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
 
         [HttpGet]
         [HttpHead]
-        public async Task<IActionResult> GetAgentProfile([BindRequired, FromQuery]Agent agent, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> GetAgentProfile(
+            [BindRequired, FromQuery]Agent agent, 
+            CancellationToken cancellationToken = default)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
-
-                var person = await _mediator.Send(GetPersonCommand.Create(agent), cancellationToken);
-                if (person == null)
-                {
-                    return NotFound();
-                }
-
-                if (HttpMethods.IsHead(Request.Method))
-                {
-                    return NoContent();
-                }
-
-                return Ok(person);
+                return BadRequest(ModelState);
             }
-            catch (Exception ex)
+
+            var person = await _mediator.Send(GetPersonCommand.Create(agent), cancellationToken);
+            if (person == null)
             {
-                return BadRequest(ex);
+                return NotFound();
             }
+
+            return Ok(person);
         }
     }
 }

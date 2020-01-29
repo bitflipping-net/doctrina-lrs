@@ -31,8 +31,8 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
         [HttpGet(Order = 1)]
         [HttpHead]
         public async Task<ActionResult> GetAgentProfile(
-            [BindRequired, FromQuery]string profileId, 
-            [BindRequired]Agent agent, 
+            [BindRequired, FromQuery]string profileId,
+            [BindRequired]Agent agent,
             CancellationToken cancellationToken = default)
         {
 
@@ -52,24 +52,17 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 return NotFound();
             }
 
-            string lastModified = profile.LastModified?.ToString("o");
-
-            Response.ContentType = profile.ContentType;
-            Response.Headers.Add("LastModified", lastModified);
-            Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
-
-            if (HttpMethods.IsHead(Request.Method))
+            var result = new FileContentResult(profile.Content, profile.ContentType)
             {
-                return NoContent();
-            }
-
-            return new FileContentResult(profile.Content, profile.ContentType);
+                LastModified = profile.LastModified
+            };
+            return result;
         }
 
         [HttpGet(Order = 2)]
         public async Task<ActionResult> GetAgentProfilesAsync(
-            [BindRequired, FromQuery]Agent agent, 
-            [FromQuery]DateTimeOffset? since = null, 
+            [BindRequired, FromQuery]Agent agent,
+            [FromQuery]DateTimeOffset? since = null,
             CancellationToken cancelToken = default)
         {
             if (!ModelState.IsValid)
@@ -91,15 +84,15 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 .LastModified?
                 .ToString("o");
 
-            Response.Headers.Add("LastModified", lastModified);
+            Response.Headers.Add("Last-Modified", lastModified);
             return Ok(ids);
         }
 
         [HttpPut]
         [HttpPost]
         public async Task<ActionResult> SaveAgentProfileAsync(
-            [BindRequired, FromQuery]string profileId, 
-            [BindRequired, FromQuery]Agent agent, 
+            [BindRequired, FromQuery]string profileId,
+            [BindRequired, FromQuery]Agent agent,
             [BindRequired, FromHeader(Name = "Content-Type")] string contentType,
             [BindRequired, FromBody]byte[] content,
             CancellationToken cancelToken = default)
@@ -118,15 +111,15 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             }, cancelToken);
 
             Response.Headers.Add("ETag", $"\"{profile.Tag}\"");
-            Response.Headers.Add("LastModified", profile.LastModified?.ToString("o"));
+            Response.Headers.Add("Last-Modified", profile.LastModified?.ToString("o"));
 
             return NoContent();
         }
 
         [HttpDelete]
         public async Task<ActionResult> DeleteProfileAsync(
-            [BindRequired, FromQuery]string profileId, 
-            [BindRequired]Agent agent, 
+            [BindRequired, FromQuery]string profileId,
+            [BindRequired]Agent agent,
             [BindRequired, FromHeader(Name = "Content-Type")] string contentType,
             CancellationToken cancelToken = default)
         {

@@ -63,7 +63,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             var content = new FileContentResult(stateDocument.Content, stateDocument.ContentType.ToString())
             {
                 LastModified = stateDocument.LastModified,
-                EntityTag = new EntityTagHeaderValue(stateDocument.Tag)
+                EntityTag = new EntityTagHeaderValue($"\"{stateDocument.Tag}\"")
             };
             return content;
         }
