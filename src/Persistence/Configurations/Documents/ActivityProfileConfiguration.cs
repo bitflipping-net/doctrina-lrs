@@ -21,9 +21,6 @@ namespace Doctrina.Persistence.Configurations.Documents
             builder.HasOne(e => e.Activity)
                 .WithMany();
 
-            //builder.HasIndex(e => new { e.ProfileId, e.ActivityId })
-            //   .IsUnique();
-
             builder.OwnsOne(x => x.Document, a =>
             {
                 a.Property(e => e.ContentType)
@@ -36,11 +33,12 @@ namespace Doctrina.Persistence.Configurations.Documents
                     .HasMaxLength(50);
 
                 a.Property(e => e.LastModified)
-                    .IsRequired()
                     .ValueGeneratedOnAddOrUpdate();
 
                 a.Property(e => e.CreateDate)
                     .ValueGeneratedOnAdd();
+
+                a.WithOwner();
             });
         }
     }

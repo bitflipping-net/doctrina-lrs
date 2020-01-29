@@ -10,13 +10,13 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Doctrina.WebUI.ExperienceApi.Controllers
 {
     [Authorize]
-    [HeadWithoutBody]
-    [RequiredVersionHeaderAttribute]
+    [RequiredVersionHeader]
     [Route("xapi/activities/profile")]
     [Produces("application/json")]
     public class ActivityProfileController : ApiControllerBase
@@ -34,8 +34,13 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
         /// <param name="activityId">The Activity id associated with this Profile document.</param>
         /// <param name="profileId">The profile id associated with this Profile document.</param>
         /// <returns>200 OK, the Profile document</returns>
-        [AcceptVerbs("GET", "HEAD", Order = 1)]
-        public async Task<IActionResult> GetProfile([BindRequired]string profileId, [BindRequired]Iri activityId, Guid? registration = null)
+        [HttpGet(Order = 1)]
+        [HttpHead(Order = 1)]
+        public async Task<IActionResult> GetProfile(
+            [BindRequired, FromQuery] string profileId, 
+            [BindRequired, FromQuery] Iri activityId, 
+            [FromQuery]Guid? registration = null, 
+            CancellationToken cancelToken = default)
         {
             if (!ModelState.IsValid)
             {
@@ -47,7 +52,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 ProfileId = profileId,
                 ActivityId = activityId,
                 Registration = registration
-            });
+            }, cancelToken);
 
             if (profile == null)
             {
@@ -56,11 +61,11 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
 
             var result = new FileContentResult(profile.Content, profile.ContentType)
             {
-                EntityTag = new Microsoft.Net.Http.Headers.EntityTagHeaderValue(profile.Tag),
+                EntityTag = new Microsoft.Net.Http.Headers.EntityTagHeaderValue($"\"{profile.Tag}\""),
                 LastModified = profile.LastModified
             };
 
-            return Ok(result);
+            return result;
         }
 
         /// <summary>
@@ -69,8 +74,12 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
         /// <param name="activityId">The Activity id associated with these Profile documents.</param>
         /// <param name="since">Only ids of Profile documents stored since the specified Timestamp (exclusive) are returned.</param>
         /// <returns>200 OK, Array of Profile id(s)</returns>
-        [AcceptVerbs("GET", "HEAD", Order = 2)]
-        public async Task<ActionResult<string[]>> GetProfiles(Iri activityId, DateTimeOffset? since = null)
+        [HttpGet(Order = 2)]
+        [HttpHead(Order = 2)]
+        public async Task<ActionResult<string[]>> GetProfiles(
+            [BindRequired, FromQuery] Iri activityId, 
+            [FromQuery] DateTimeOffset? since = null, 
+            CancellationToken cancelToken = default)
         {
             if (!ModelState.IsValid)
             {
@@ -81,11 +90,11 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             {
                 ActivityId = activityId,
                 Since = since
-            });
+            }, cancelToken);
 
             if (profiles == null)
             {
-                return Ok(new string[0]);
+                return Ok(Array.Empty<string>());
             }
 
             IEnumerable<string> ids = profiles.Select(x => x.ProfileId);
@@ -93,7 +102,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 .FirstOrDefault()?
                 .LastModified?.ToString("o");
 
-            Response.Headers.Add("LastModified", lastModified);
+            Response.Headers.Add("Last-Modified", lastModified);
             return Ok(ids);
         }
 
@@ -104,26 +113,31 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
         /// <param name="profileId">The profile id associated with this Profile document.</param>
         /// <param name="document">The document to be stored or updated.</param>
         /// <returns>204 No Content</returns>
-        [AcceptVerbs("PUT", "POST")]
-        public async Task<IActionResult> SaveProfile([FromQuery]string profileId, [FromQuery]Iri activityId, [FromBody]byte[] document, [FromQuery]Guid? registration = null)
+        [HttpPost]
+        [HttpPut]
+        public async Task<IActionResult> SaveProfile(
+            [BindRequired, FromQuery]string profileId, 
+            [BindRequired, FromQuery]Iri activityId,
+            [BindRequired, FromHeader(Name = "Content-Type")]string contentType,
+            [BindRequired, FromBody]byte[] body, 
+            [FromQuery]Guid? registration = null, 
+            CancellationToken cancelToken = default)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            string contentType = Request.ContentType;
-
             ActivityProfileDocument profile = await _mediator.Send(new CreateActivityProfileCommand()
             {
                 ProfileId = profileId,
                 ActivityId = activityId,
-                Content = document,
+                Content = body,
                 ContentType = contentType,
                 Registration = registration
-            });
+            }, cancelToken);
 
-            Response.Headers["ETag"] = profile.Tag;
+            //Response.Headers["ETag"] = profile.Tag;
 
             return NoContent();
         }
@@ -135,35 +149,36 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
         /// <param name="profileId">The profile id associated with this Profile document.</param>
         /// <returns>204 No Content</returns>
         [HttpDelete]
-        public async Task<IActionResult> DeleteProfileAsync(string profileId, Iri activityId, Guid? registration = null)
+        public async Task<IActionResult> DeleteProfileAsync(
+            [BindRequired, FromQuery]string profileId, 
+            [BindRequired, FromQuery]Iri activityId,
+            [FromQuery] Guid? registration = null,
+            CancellationToken cancelToken = default)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                ActivityProfileDocument profile = await _mediator.Send(new GetActivityProfileQuery()
-                {
-                    ProfileId = profileId,
-                    ActivityId = activityId,
-                    Registration = registration
-                });
-
-                if (profile == null)
-                {
-                    return NotFound();
-                }
-
-                await _mediator.Send(new DeleteActivityProfileCommand()
-                {
-                    ProfileId = profileId,
-                    ActivityId = activityId,
-                    Registration = registration
-                });
-
-                return NoContent();
+                return BadRequest(ModelState);
             }
-            catch (Exception ex)
+
+            ActivityProfileDocument profile = await _mediator.Send(new GetActivityProfileQuery() { 
+            ActivityId = activityId,
+            ProfileId = profileId,
+            Registration = registration
+            }, cancelToken);
+
+            if (profile == null)
             {
-                return BadRequest(ex);
+                return NotFound();
             }
+
+            await _mediator.Send(new DeleteActivityProfileCommand()
+            {
+                ProfileId = profileId,
+                ActivityId = activityId,
+                Registration = registration
+            }, cancelToken);
+
+            return NoContent();
         }
     }
 }

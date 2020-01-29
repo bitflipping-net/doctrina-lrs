@@ -3,6 +3,7 @@ using Doctrina.ExperienceApi.Data;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Doctrina.WebUI.ExperienceApi.Controllers
@@ -21,9 +22,9 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ActionResult<About>> About()
+        public async Task<ActionResult<About>> About(CancellationToken cancelToken = default)
         {
-            return Ok(await _mediator.Send(new GetAboutQuery()));
+            return Ok(await _mediator.Send(new GetAboutQuery(), cancelToken));
         }
     }
 }

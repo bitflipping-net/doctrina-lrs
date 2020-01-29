@@ -4,15 +4,14 @@ using Doctrina.WebUI.ExperienceApi.Mvc.Filters;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Doctrina.WebUI.ExperienceApi.Controllers
 {
     [Authorize]
-    [HeadWithoutBody]
     [RequiredVersionHeader]
     [Route("xapi/activities")]
-    [Produces("application/json")]
     public class ActivitiesController : ApiControllerBase
     {
         private readonly IMediator _mediator;
@@ -22,10 +21,11 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             _mediator = mediator;
         }
 
-        [AcceptVerbs("GET", "HEAD")]
-        public async Task<ActionResult> GetActivityDocumentAsync(GetActivityQuery command)
+        [HttpGet]
+        [HttpHead]
+        public async Task<ActionResult> GetActivityDocumentAsync([FromQuery]GetActivityQuery command, CancellationToken cancelToken = default)
         {
-            Activity activity = await _mediator.Send(command);
+            Activity activity = await _mediator.Send(command, cancelToken);
 
             if (activity == null)
             {

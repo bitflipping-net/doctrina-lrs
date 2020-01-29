@@ -8,13 +8,17 @@ namespace Doctrina.WebUI.ExperienceApi.Mvc.ModelBinding
     {
         public Task BindModelAsync(ModelBindingContext bindingContext)
         {
+            var modelName = bindingContext.ModelName;
+
             var valueProviderResult =
-                bindingContext.ValueProvider.GetValue(bindingContext.ModelName);
+                bindingContext.ValueProvider.GetValue(modelName);
 
             if (valueProviderResult == ValueProviderResult.None)
             {
                 return Task.CompletedTask;
             }
+
+            bindingContext.ModelState.SetModelValue(modelName, valueProviderResult);
 
             if (Iri.TryParse(valueProviderResult.FirstValue, out Iri iri))
             {

@@ -7,18 +7,18 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Doctrina.WebUI.ExperienceApi.Controllers
 {
     [Authorize]
-    [HeadWithoutBody]
     [RequiredVersionHeader]
     [Route("xapi/agents/profile")]
-    [Produces("application/json")]
     public class AgentProfileController : ApiControllerBase
     {
         private readonly IMediator _mediator;
@@ -28,32 +28,24 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             _mediator = mediator;
         }
 
-        [AcceptVerbs("GET", "HEAD", Order = 1)]
-        public async Task<ActionResult> GetAgentProfile(string profileId, [FromQuery(Name = "agent")]string strAgent)
+        [HttpGet(Order = 1)]
+        [HttpHead]
+        public async Task<ActionResult> GetAgentProfile(
+            [BindRequired, FromQuery]string profileId, 
+            [BindRequired]Agent agent, 
+            CancellationToken cancellationToken = default)
         {
-            // TODO: Parse 
-            if (string.IsNullOrWhiteSpace(profileId))
-            {
-                throw new ArgumentNullException(nameof(profileId));
-            }
-
-            if (string.IsNullOrWhiteSpace(strAgent))
-            {
-                throw new ArgumentNullException("agent");
-            }
 
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            Agent agent = new Agent(strAgent);
-
             var profile = await _mediator.Send(new GetAgentProfileQuery()
             {
                 ProfileId = profileId,
                 Agent = agent
-            });
+            }, cancellationToken);
 
             if (profile == null)
             {
@@ -74,31 +66,22 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             return new FileContentResult(profile.Content, profile.ContentType);
         }
 
-        //[AcceptVerbs("GET", "HEAD")]
         [HttpGet(Order = 2)]
-        [Produces("application/json")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary), StatusCodes.Status400BadRequest)]
-        [ProducesDefaultResponseType]
-        public async Task<ActionResult> GetAgentProfilesAsync([FromQuery(Name = "agent")]string strAgent, DateTimeOffset? since = null)
+        public async Task<ActionResult> GetAgentProfilesAsync(
+            [BindRequired, FromQuery]Agent agent, 
+            [FromQuery]DateTimeOffset? since = null, 
+            CancellationToken cancelToken = default)
         {
-            if (string.IsNullOrWhiteSpace(strAgent))
-            {
-                throw new ArgumentNullException("agent");
-            }
-
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            Agent agent = new Agent(strAgent);
-
-            ICollection<AgentProfileDocument> profiles = await _mediator.Send(new GetAgentProfilesQuery(agent, since));
+            ICollection<AgentProfileDocument> profiles = await _mediator.Send(new GetAgentProfilesQuery(agent, since), cancelToken);
 
             if (profiles == null)
             {
-                return Ok(new Guid[] { });
+                return Ok(Array.Empty<Guid>());
             }
 
             IEnumerable<string> ids = profiles.Select(x => x.ProfileId).ToList();
@@ -112,23 +95,19 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             return Ok(ids);
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="agent"></param>
-        /// <param name="profileId"></param>
-        /// <param name="document"></param>
-        /// <returns></returns>
-        [AcceptVerbs("PUT", "POST")]
-        public async Task<ActionResult> SaveAgentProfileAsync(string profileId, [FromQuery(Name = "agent")]string strAgent, [FromBody]byte[] content)
+        [HttpPut]
+        [HttpPost]
+        public async Task<ActionResult> SaveAgentProfileAsync(
+            [BindRequired, FromQuery]string profileId, 
+            [BindRequired, FromQuery]Agent agent, 
+            [BindRequired, FromHeader(Name = "Content-Type")] string contentType,
+            [BindRequired, FromBody]byte[] content,
+            CancellationToken cancelToken = default)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-            string contentType = Request.ContentType;
-            Agent agent = new Agent(strAgent);
 
             AgentProfileDocument profile = await _mediator.Send(new MergeAgentProfileCommand()
             {
@@ -136,7 +115,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 ProfileId = profileId,
                 Content = content,
                 ContentType = contentType
-            });
+            }, cancelToken);
 
             Response.Headers.Add("ETag", $"\"{profile.Tag}\"");
             Response.Headers.Add("LastModified", profile.LastModified?.ToString("o"));
@@ -145,17 +124,19 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
         }
 
         [HttpDelete]
-        public async Task<ActionResult> DeleteProfileAsync(string profileId, [FromQuery(Name = "agent")]string strAgent)
+        public async Task<ActionResult> DeleteProfileAsync(
+            [BindRequired, FromQuery]string profileId, 
+            [BindRequired]Agent agent, 
+            [BindRequired, FromHeader(Name = "Content-Type")] string contentType,
+            CancellationToken cancelToken = default)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            string contentType = Request.ContentType;
-            Agent agent = new Agent(strAgent);
 
-            var profile = await _mediator.Send(GetAgentProfileQuery.Create(agent, profileId));
+            var profile = await _mediator.Send(GetAgentProfileQuery.Create(agent, profileId), cancelToken);
             if (profile == null)
             {
                 return NotFound();

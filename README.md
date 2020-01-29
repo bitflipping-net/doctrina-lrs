@@ -7,9 +7,9 @@ Use these instructions to get the project up and running.
 You will need the following tools:
 
 * [Visual Studio Code or 2019](https://www.visualstudio.com/downloads/)
-* [.NET Core SDK 3.0](https://www.microsoft.com/net/download/dotnet-core/3.0)
+* [.NET Core SDK 3.1](https://www.microsoft.com/net/download/dotnet-core/3.1)
 * [Node JS](https://nodejs.org/en/download/)
-* [Redis x64](https://redis.io/)
+* [Redis x64](https://redis.io/) (Optional)
 
 ### Setup
 Follow these steps to get your development environment set up:
@@ -76,10 +76,10 @@ After following the steps for setup, do the following to run the `lrs-conformanc
 
 
 ## Technologies
-* .NET Core 3.0
-* Entity Framework Core 3.0
+* .NET Core 3.1
+* Entity Framework Core 3.1
 * Blazor.net
-* Redis
+* Redis/InMemory Cache
 
 ## License
 This project is licensed under the AGPLv3 License - see the [LICENSE](https://github.com/bitflipping-solutions/doctrina-lrs/blob/develop/LICENSE) file for details.

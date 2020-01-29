@@ -1,0 +1,32 @@
+﻿@using System.Globalization
+@inherits InputBase<string>
+
+<input @attributes="AdditionalAttributes" type="text" typeof="radio" value="@Value" @onchange="OnChange"
+       class="border w-full rounded text-2xl border-gray-500 mb-1" />
+
+@code {
+
+    private void OnChange(ChangeEventArgs args)
+    {
+        CurrentValueAsString = args.Value.ToString();
+    }
+
+    protected override bool TryParseValueFromString(string value, out string result, out string validationErrorMessage)
+    {
+        var success = BindConverter.TryConvertTo<string>(value, CultureInfo.CurrentCulture, out var parsedValue);
+        if (success)
+        {
+            result = parsedValue;
+            validationErrorMessage = null;
+
+            return true;
+        }
+        else
+        {
+            result = default;
+            validationErrorMessage = $"{FieldIdentifier.FieldName} field isn't valid.";
+
+            return false;
+        }
+    }
+}

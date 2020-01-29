@@ -6,12 +6,11 @@ namespace Doctrina.Domain.Entities.Documents
     {
         public ActivityProfileEntity()
         {
-            Document = new DocumentEntity();
         }
 
-        public ActivityProfileEntity(byte[] content, string contentType)
+        public ActivityProfileEntity(byte[] body, string contentType)
         {
-            Document = new DocumentEntity(content, contentType);
+            Document = new DocumentEntity(body, contentType);
         }
 
 

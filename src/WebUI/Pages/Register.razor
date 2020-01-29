@@ -1,0 +1,58 @@
+﻿@page "/register"
+@using Doctrina.WebUI.Data
+@using Doctrina.WebUI.Models
+
+@inject RegistrationService RegistrationService
+
+<h1>Register</h1>
+
+<div class="mx-auto container">
+    <div class="mx-auto md:w-1/3">
+        <EditForm Model="registrationModel">
+            <DataAnnotationsValidator />
+            <ValidationSummary Model="@registrationModel" />
+
+            <label>
+                Email Address
+                <TextField id="email" @bind-Value="registrationModel.Email" />
+                <ValidationMessage For="@(() => registrationModel.Email)" />
+                <HelpText Text="Sample help text" />
+            </label>
+
+            <label>
+                Name
+                <TextField id="name" @bind-Value="registrationModel.Name" />
+                <ValidationMessage For="@(() => registrationModel.Name)" />
+                <HelpText Text="Sample help text" />
+            </label>
+
+            <label>
+                Password
+                <PasswordField id="name" @bind-Value="registrationModel.Password" />
+                <ValidationMessage For="@(() => registrationModel.Password)" />
+                <HelpText Text="Sample help text" />
+            </label>
+
+            <label>
+                RepeatPassword
+                <PasswordField id="name" @bind-Value="registrationModel.RepeatPassword" />
+                <ValidationMessage For="@(() => registrationModel.RepeatPassword)" />
+                <HelpText Text="Sample help text" />
+            </label>
+
+            <div class="flex flex-row w-full">
+                <StyledButton type="submit" class="w-full block flex-auto">Submit</StyledButton>
+                <a href="/" class="flex-auto w-full block border rounded px-3 py-2 text-center">Cancel</a>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    private RegistrationModel registrationModel = new RegistrationModel();
+
+    private void HandleRegistration()
+    {
+        Console.WriteLine("registration");
+    }
+}

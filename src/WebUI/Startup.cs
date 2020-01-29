@@ -3,18 +3,20 @@ using Doctrina.Application.Statements.Commands;
 using Doctrina.Infrastructure;
 using Doctrina.Persistence;
 using Doctrina.WebUI.Data;
-using Doctrina.WebUI.ExperienceApi.Builder;
+using Doctrina.WebUI.ExperienceApi;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.IO;
 using Serilog;
+using System.IO;
 
 namespace Doctrina.WebUI
 {
@@ -33,6 +35,13 @@ namespace Doctrina.WebUI
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
+
             services.AddInfrastructure(Configuration, Environment);
             services.AddPersistence(Configuration);
             services.AddApplication(Configuration);
@@ -49,22 +58,31 @@ namespace Doctrina.WebUI
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<CreateStatementsCommandValidator>())
                 .AddExperienceApi();
 
+            services.AddResponseCompression();
+
             // Customise default API behavour
             services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.SuppressModelStateInvalidFilter = true;
             });
 
-            // In production, the React files will be served from this directory
+            //services.AddOpenApiDocument(configure =>
+            //{
+            //    configure.Title = "Doctrina LRS API";
+            //});
 
-            services.AddOpenApiDocument(configure =>
+            services.AddMvc(options =>
             {
-                configure.Title = "Doctrina LRS API";
+                var policy = new AuthorizationPolicyBuilder()
+                                .RequireAuthenticatedUser()
+                                .Build();
+                options.Filters.Add(new AuthorizeFilter(policy));
             });
 
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
+            services.AddSingleton<RegistrationService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -81,6 +99,8 @@ namespace Doctrina.WebUI
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseResponseCompression();
 
             app.UseSerilogRequestLogging();
 
@@ -102,13 +122,13 @@ namespace Doctrina.WebUI
             }
             app.UseStaticFiles();
 
-            app.UseOpenApi();
+            //app.UseOpenApi();
 
-            app.UseSwaggerUi3(settings =>
-            {
-                settings.Path = "/xapi";
-                //settings.DocumentPath = "/api/specification.json";
-            });
+            //app.UseSwaggerUi3(settings =>
+            //{
+            //    settings.Path = "/xapi";
+            //    //settings.DocumentPath = "/api/specification.json";
+            //});
 
             app.UseRouting();
 
@@ -128,7 +148,9 @@ namespace Doctrina.WebUI
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapBlazorHub();
+                endpoints.MapBlazorHub().RequireAuthorization(new AuthorizeAttribute { 
+                    AuthenticationSchemes = "Cookies"
+                });
                 endpoints.MapFallbackToPage("/_Host");
             });
         }

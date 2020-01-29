@@ -5,6 +5,8 @@ using IdentityModel;
 using IdentityServer4.Models;
 using IdentityServer4.Test;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -20,17 +22,25 @@ namespace Doctrina.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
         {
-            string connectionString = configuration.GetConnectionString("DoctrinaAuthorizationDatabase");
-            var migrationsAssemblyName = typeof(DependencyInjection).GetTypeInfo().Assembly.GetName().Name;
 
             services.AddScoped<IUserManager, UserManagerService>();
             services.AddTransient<IDateTime, MachineDateTime>();
+
+            services.ConfigureSelfHostedEnvironment(configuration, environment);
+
+            return services;
+        }
+
+        private static IServiceCollection ConfigureSelfHostedEnvironment(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
+        {
+            string connectionString = configuration.GetConnectionString("DoctrinaAuthorizationDatabase");
+            var migrationsAssemblyName = typeof(DependencyInjection).GetTypeInfo().Assembly.GetName().Name;
 
             services.AddDbContext<DoctrinaAuthorizationDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
             services.AddDefaultIdentity<DoctrinaUser>()
-                .AddEntityFrameworkStores<DoctrinaAuthorizationDbContext>();
+                    .AddEntityFrameworkStores<DoctrinaAuthorizationDbContext>();
 
             if (environment.IsEnvironment("Test"))
             {
@@ -49,11 +59,11 @@ namespace Doctrina.Infrastructure
                         new TestUser
                         {
                             SubjectId = "f26da293-02fb-4c90-be75-e4aa51e0bb17",
-                            Username = "rasmus@doctrina",
+                            Username = "rm@doctrina.net",
                             Password = "Doctrina1!",
                             Claims = new List<Claim>
                             {
-                                new Claim(JwtClaimTypes.Email, "rasmus@doctrina")
+                                new Claim(JwtClaimTypes.Email, "rm@doctrina.net")
                             }
                         }
                     });
@@ -75,8 +85,16 @@ namespace Doctrina.Infrastructure
                     .AddApiAuthorization<DoctrinaUser, DoctrinaAuthorizationDbContext>();
             }
 
-            services.AddAuthentication()
-                .AddIdentityServerJwt();
+            services.AddAuthentication(auth => {
+                auth.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                auth.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+                auth.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            })
+            .AddCookie()
+            .AddOpenIdConnect(options => {
+                configuration.GetSection("OpenIdConnect").Bind(options);
+            })
+            .AddIdentityServerJwt();
 
 
             return services;

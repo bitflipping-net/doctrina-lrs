@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <LangVersion>7.1</LangVersion>
-    <Configurations>Debug;Release;Test</Configurations>
+    <Configurations>Debug;Release;Test;SaaS</Configurations>
     <AssemblyName>Doctrina.Common</AssemblyName>
     <RootNamespace>Doctrina.Common</RootNamespace>
   </PropertyGroup>

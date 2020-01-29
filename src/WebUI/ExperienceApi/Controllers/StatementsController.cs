@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Queries = Doctrina.Application.Statements.Queries;
 
@@ -39,9 +40,10 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
         /// </summary>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        [AcceptVerbs("GET", "HEAD", Order = 3)]
+        [HttpGet(Order = 3)]
+        [HttpHead]
         [Produces("application/json", "multipart/mixed")]
-        public async Task<IActionResult> GetStatements([FromQuery]Queries.PagedStatementsQuery parameters)
+        public async Task<IActionResult> GetStatements([FromQuery]Queries.PagedStatementsQuery parameters, CancellationToken cancellationToken = default)
         {
             if (!ModelState.IsValid)
             {
@@ -66,7 +68,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                     requestQuery = Queries.VoidedStatemetQuery.Create(voidedStatementId, attachments, format);
                 }
 
-                Statement statement = await _mediator.Send(requestQuery);
+                Statement statement = await _mediator.Send(requestQuery, cancellationToken);
 
                 if (statement == null)
                 {
@@ -76,7 +78,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 return new StatementActionResult(statement, format);
             }
 
-            PagedStatementsResult pagedResult = await _mediator.Send(parameters);
+            PagedStatementsResult pagedResult = await _mediator.Send(parameters, cancellationToken);
             StatementsResult result = new StatementsResult
             {
                 Statements = pagedResult.Statements
@@ -99,14 +101,14 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
         /// <returns></returns>
         [HttpPut]
         [Produces("application/json")]
-        public async Task<IActionResult> PutStatement([FromQuery]Guid statementId, [ModelBinder(typeof(PutStatementModelBinder))]Statement statement)
+        public async Task<IActionResult> PutStatement([FromQuery]Guid statementId, [ModelBinder(typeof(PutStatementModelBinder))]Statement statement, CancellationToken cancellationToken = default)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            await _mediator.Send(PutStatementCommand.Create(statementId, statement));
+            await _mediator.Send(PutStatementCommand.Create(statementId, statement), cancellationToken);
 
             return NoContent();
         }
@@ -118,14 +120,14 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
         /// <returns>Array of Statement id(s) (UUID) in the same order as the corresponding stored Statements.</returns>
         [HttpPost]
         [Produces("application/json")]
-        public async Task<ActionResult<ICollection<Guid>>> PostStatements(PostStatementContent model)
+        public async Task<ActionResult<ICollection<Guid>>> PostStatements(PostStatementContent model, CancellationToken cancellationToken = default)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            ICollection<Guid> guids = await _mediator.Send(CreateStatementsCommand.Create(model.Statements));
+            ICollection<Guid> guids = await _mediator.Send(CreateStatementsCommand.Create(model.Statements), cancellationToken);
 
             return Ok(guids);
         }

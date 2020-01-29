@@ -1,0 +1,7 @@
+﻿[*.cs]
+
+# IDE0063: Use simple 'using' statement
+csharp_prefer_simple_using_statement = false:error
+
+# IDE0049: Simplify Names
+dotnet_style_predefined_type_for_locals_parameters_members = true:silent

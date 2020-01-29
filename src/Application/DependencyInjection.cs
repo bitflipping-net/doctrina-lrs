@@ -11,7 +11,7 @@ namespace Doctrina.Application
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration config)
         {
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddMediatR(Assembly.GetExecutingAssembly());
@@ -19,11 +19,18 @@ namespace Doctrina.Application
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehavior<,>));
             services.AddSingleton<IDoctrinaAppContext, DoctrinaAppContext>();
 
-            services.AddStackExchangeRedisCache(options =>
+            if(config["DistCache:Type"] == "Redis")
             {
-                options.Configuration = "localhost";
-                options.InstanceName = "DoctrinaInstance";
-            });
+                services.AddStackExchangeRedisCache(options =>
+                {
+                    options.Configuration = config["DistCache:Configuration"];
+                    options.InstanceName = config["DistCache:InstanceName"];
+                });
+            }
+            else
+            {
+                services.AddDistributedMemoryCache();
+            }
 
             return services;
         }

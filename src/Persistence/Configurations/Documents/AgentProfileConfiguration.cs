@@ -37,11 +37,12 @@ namespace Doctrina.Persistence.Configurations.Documents
                     .HasMaxLength(50);
 
                 a.Property(e => e.LastModified)
-                    .IsRequired()
                     .ValueGeneratedOnAddOrUpdate();
 
                 a.Property(e => e.CreateDate)
                     .ValueGeneratedOnAdd();
+
+                a.WithOwner();
             });
         }
     }

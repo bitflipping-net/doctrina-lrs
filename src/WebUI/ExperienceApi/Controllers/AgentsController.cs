@@ -5,13 +5,14 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Doctrina.WebUI.ExperienceApi.Controllers
 {
     [Authorize]
-    [HeadWithoutBody]
     [RequiredVersionHeader]
     [Route("xapi/agents")]
     [Produces("application/json")]
@@ -24,8 +25,9 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             _mediator = mediator;
         }
 
-        [AcceptVerbs("GET", "HEAD")]
-        public async Task<IActionResult> GetAgentProfile([FromQuery(Name = "agent")]string strAgent)
+        [HttpGet]
+        [HttpHead]
+        public async Task<IActionResult> GetAgentProfile([BindRequired, FromQuery]Agent agent, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -34,9 +36,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                     return BadRequest(ModelState);
                 }
 
-                Agent agent = new Agent(strAgent);
-
-                var person = await _mediator.Send(GetPersonCommand.Create(agent));
+                var person = await _mediator.Send(GetPersonCommand.Create(agent), cancellationToken);
                 if (person == null)
                 {
                     return NotFound();

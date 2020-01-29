@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Doctrina.WebUI.ExperienceApi.Models
 {
-    [ModelBinder(BinderType = typeof(PostStatementsModelBinder))]
+    [ModelBinder(typeof(PostStatementsModelBinder))]
     public class PostStatementContent
     {
         [Required]

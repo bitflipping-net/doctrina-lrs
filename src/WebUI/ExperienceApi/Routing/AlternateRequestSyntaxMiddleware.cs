@@ -13,6 +13,9 @@ using System.Web;
 
 namespace Doctrina.WebUI.ExperienceApi.Routing
 {
+    /// <summary>
+    /// Re-route alternate requests to controllers
+    /// </summary>
     public class AlternateRequestMiddleware
     {
         private readonly RequestDelegate _next;
@@ -74,18 +77,6 @@ namespace Doctrina.WebUI.ExperienceApi.Routing
                 throw new BadRequestException("Alternate request syntax sending content does not have a form parameter with the name of \"content\"");
             }
 
-            // Ensure correct content type
-            //var mediaTypeValue = MediaTypeHeaderValue.Parse(request.ContentType);
-            //if (mediaTypeValue.MediaType != "application/x-www-form-urlencoded")
-            //{
-            //    return;
-            //}
-            ////else
-            ////{
-            ////    // Change content type
-            ////    request.ContentType = "application/json";
-            ////}
-
             // Parse form data values
             var formData = request.Form.ToDictionary(x => x.Key, y => y.Value.ToString());
             request.ContentType = "application/json";
@@ -98,13 +89,6 @@ namespace Doctrina.WebUI.ExperienceApi.Routing
                     context.Response.StatusCode = 400;
                     throw new BadRequestException("Alternate request syntax sending content does not have a form parameter with the name of \"content\"");
                 }
-
-                // Content-Type form header is not required
-                //if (!formData.Any(x=> x.Key.Equals("Content-Type", StringComparison.InvariantCultureIgnoreCase)))
-                //{
-                //    context.Response.StatusCode = 400;
-                //    throw new Exception("Alternate request syntax sending content does not have a form header parameter with the name of \"Content-Type\"");
-                //}
             }
 
             if (formData.ContainsKey("content"))
@@ -113,7 +97,7 @@ namespace Doctrina.WebUI.ExperienceApi.Routing
 
                 if (unsafeUrlRegex.IsMatch(urlEncodedContent))
                 {
-                    throw new Exception($"Form data 'content' contains unsafe charactors.");
+                    throw new BadRequestException($"Form data 'content' contains unsafe charactors.");
                 }
 
                 string decodedContent = HttpUtility.UrlDecode(urlEncodedContent);
@@ -121,8 +105,6 @@ namespace Doctrina.WebUI.ExperienceApi.Routing
                 using(var sw = new StreamWriter(ms, Encoding.UTF8, leaveOpen: true))
                 {
                     sw.Write(decodedContent);
-                    //sw.Flush();
-                    //sw.Close();
                 }
                 ms.Position = 0;
                 request.Body = ms;
@@ -130,7 +112,7 @@ namespace Doctrina.WebUI.ExperienceApi.Routing
                 formData.Remove("content");
             }
 
-            // Treat all known form headers as request http headers
+            // Treat all known form headers as request headers
             if (formData.Any())
             {
                 foreach (var headerName in formHttpHeaders)

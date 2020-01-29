@@ -1,0 +1,42 @@
+﻿@using Doctrina.WebUI.Data
+@using Doctrina.WebUI.Models
+@using Doctrina.WebUI.Components.Forms
+
+@inject RegistrationService RegistrationService
+
+<div class="mx-auto container">
+    <div class="mx-auto md:w-1/3">
+        <EditForm Model="loginModel">
+            <DataAnnotationsValidator />
+            <ValidationSummary Model="@loginModel" />
+
+            <label>
+                Email Address
+                <TextField id="name" @bind-Value="loginModel.Email" />
+                <ValidationMessage For="@(() => loginModel.Email)" />
+                <HelpText Text="Sample help text" />
+            </label>
+
+            <label>
+                Password
+                <PasswordField id="name" @bind-Value="loginModel.Password" />
+                <ValidationMessage For="@(() => loginModel.Password)" />
+                <HelpText Text="Sample help text" />
+            </label>
+
+            <div class="flex flex-row w-full">
+                <StyledButton type="submit" class="w-full block flex-auto">Submit</StyledButton>
+                <a href="/" class="flex-auto w-full block border rounded px-3 py-2 text-center">Create Account</a>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    private LoginModel loginModel = new LoginModel();
+
+    private void HandleRegistration()
+    {
+        Console.WriteLine("registration");
+    }
+}

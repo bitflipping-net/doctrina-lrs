@@ -1,0 +1,33 @@
+﻿<button @attributes="AdditionalAttributes" class="px-3 py-2 @GetButtonStyle()">
+    @ChildContent
+</button>
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    [Parameter]
+    public ButtonStyle Style {get;set;}
+
+    public enum ButtonStyle
+    {
+        Primary,
+        Outline
+    }
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> AdditionalAttributes { get; set; }
+
+    private string GetButtonStyle()
+    {
+        switch (Style)
+        {
+            default:
+            case ButtonStyle.Primary: return "bg-black text-white p-2";
+            case ButtonStyle.Outline: return "border border-black text-black bg-white";
+        }
+    }
+}

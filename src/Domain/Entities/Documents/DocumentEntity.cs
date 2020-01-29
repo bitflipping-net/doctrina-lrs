@@ -10,9 +10,9 @@ namespace Doctrina.Domain.Entities.Documents
     {
         public DocumentEntity() { }
 
-        public DocumentEntity(byte[] content, string contentType)
+        public DocumentEntity(byte[] body, string contentType)
         {
-            Content = content;
+            Content = body;
             ContentType = contentType;
             LastModified = DateTimeOffset.UtcNow;
             CreateDate = DateTimeOffset.UtcNow;
@@ -50,7 +50,7 @@ namespace Doctrina.Domain.Entities.Documents
             using (var md5 = MD5.Create())
             {
                 byte[] checksum = md5.ComputeHash(Content);
-                return BitConverter.ToString(checksum).Replace("-", string.Empty).ToLower(); ;
+                return BitConverter.ToString(checksum).Replace("-", string.Empty).ToLower();
             }
         }
 

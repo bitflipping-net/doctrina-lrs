@@ -147,37 +147,30 @@ namespace Doctrina.Application.Statements.Queries
                 query = query.Where(x => x.Stored <= request.Until.Value);
             }
 
-            int pageSize = request.Limit ?? 1000;
+            int pageSize = request.Limit ?? 3000;
             int skipRows = request.PageIndex * pageSize;
 
-            IQueryable<PagedQuery> pagedQuery = null;
+            IQueryable<StatementEntity> pagedQuery = null;
 
             if (!request.Attachments.GetValueOrDefault())
             {
-                pagedQuery = query.Select(p => new PagedQuery { 
-                    Statement = new StatementEntity
-                    {
-                        StatementId = p.StatementId,
-                        FullStatement = p.FullStatement
-                    },
-                    TotalCount = query.LongCount()
+                pagedQuery = query.Select(p => new StatementEntity
+                { 
+                    StatementId = p.StatementId,
+                    FullStatement = p.FullStatement
                 });
             }
             else
             {
-                pagedQuery = query.Select(p => new PagedQuery
-                { 
-                    Statement = new StatementEntity
-                    {
-                        StatementId = p.StatementId,
-                        FullStatement = p.FullStatement,
-                        Attachments = p.Attachments,
-                    },
-                    TotalCount = query.LongCount()
+                pagedQuery = query.Select(p => new StatementEntity
+                {
+                    StatementId = p.StatementId,
+                    FullStatement = p.FullStatement,
+                    Attachments = p.Attachments,
                 });
             }
 
-            var result = await pagedQuery.Skip(skipRows).Take(pageSize)
+            var result = await pagedQuery.Skip(skipRows).Take(pageSize + 1)
                 .ToListAsync(cancellationToken);
 
             if (result == null)
@@ -185,14 +178,11 @@ namespace Doctrina.Application.Statements.Queries
                 return new PagedStatementsResult();
             }
 
-            long totalCount = result.FirstOrDefault()?.TotalCount ?? 0;
-            int totalPagesIndex = (int)Math.Floor((double)totalCount / pageSize);
-
-            List<Statement> statements = result.Select(p => _mapper.Map<Statement>(p.Statement)).ToList();
+            List<Statement> statements = result.Take(pageSize).Select(p => _mapper.Map<Statement>(p)).ToList();
 
             var statementCollection = new StatementCollection(statements);
 
-            if (request.PageIndex < totalPagesIndex)
+            if (result.Count > pageSize)
             {
                 request.MoreToken = Guid.NewGuid().ToString();
                 request.PageIndex = request.PageIndex++;

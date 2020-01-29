@@ -79,5 +79,15 @@ namespace Doctrina.Domain.Entities.OwnedTypes
         {
             return ((IDictionary<string, string>)Values).GetEnumerator();
         }
+
+        public override bool Equals(object obj)
+        {
+            return Values.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return Values.GetHashCode();
+        }
     }
 }
