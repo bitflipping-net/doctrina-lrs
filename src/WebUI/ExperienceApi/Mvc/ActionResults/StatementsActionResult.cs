@@ -53,6 +53,7 @@ namespace Doctrina.WebUI.ExperienceApi.Mvc.ActionResults
                 return multipart.CopyToAsync(context.HttpContext.Response.Body);
             }
 
+            context.HttpContext.Response.ContentType = MediaTypes.Application.Json;
             return stringContent.CopyToAsync(context.HttpContext.Response.Body);
         }
     }
