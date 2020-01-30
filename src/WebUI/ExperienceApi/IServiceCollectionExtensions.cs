@@ -8,6 +8,8 @@ namespace Doctrina.WebUI.ExperienceApi
     {
         public static IServiceCollection AddLearningRecordStore(this IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
+
             services.AddScoped<IAuthorityContext, AuthorityContext>();
 
             services.AddAuthentication(options =>

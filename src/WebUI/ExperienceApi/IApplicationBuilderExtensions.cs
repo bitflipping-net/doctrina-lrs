@@ -20,12 +20,13 @@ namespace Doctrina.WebUI.ExperienceApi
 
                 experienceApi.UseRequestLocalization();
 
+                experienceApi.UseRouting();
+
                 experienceApi.UseAuthentication();
+                experienceApi.UseAuthorization();
 
                 experienceApi.UseMiddleware<ConsistentThroughMiddleware>();
                 experienceApi.UseMiddleware<UnrecognizedParametersMiddleware>();
-
-                experienceApi.UseRouting();
 
                 experienceApi.UseEndpoints(routes =>
                 {

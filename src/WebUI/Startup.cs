@@ -129,14 +129,13 @@ namespace Doctrina.WebUI
             //    settings.Path = "/xapi";
             //    //settings.DocumentPath = "/api/specification.json";
             //});
+            app.UseExperienceApiEndpoints();
 
             app.UseRouting();
 
             app.UseAuthentication();
             app.UseIdentityServer();
             app.UseAuthorization();
-
-            app.UseExperienceApiEndpoints();
 
             app.UseEndpoints(endpoints =>
             {

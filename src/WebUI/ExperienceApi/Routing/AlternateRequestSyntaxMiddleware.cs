@@ -41,16 +41,22 @@ namespace Doctrina.WebUI.ExperienceApi.Routing
         private void AlternateRequest(HttpContext context)
         {
             var request = context.Request;
-            if (request.Method.ToUpperInvariant() != "POST")
+
+            // Must include parameter method
+            string methodQuery = request.Query["method"].FirstOrDefault()?.ToUpperInvariant();
+            if (string.IsNullOrWhiteSpace(methodQuery))
             {
                 return;
             }
 
-            // Must include parameter method
-            var methodQuery = request.Query["method"].FirstOrDefault();
-            if (string.IsNullOrWhiteSpace(methodQuery))
+            if (request.Method.ToUpperInvariant() != "POST")
             {
-                return;
+                throw new BadRequestException("An LRS rejects an alternate request syntax not issued as a POST");
+            }
+
+            if (!allowedMethodNames.Contains(methodQuery))
+            {
+                throw new BadRequestException($"Query parameter method \"{methodQuery}\" is not alloed. ");
             }
 
             // Multiple query parameters are not allowed
@@ -59,23 +65,13 @@ namespace Doctrina.WebUI.ExperienceApi.Routing
                 throw new BadRequestException("An LRS will reject an alternate request syntax which contains any extra information with error code 400 Bad Request (Communication 1.3.s3.b4)");
             }
 
-            if (!allowedMethodNames.Contains(methodQuery.ToUpperInvariant()))
-            {
-                return;
-            }
-
-            if(request.Method != "POST")
-            {
-                throw new BadRequestException("An LRS rejects an alternate request syntax not issued as a POST");
-            }
-
-            // Set request method to query method
-            request.Method = methodQuery;
-
             if (!request.HasFormContentType)
             {
                 throw new BadRequestException("Alternate request syntax sending content does not have a form parameter with the name of \"content\"");
             }
+
+            // Set request method to query method
+            request.Method = methodQuery;
 
             // Parse form data values
             var formData = request.Form.ToDictionary(x => x.Key, y => y.Value.ToString());
