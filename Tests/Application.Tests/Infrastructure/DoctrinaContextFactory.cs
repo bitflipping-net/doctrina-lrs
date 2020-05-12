@@ -1,10 +1,11 @@
-﻿using Doctrina.Persistence;
+﻿using Doctrina.ExperienceApi.Data;
+using Doctrina.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System;
 
 namespace Doctrina.Application.Tests.Infrastructure
 {
-    public class DoctrinaContextFactory
+    public static class DoctrinaContextFactory
     {
         public static DoctrinaDbContext Create()
         {
@@ -16,9 +17,8 @@ namespace Doctrina.Application.Tests.Infrastructure
 
             context.Database.EnsureCreated();
 
-            //context.Statements.AddRange(new[] {
-
-            //});
+            // TODO: Parse statements from file, and map to entities.
+            //var collection = new StatementCollection();
 
             context.SaveChanges();
 

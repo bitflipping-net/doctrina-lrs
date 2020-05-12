@@ -2,9 +2,9 @@
 
 namespace Doctrina.Application.Agents.Commands
 {
-    public class MergeActorCommandValidator : AbstractValidator<MergeActorCommand>
+    public class UpsertActorCommandValidator : AbstractValidator<UpsertActorCommand>
     {
-        public MergeActorCommandValidator()
+        public UpsertActorCommandValidator()
         {
             //RuleFor(x => x.Actor).Must(actor => !actor.IsAnonymous() && actor.GetIdentifiers().Count > 1)
             //    .WithMessage($"An Identified Group/Agent does not allow for multiple identifiers.");

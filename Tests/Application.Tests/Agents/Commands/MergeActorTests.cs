@@ -1,45 +1,61 @@
 ﻿using AutoMapper;
 using Doctrina.Application.Agents.Commands;
 using Doctrina.Application.Common.Interfaces;
+using Doctrina.Application.Tests.Infrastructure;
+using Doctrina.Domain.Entities;
 using Doctrina.ExperienceApi.Data;
 using MediatR;
 using Moq;
+using Shouldly;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace Application.Tests.Agents.Commands
 {
-    public class MergeActorTests
+    public class MergeActorTests : CommandTestBase
     {
         [Fact]
-        public void AnonymousGroup()
+        public async Task AnonymousGroup()
         {
             // Arrange
             var mediatorMock = new Mock<IMediator>();
             var mapperMock = new Mock<IMapper>();
-            var authorityMock = new Mock<IAuthorityContext>();
-
-            //var handler = new MergeActorCommand.Handler(_context, mediatorMock.Object, mapperMock.Object, authorityMock.Object);
-            var newStatementId = Guid.Parse("637E9E80-4B8D-4640-AC13-615C3E413568");
-
-            var statement = new Group()
+            var actor = new Group()
             {
-                Account = new Account()
-                {
-                    HomePage = new Uri("https://twitter.com"),
-                    Name = "bitflipping-net"
+                Member = new[]{
+                    new Agent()
+                    {
+                        Account = new Doctrina.ExperienceApi.Data.Account(){
+                            Name = "test-user",
+                            HomePage = new Uri("https://bitflipping-net"),
+                        }
+                    },
+                    new Agent()
+                    {
+                        Name = "Test Agent",
+                        Mbox = new Mbox("mailto:test@doctrina.net")
+                    }
                 }
             };
+            var handler = new UpsertActorCommand.Handler(_context, mediatorMock.Object, mapperMock.Object);
+            var validator = new UpsertActorCommandValidator();
+            var cmd = UpsertActorCommand.Create(actor);
 
             // Act
-            // var result = sut.Handle(new CreateStatementCommand { Statement = statement }, CancellationToken.None);
+            var validationResult = validator.Validate(cmd);
+            validationResult.IsValid.ShouldBeTrue();
+
+            var result = await handler.Handle(cmd, CancellationToken.None);
 
             // Assert
-            //mediatorMock.Verify(m => m.Publish(It.Is<StatementCreated>(cc => cc.StatementId == newStatementId), It.IsAny<CancellationToken>()), Times.Once);
+            result.AgentId.ShouldNotBe(Guid.Empty);
+            result.Hash.ShouldNotBeNullOrWhiteSpace();
+            result.ShouldBeOfType<GroupEntity>();
         }
     }
 }

@@ -15,14 +15,15 @@ namespace Doctrina.Application.System.Commands.SeedSampleData
             _userManager = userManager;
         }
 
-        public async Task SeedAllAsync(CancellationToken cancellationToken)
+        public async Task SeedAllAsync(CancellationToken cancellationToken = default)
         {
             await SeedUsersAsync(cancellationToken);
         }
 
-        private async Task SeedUsersAsync(CancellationToken cancellationToken)
+        private Task SeedUsersAsync(CancellationToken cancellationToken = default)
         {
             // TODO: Seed user
+            return Task.CompletedTask;
         }
     }
 }

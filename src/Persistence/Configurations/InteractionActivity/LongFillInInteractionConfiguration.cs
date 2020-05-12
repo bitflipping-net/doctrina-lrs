@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Doctrina.Persistence.Configurations.Interactions
 {
-    public class LongFillInInteractionTypeConfiguration : IEntityTypeConfiguration<LongFillInInteractionActivity>
+    public class LongFillInInteractionConfiguration : IEntityTypeConfiguration<LongFillInInteractionActivity>
     {
         public void Configure(EntityTypeBuilder<LongFillInInteractionActivity> builder)
         {

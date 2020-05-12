@@ -11,6 +11,7 @@ public class AgentMppings : IHaveCustomMapping
         configuration.CreateMap<IAgentEntity, IAgentEntity>();
 
         configuration.CreateMap<Agent, AgentEntity>()
+            .ForMember(ent => ent.AgentId, opt => opt.Ignore())
             .ForMember(ent => ent.ObjectType, opt => opt.Ignore())
             .ForMember(ent => ent.Hash, opt => opt.MapFrom(x => x.ComputeHash()))
            .ForMember(ent => ent.Name, opt => opt.MapFrom(x => x.Name))

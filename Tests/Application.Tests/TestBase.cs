@@ -1,4 +1,6 @@
 ﻿
+using AutoMapper;
+using Doctrina.Application.Infrastructure.AutoMapper;
 using Doctrina.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -30,6 +32,11 @@ namespace Doctrina.Application.Tests
             dbContext.Database.EnsureCreated();
 
             return dbContext;
+        }
+
+        public Profile GetAutomapperProfile()
+        {
+            return new AutoMapperProfile();
         }
     }
 }

@@ -1,0 +1,6 @@
+###
+POST /xapi/statements?method=PUT HTTP/1.1
+content-type: application/x-www-form-urlencoded
+host: localhost:52209
+
+statementId=55653d20-9ba4-4574-8ed4-e62e390cb2c7&content=%7B%22actor%22%3A%7B%22objectType%22%3A%22Agent%22%2C%22name%22%3A%22xAPI%20mbox%22%2C%22mbox%22%3A%22mailto%3Axapi%40adlnet.gov%22%7D%2C%22verb%22%3A%7B%22id%22%3A%22http%3A%2F%2Fadlnet.gov%2Fexpapi%2Fverbs%2Fattended%22%2C%22display%22%3A%7B%22en-GB%22%3A%22attended%22%2C%22en-US%22%3A%22attended%22%7D%7D%2C%22object%22%3A%7B%22objectType%22%3A%22Activity%22%2C%22id%22%3A%22http%3A%2F%2Fwww.example.com%2Fmeetings%2Foccurances%2F34534%22%7D%7D&X-Experience-API-Version=1.0.3&Authorization=Basic%20YWRtaW5AZXhhbXBsZS5jb206ektSNGdrWU5IUDV0dkg%3D

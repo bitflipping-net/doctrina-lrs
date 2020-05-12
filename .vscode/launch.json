@@ -10,11 +10,12 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/src/WebUI/bin/Debug/netcoreapp3.0/Doctrina.WebUI.dll",
+            "program": "${workspaceFolder}/src/WebUI/bin/Debug/netcoreapp3.1/Doctrina.WebUI.dll",
             "args": [],
             "cwd": "${workspaceFolder}/src/WebUI",
             "stopAtEntry": false,
             "internalConsoleOptions": "openOnSessionStart",
+            "requireExactSource": false,
             "launchBrowser": {
                 "enabled": true,
                 "args": "${auto-detect-url}",

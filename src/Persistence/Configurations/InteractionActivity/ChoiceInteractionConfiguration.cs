@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Doctrina.Persistence.Configurations.Interactions
 {
-    public class LikertInteractionTypeConfiguration : IEntityTypeConfiguration<LikertInteractionActivity>
+    public class FillInInteractionConfiguration : IEntityTypeConfiguration<ChoiceInteractionActivity>
     {
-        public void Configure(EntityTypeBuilder<LikertInteractionActivity> builder)
+        public void Configure(EntityTypeBuilder<ChoiceInteractionActivity> builder)
         {
             builder.HasBaseType<InteractionActivityBase>();
 
-            builder.Property(x => x.Scale)
+            builder.Property(x => x.Choices)
                 .HasConversion(new InteractionComponentCollectionValueConverter())
                 .HasColumnType("ntext");
         }

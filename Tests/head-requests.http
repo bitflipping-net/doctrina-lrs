@@ -1,0 +1,66 @@
+### @name headActivityProfile
+HEAD /xapi/activities?activityId=http://www.example.com/meetings/occurances/34534 HTTP/1.1
+Host: localhost:52209
+User-Agent: node-superagent/1.8.5
+Content-Type: application/json
+X-Experience-API-Version: 1.0.3
+Authorization: Basic YWRtaW5AZXhhbXBsZS5jb206ektSNGdrWU5IUDV0dkg=
+
+### @name postActivityProfile
+POST /xapi/activities/profile?activityId=http://www.example.com/activityId/hashset&profileId=873c092a-c727-4c0c-b7e8-2c0a4c25e65a HTTP/1.1
+Host: localhost:52209
+Accept-Encoding: gzip, deflate
+User-Agent: node-superagent/1.8.5
+Content-Type: application/json
+X-Experience-API-Version: 1.0.3
+Authorization: Basic YWRtaW5AZXhhbXBsZS5jb206ektSNGdrWU5IUDV0dkg=
+
+
+### @name postState
+POST /xapi/activities/state?activityId=http://www.example.com/activityId/hashset&agent=%7B%22objectType%22%3A%22Agent%22%2C%22account%22%3A%7B%22homePage%22%3A%22http%3A%2F%2Fwww.example.com%2FagentId%2F1%22%2C%22name%22%3A%22Rick%20James%22%7D%7D&stateId=c8d992da-1029-4e4a-8e37-73dbb014d0ac HTTP/1.1
+Host: localhost:52209
+Accept-Encoding: gzip, deflate
+User-Agent: node-superagent/1.8.5
+Content-Type: application/json
+X-Experience-API-Version: 1.0.3
+Authorization: Basic YWRtaW5AZXhhbXBsZS5jb206ektSNGdrWU5IUDV0dkg=
+Content-Length: 184
+
+{
+    "name":"e2e8b7b1-469a-4c19-97b4-c5ac68fada22",
+    "location":{
+        "name":"fba58207-1a24-4469-9972-7d0216610020"
+    },
+    "5c5fac9d-974e-4753-89d1-47b9d11ab66d":"0967b9eb-6e5a-4f2e-9873-4c4f3e5f4640"
+}
+
+###
+POST /xapi/agents/profile
+    ?agent=%7B%22objectType%22%3A%22Agent%22%2C%22account%22%3A%7B%22homePage%22%3A%22http%3A%2F%2Fwww.example.com%2FagentId%2F1%22%2C%22name%22%3A%22Rick%20James%22%7D%7D
+    &profileId=5e777e16-d21b-4725-8edf-6dadeb8b651e HTTP/1.1
+Host: localhost:52209
+Accept-Encoding: gzip, deflate
+User-Agent: node-superagent/1.8.5
+Content-Type: application/json
+X-Experience-API-Version: 1.0.3
+Authorization: Basic YWRtaW5AZXhhbXBsZS5jb206ektSNGdrWU5IUDV0dkg=
+
+{"name":"d82edfc1-5e8a-4886-b496-48266b3bd3d9","location":{"name":"1bf7c5c0-3c82-4267-8a36-b3d74e4d2442"},"1104cc75-7268-4313-9e7e-2999c9b67db4":"a5627f4f-9e4e-482e-b898-d2f97e70be64"}
+
+###
+HEAD /xapi/activities/state?activityId=http://www.example.com/activityId/hashset&agent=%7B%22objectType%22%3A%22Agent%22%2C%22account%22%3A%7B%22homePage%22%3A%22http%3A%2F%2Fwww.example.com%2FagentId%2F1%22%2C%22name%22%3A%22Rick%20James%22%7D%7D&stateId=2a5beca5-c514-43f9-8bc8-eb8cb4371dac
+Host: localhost:52209
+Accept-Encoding: gzip, deflate
+User-Agent: node-superagent/1.8.5
+Content-Type: application/json
+X-Experience-API-Version: 1.0.3
+Authorization: Basic YWRtaW5AZXhhbXBsZS5jb206ektSNGdrWU5IUDV0dkg=
+
+###
+HEAD /xapi/agents?agent=%7B%22objectType%22%3A%22Agent%22%2C%22name%22%3A%22xAPI%20mbox%22%2C%22mbox%22%3A%22mailto%3Axapi%40adlnet.gov%22%7D
+Host: localhost:52209
+Accept-Encoding: gzip, deflate
+User-Agent: node-superagent/1.8.5
+Content-Type: application/json
+X-Experience-API-Version: 1.0.3
+Authorization: Basic YWRtaW5AZXhhbXBsZS5jb206ektSNGdrWU5IUDV0dkg=

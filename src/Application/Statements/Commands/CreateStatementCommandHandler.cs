@@ -64,20 +64,20 @@ namespace Doctrina.Application.Statements.Commands
 
             StatementEntity newStatement = _mapper.Map<StatementEntity>(request.Statement);
             newStatement.Verb = (VerbEntity)await _mediator.Send(MergeVerbCommand.Create(request.Statement.Verb), cancellationToken).ConfigureAwait(false);
-            newStatement.Actor = (AgentEntity)await _mediator.Send(MergeActorCommand.Create(request.Statement.Actor), cancellationToken).ConfigureAwait(false);
-            newStatement.Authority = (AgentEntity)await _mediator.Send(MergeActorCommand.Create(request.Statement.Authority), cancellationToken).ConfigureAwait(false);
+            newStatement.Actor = (AgentEntity)await _mediator.Send(UpsertActorCommand.Create(request.Statement.Actor), cancellationToken).ConfigureAwait(false);
+            newStatement.Authority = (AgentEntity)await _mediator.Send(UpsertActorCommand.Create(request.Statement.Authority), cancellationToken).ConfigureAwait(false);
 
             if(newStatement.Context != null)
             {
                 var context = newStatement.Context;
                 if(context.Instructor != null)
                 {
-                    context.Instructor = (AgentEntity)await _mediator.Send(MergeActorCommand.Create(request.Statement.Context.Instructor), cancellationToken);
+                    context.Instructor = (AgentEntity)await _mediator.Send(UpsertActorCommand.Create(request.Statement.Context.Instructor), cancellationToken);
 
                 }
                 if(context.Team != null)
                 {
-                    context.Team = (AgentEntity)await _mediator.Send(MergeActorCommand.Create(request.Statement.Context.Team), cancellationToken);
+                    context.Team = (AgentEntity)await _mediator.Send(UpsertActorCommand.Create(request.Statement.Context.Team), cancellationToken);
                 }
             }
 
@@ -88,7 +88,7 @@ namespace Doctrina.Application.Statements.Commands
             }
             else if (objType == EntityObjectType.Agent || objType == EntityObjectType.Group)
             {
-                newStatement.Object.Agent = (AgentEntity)await _mediator.Send(MergeActorCommand.Create((IAgent)request.Statement.Object));
+                newStatement.Object.Agent = (AgentEntity)await _mediator.Send(UpsertActorCommand.Create((IAgent)request.Statement.Object));
             }
             else if (objType == EntityObjectType.SubStatement)
             {

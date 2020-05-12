@@ -28,7 +28,7 @@ namespace Doctrina.Application.ActivityStates.Commands
         {
 
             ActivityEntity activity = (ActivityEntity)await _mediator.Send(MergeActivityCommand.Create(request.ActivityId), cancellationToken);
-            AgentEntity agent = (AgentEntity)await _mediator.Send(MergeActorCommand.Create(request.Agent), cancellationToken);
+            AgentEntity agent = (AgentEntity)await _mediator.Send(UpsertActorCommand.Create(request.Agent), cancellationToken);
 
             var state = new ActivityStateEntity(request.Content, request.ContentType)
             {

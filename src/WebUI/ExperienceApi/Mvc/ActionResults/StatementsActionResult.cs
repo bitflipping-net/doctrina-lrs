@@ -21,7 +21,7 @@ namespace Doctrina.WebUI.ExperienceApi.Mvc.ActionResults
             this.format = format;
         }
 
-        public Task ExecuteResultAsync(ActionContext context)
+        public async Task ExecuteResultAsync(ActionContext context)
         {
             var stringContent = new StringContent(result.ToJson(format), Encoding.UTF8, MediaTypes.Application.Json);
 
@@ -49,12 +49,12 @@ namespace Doctrina.WebUI.ExperienceApi.Mvc.ActionResults
                 var mediaType = MediaTypeHeaderValue.Parse(MediaTypes.Multipart.Mixed);
                 mediaType.Parameters.Add(new NameValueHeaderValue("boundary", boundary));
                 context.HttpContext.Response.ContentType = mediaType.ToString();
-
-                return multipart.CopyToAsync(context.HttpContext.Response.Body);
+                
+                await multipart.CopyToAsync(context.HttpContext.Response.Body);
             }
 
             context.HttpContext.Response.ContentType = MediaTypes.Application.Json;
-            return stringContent.CopyToAsync(context.HttpContext.Response.Body);
+            await stringContent.CopyToAsync(context.HttpContext.Response.Body);
         }
     }
 }

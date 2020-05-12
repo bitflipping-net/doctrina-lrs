@@ -19,6 +19,8 @@ namespace Doctrina.Persistence.Configurations
 
             builder.Property(e => e.MoreInfo);
 
+            //builder.Property(e => e.InteractionActivity);
+
             builder.Property(p => p.Names)
                 .HasConversion(new LanguageMapCollectionValueConverter())
                 .HasColumnType("ntext");

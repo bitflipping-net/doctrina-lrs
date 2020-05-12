@@ -13,11 +13,11 @@ using System.Threading.Tasks;
 
 namespace Doctrina.Application.Agents.Commands
 {
-    public class MergeActorCommand : IRequest<IAgentEntity>
+    public class UpsertActorCommand : IRequest<IAgentEntity>
     {
         public IAgent Actor { get; private set; }
 
-        public class Handler : IRequestHandler<MergeActorCommand, IAgentEntity>
+        public class Handler : IRequestHandler<UpsertActorCommand, IAgentEntity>
         {
             private readonly IDoctrinaDbContext _context;
             private readonly IMediator _mediator;
@@ -30,12 +30,12 @@ namespace Doctrina.Application.Agents.Commands
                 _mapper = mapper;
             }
 
-            public async Task<IAgentEntity> Handle(MergeActorCommand request, CancellationToken cancellationToken)
+            public async Task<IAgentEntity> Handle(UpsertActorCommand request, CancellationToken cancellationToken)
             {
-                return await MergeActor(Map(request.Actor), cancellationToken);
+                return await MergeActor(MapToEntity(request.Actor), cancellationToken);
             }
 
-            private AgentEntity Map(IAgent actor)
+            private AgentEntity MapToEntity(IAgent actor)
             {
                 if(actor.ObjectType == ObjectType.Agent)
                 {
@@ -112,9 +112,9 @@ namespace Doctrina.Application.Agents.Commands
             }
         }
 
-        internal static MergeActorCommand Create(IAgent agent)
+        public static UpsertActorCommand Create(IAgent agent)
         {
-            return new MergeActorCommand()
+            return new UpsertActorCommand()
             {
                 Actor = agent
             };

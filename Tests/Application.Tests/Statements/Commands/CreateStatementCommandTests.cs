@@ -17,10 +17,9 @@ namespace Doctrina.Application.Tests.Statements.Commands
         {
             // Arrange
             var mediatorMock = new Mock<IMediator>();
-            var mapperMock = new Mock<IMapper>();
             var authorityMock = new Mock<IAuthorityContext>();
 
-            var sut = new CreateStatementCommandHandler(_context, mediatorMock.Object, mapperMock.Object, authorityMock.Object);
+            var sut = new CreateStatementCommandHandler(_context, mediatorMock.Object, _mapper, authorityMock.Object);
             var newStatementId = Guid.Parse("637E9E80-4B8D-4640-AC13-615C3E413568");
 
             var statement = new Statement("{\"actor\":{\"objectType\":\"Agent\",\"name\":\"xAPI mbox\",\"mbox\":\"mailto:xapi@adlnet.gov\"},\"verb\":{\"id\":\"http://adlnet.gov/expapi/verbs/attended\",\"display\":{\"en-GB\":\"attended\",\"en-US\":\"attended\"}},\"object\":{\"objectType\":\"Activity\",\"id\":\"http://www.example.com/meetings/occurances/34534\"}}");

@@ -8,23 +8,23 @@ namespace Doctrina.Domain.Entities
     {
         public ContextActivitiesEntity()
         {
-            Parent = new HashSet<ContextActivityTypeEntity>();
+            Parent = new HashSet<ContextActivityEntity>();
 
-            Grouping = new HashSet<ContextActivityTypeEntity>();
+            Grouping = new HashSet<ContextActivityEntity>();
 
-            Category = new HashSet<ContextActivityTypeEntity>();
+            Category = new HashSet<ContextActivityEntity>();
 
-            Other = new HashSet<ContextActivityTypeEntity>();
+            Other = new HashSet<ContextActivityEntity>();
         }
 
         public Guid ContextActivitiesId { get; set; }
 
-        public ICollection<ContextActivityTypeEntity> Parent { get; set; }
+        public ICollection<ContextActivityEntity> Parent { get; set; }
 
-        public ICollection<ContextActivityTypeEntity> Grouping { get; set; }
+        public ICollection<ContextActivityEntity> Grouping { get; set; }
 
-        public ICollection<ContextActivityTypeEntity> Category { get; set; }
+        public ICollection<ContextActivityEntity> Category { get; set; }
 
-        public ICollection<ContextActivityTypeEntity> Other { get; set; }
+        public ICollection<ContextActivityEntity> Other { get; set; }
     }
 }

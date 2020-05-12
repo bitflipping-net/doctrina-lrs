@@ -82,24 +82,5 @@ namespace Doctrina.Domain.Entities.OwnedTypes
         {
             return _values.GetEnumerator();
         }
-
-        public string JsonStringDbValue
-        {
-            get
-            {
-                return JsonConvert.SerializeObject(this);
-            }
-            set
-            {
-                if (string.IsNullOrEmpty(value))
-                {
-                    return;
-                }
-
-                var collection = JsonConvert.DeserializeObject<ExtensionsCollection>(value);
-                Clear();
-                Add(collection);
-            }
-        }
     }
 }

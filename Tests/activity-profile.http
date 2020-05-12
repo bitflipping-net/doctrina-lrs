@@ -1,0 +1,27 @@
+POST /xapi/activities/profile?activityId=http://www.example.com/activityId/hashset&profileId=f7b6cbe5-2a15-4757-b53c-69102df7ae55 HTTP/1.1
+Host: localhost:52209
+Accept-Encoding: gzip, deflate
+User-Agent: node-superagent/1.8.5
+Content-Type: application/json
+X-Experience-API-Version: 1.0.3
+Authorization: Basic YWRtaW5AZXhhbXBsZS5jb206ektSNGdrWU5IUDV0dkg=
+Content-Length: 184
+
+{"name":"d9ff12f9-2972-4579-8d16-69fd98b9edb8","location":{"name":"1f9b3e26-301c-4bdc-96f9-604879029980"},"75b22ce6-bb31-4b0d-a916-053801141f3a":"ea1f4644-f77a-45b6-b55d-84d58b2f25f4"}
+
+### Delete
+DELETE /xapi/activities/profile?activityId=http://www.example.com/activityId/hashset&profileId=f7b6cbe5-2a15-4757-b53c-69102df7ae55 HTTP/1.1
+Host: localhost:52209
+Accept-Encoding: gzip, deflate
+User-Agent: node-superagent/1.8.5
+X-Experience-API-Version: 1.0.3
+Authorization: Basic YWRtaW5AZXhhbXBsZS5jb206ektSNGdrWU5IUDV0dkg=
+
+
+### GET
+GET /xapi/activities/profile?activityId=http://www.example.com/activityId/hashset&profileId=f7b6cbe5-2a15-4757-b53c-69102df7ae55 HTTP/1.1
+Host: localhost:52209
+Accept-Encoding: gzip, deflate
+User-Agent: node-superagent/1.8.5
+X-Experience-API-Version: 1.0.3
+Authorization: Basic YWRtaW5AZXhhbXBsZS5jb206ektSNGdrWU5IUDV0dkg=

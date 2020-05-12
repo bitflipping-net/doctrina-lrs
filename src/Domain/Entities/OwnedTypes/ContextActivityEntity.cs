@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace Doctrina.Domain.Entities.OwnedTypes
 {
     [Owned]
-    public class ContextActivityTypeEntity : IEquatable<ContextActivityTypeEntity>
+    public class ContextActivityEntity : IEquatable<ContextActivityEntity>
     {
         /// <summary>
         /// Primary Key
@@ -22,7 +22,7 @@ namespace Doctrina.Domain.Entities.OwnedTypes
         /// </summary>
         public string Hash { get; set; }
 
-        public bool Equals([AllowNull] ContextActivityTypeEntity other)
+        public bool Equals([AllowNull] ContextActivityEntity other)
         {
             return Hash == other?.Hash;
         }

@@ -86,7 +86,7 @@ namespace Doctrina.Application.AgentProfiles
         public async Task<AgentProfileDocument> Handle(CreateAgentProfileCommand request, CancellationToken cancellationToken)
         {
 
-            var agent = (AgentEntity)await _mediator.Send(MergeActorCommand.Create(request.Agent), cancellationToken);
+            var agent = (AgentEntity)await _mediator.Send(UpsertActorCommand.Create(request.Agent), cancellationToken);
 
             var profile = new AgentProfileEntity(request.Content, request.ContentType)
             {

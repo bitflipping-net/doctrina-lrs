@@ -147,7 +147,7 @@ namespace Doctrina.Application.Statements.Queries
                 query = query.Where(x => x.Stored <= request.Until.Value);
             }
 
-            int pageSize = request.Limit ?? 3000;
+            int pageSize = request.Limit ?? 1000;
             int skipRows = request.PageIndex * pageSize;
 
             IQueryable<StatementEntity> pagedQuery = null;
@@ -185,7 +185,7 @@ namespace Doctrina.Application.Statements.Queries
             if (result.Count > pageSize)
             {
                 request.MoreToken = Guid.NewGuid().ToString();
-                request.PageIndex = request.PageIndex++;
+                request.PageIndex += 1;
                 if (!request.Until.HasValue)
                 {
                     request.Until = DateTimeOffset.UtcNow;

@@ -33,19 +33,19 @@ namespace Doctrina.Application.SubStatements
             subStatement.Timestamp = subStatement.Timestamp ?? DateTimeOffset.UtcNow;
 
             subStatement.Verb = (VerbEntity)await _mediator.Send(MergeVerbCommand.Create(request.SubStatement.Verb));
-            subStatement.Actor = (AgentEntity)await _mediator.Send(MergeActorCommand.Create(request.SubStatement.Actor));
+            subStatement.Actor = (AgentEntity)await _mediator.Send(UpsertActorCommand.Create(request.SubStatement.Actor));
 
             if (subStatement.Context != null)
             {
                 var context = subStatement.Context;
                 if (context.Instructor != null)
                 {
-                    context.Instructor = (AgentEntity)await _mediator.Send(MergeActorCommand.Create(request.SubStatement.Context.Instructor), cancellationToken);
+                    context.Instructor = (AgentEntity)await _mediator.Send(UpsertActorCommand.Create(request.SubStatement.Context.Instructor), cancellationToken);
                 }
 
                 if (context.Team != null)
                 {
-                    context.Team = (AgentEntity)await _mediator.Send(MergeActorCommand.Create(request.SubStatement.Context.Team), cancellationToken);
+                    context.Team = (AgentEntity)await _mediator.Send(UpsertActorCommand.Create(request.SubStatement.Context.Team), cancellationToken);
                 }
             }
 
@@ -56,7 +56,7 @@ namespace Doctrina.Application.SubStatements
             }
             else if (objType == EntityObjectType.Agent || objType == EntityObjectType.Group)
             {
-                subStatement.Object.Agent = (AgentEntity)await _mediator.Send(MergeActorCommand.Create((IAgent)request.SubStatement.Object));
+                subStatement.Object.Agent = (AgentEntity)await _mediator.Send(UpsertActorCommand.Create((IAgent)request.SubStatement.Object));
             }
             else if (objType == EntityObjectType.StatementRef)
             {

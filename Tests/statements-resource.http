@@ -1,0 +1,29 @@
+@host = localhost:5000
+@version = 1.0.3
+@basicAuth = Basic YWRtaW5AZXhhbXBsZS5jb206ektSNGdrWU5IUDV0dkg=
+@moreUrl = {{attendedStatements.response.body.more}}
+
+###
+# @name attendedStatements
+GET /xapi/statements?verb=http://adlnet.gov/expapi/verbs/attended HTTP/1.1
+Host: {{host}}
+Content-Type: application/json
+X-Experience-API-Version: {{version}}
+Authorization: {{basicAuth}}
+
+###
+# @name moreStatements
+GET /xapi/statements?more=ffd0c875-7118-4660-b7dc-907ba98f1452 HTTP/1.1
+host: {{host}}
+Content-Type: application/json
+X-Experience-API-Version: {{version}}
+Authorization: {{basicAuth}}
+
+@moreUrl = {{moreStatements.response.body.more}}
+
+###
+GET /xapi/statements?statementId=81930f55-fbbc-4e47-b200-a33b9163682f&format=canonical HTTP/1.1
+host: {{host}}
+Accept-Language: en-GB
+X-Experience-API-Version: {{version}}
+Authorization: {{basicAuth}}

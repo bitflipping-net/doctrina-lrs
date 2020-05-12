@@ -9,6 +9,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -51,6 +52,10 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             }
 
             ResultFormat format = parameters.Format ?? ResultFormat.Exact;
+            if(!StringValues.IsNullOrEmpty(Request.Headers["Accept-Language"]))
+            {
+                format = ResultFormat.Canonical;
+            }
 
             if (parameters.StatementId.HasValue || parameters.VoidedStatementId.HasValue)
             {

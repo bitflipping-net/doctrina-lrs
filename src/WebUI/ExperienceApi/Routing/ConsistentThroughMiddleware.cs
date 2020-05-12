@@ -3,6 +3,7 @@ using Doctrina.Application.Statements.Queries;
 using Doctrina.ExperienceApi.Client.Http;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using System;
 using System.Threading.Tasks;
 
 namespace Doctrina.WebUI.ExperienceApi.Routing
@@ -27,8 +28,8 @@ namespace Doctrina.WebUI.ExperienceApi.Routing
                 {
                     if (!headers.ContainsKey(headerKey))
                     {
-                        var consistentThroughDate = await mediator.Send(new ConsistentThroughQuery());
-                        headers.Add(headerKey, consistentThroughDate.ToString("o"));
+                        //var consistentThroughDate = await mediator.Send(new ConsistentThroughQuery());
+                        headers.Add(headerKey, DateTimeOffset.Now.ToString("o"));
                     }
                 }
             }

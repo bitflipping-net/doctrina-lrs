@@ -1,8 +1,6 @@
 ﻿using Doctrina.ExperienceApi.Client.Http;
 using Doctrina.ExperienceApi.Data;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -13,26 +11,27 @@ namespace Doctrina.WebUI.ExperienceApi.Mvc.ActionResults
 {
     public class StatementActionResult : IActionResult
     {
-        private readonly Statement statement;
-        private readonly ResultFormat format;
+        private readonly Statement _statement;
+        private readonly ResultFormat _format;
 
         public StatementActionResult(Statement statement, ResultFormat format)
         {
-            this.statement = statement;
-            this.format = format;
+            _statement = statement;
+            _format = format;
         }
 
         public Task ExecuteResultAsync(ActionContext context)
         {
-            var stringContent = new StringContent(statement.ToJson(format), Encoding.UTF8, MediaTypes.Application.Json);
+            string strJson = _statement.ToJson(_format);
+            var stringContent = new StringContent(strJson, Encoding.UTF8, MediaTypes.Application.Json);
 
-            if (statement.Attachments.Any(x => x.Payload != null))
+            if (_statement.Attachments.Any(x => x.Payload != null))
             {
                 var multipart = new MultipartContent("mixed")
                 {
                     stringContent
                 };
-                foreach (var attachment in statement.Attachments)
+                foreach (var attachment in _statement.Attachments)
                 {
                     if (attachment.Payload != null)
                     {
