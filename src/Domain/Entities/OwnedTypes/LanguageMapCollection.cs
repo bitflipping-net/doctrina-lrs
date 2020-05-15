@@ -1,9 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Doctrina.Domain.Entities.OwnedTypes
 {
-    public class LanguageMapCollection : IDictionary<string, string>
+    public class LanguageMapCollection : IDictionary<string, string>, IEqualityComparer<LanguageMapCollection>
     {
         private readonly Dictionary<string, string> Values = new Dictionary<string, string>();
 
@@ -80,14 +81,24 @@ namespace Doctrina.Domain.Entities.OwnedTypes
             return ((IDictionary<string, string>)Values).GetEnumerator();
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object obj) =>
+            (obj is LanguageMapCollection)
+                ? Equals(obj)
+                : false;
+
+        public bool Equals([AllowNull] LanguageMapCollection x, [AllowNull] LanguageMapCollection y)
         {
-            return Values.Equals(obj);
+            return x.Values.Equals(y.Values);
         }
 
         public override int GetHashCode()
         {
             return Values.GetHashCode();
+        }
+
+        public int GetHashCode([DisallowNull] LanguageMapCollection obj)
+        {
+            return obj.Values.GetHashCode();
         }
     }
 }

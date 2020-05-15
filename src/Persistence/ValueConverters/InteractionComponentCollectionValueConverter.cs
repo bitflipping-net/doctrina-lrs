@@ -20,8 +20,6 @@ namespace Doctrina.Persistence.ValueConverters
         {
             return JsonConvert.SerializeObject(e);
         }
-
-
         private static InteractionComponentCollection FromDataStore(string e)
         {
             return JsonConvert.DeserializeObject<InteractionComponentCollection>(e);

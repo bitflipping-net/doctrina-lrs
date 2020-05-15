@@ -2,8 +2,10 @@
 using Doctrina.ExperienceApi.Data.InteractionTypes;
 using Doctrina.Persistence.ValueConverters;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
+using System.Collections.Generic;
 
 namespace Doctrina.Persistence.Configurations
 {
@@ -28,7 +30,9 @@ namespace Doctrina.Persistence.Configurations
                 .HasValue<OtherInteractionActivity>(InteractionType.Other);
 
             builder.Property(e => e.CorrectResponsesPattern)
-                .HasConversion(new StringArrayValueConverter());
+                .HasConversion(new StringArrayValueConverter())
+                .Metadata
+                .SetValueComparer(new ValueComparer<ICollection<string>>(false));
         }
     }
 }
