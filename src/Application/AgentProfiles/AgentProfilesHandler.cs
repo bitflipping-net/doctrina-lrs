@@ -105,6 +105,7 @@ namespace Doctrina.Application.AgentProfiles
             var agentEntity = _mapper.Map<AgentEntity>(request.Agent);
 
             var profile = await GetAgentProfile(agentEntity, request.ProfileId, cancellationToken);
+            // TODO: Entity tag header validation
             profile.Document.UpdateDocument(request.Content, request.ContentType);
 
             _context.AgentProfiles.Update(profile);

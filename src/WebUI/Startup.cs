@@ -81,7 +81,6 @@ namespace Doctrina.WebUI
 
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<WeatherForecastService>();
             services.AddSingleton<RegistrationService>();
         }
 
@@ -147,7 +146,7 @@ namespace Doctrina.WebUI
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapBlazorHub().RequireAuthorization(new AuthorizeAttribute { 
+                endpoints.MapBlazorHub().RequireAuthorization(new AuthorizeAttribute {
                     AuthenticationSchemes = "Cookies"
                 });
                 endpoints.MapFallbackToPage("/_Host");

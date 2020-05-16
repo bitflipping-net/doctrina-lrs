@@ -1,0 +1,27 @@
+@host = localhost:5000
+@version = 1.0.3
+@basicAuth = Basic YWRtaW5AZXhhbXBsZS5jb206ektSNGdrWU5IUDV0dkg=
+
+###
+POST /xapi/activities/state
+    ?activityId=http://www.example.com/activityId/hashset
+    &agent=%7B%22objectType%22%3A%22Agent%22%2C%22account%22%3A%7B%22homePage%22%3A%22http%3A%2F%2Fwww.example.com%2FagentId%2F1%22%2C%22name%22%3A%22Rick%20James%22%7D%7D
+    &stateId=ed38d1d6-7144-478c-ad7d-8cb27fd2b5b4 HTTP/1.1
+Host: {{host}}
+X-Experience-API-Version: {{version}}
+Authorization: {{basicAuth}}
+Accept-Encoding: gzip, deflate
+Content-Type: application/json
+Content-Length: 184
+
+{"name":"d4dd7c8e-209e-4c09-b639-fb8bb9484076","location":{"name":"c4a812a4-a07c-4b0d-90ce-56c6dbc204f9"},"f37bb77a-f56a-4b0f-b791-d0075009ac7d":"844e301d-d670-40d9-bab2-bbc8c882f081"}
+
+###
+
+GET /xapi/activities/state
+    ?activityId=http://www.example.com/activityId/hashset
+    &agent=%7B%22objectType%22%3A%22Agent%22%2C%22account%22%3A%7B%22homePage%22%3A%22http%3A%2F%2Fwww.example.com%2FagentId%2F1%22%2C%22name%22%3A%22Rick%20James%22%7D%7D&stateId=ed38d1d6-7144-478c-ad7d-8cb27fd2b5b4 HTTP/1.1
+Host: {{host}}
+X-Experience-API-Version: {{version}}
+Authorization: {{basicAuth}}
+Accept-Encoding: gzip, deflate

@@ -2,14 +2,15 @@
 @version = 1.0.3
 @basicAuth = Basic YWRtaW5AZXhhbXBsZS5jb206ektSNGdrWU5IUDV0dkg=
 @moreUrl = {{attendedStatements.response.body.more}}
+@moreStatements.response.body.more =
 
 ###
 # @name attendedStatements
 GET /xapi/statements?verb=http://adlnet.gov/expapi/verbs/attended HTTP/1.1
 Host: {{host}}
-Content-Type: application/json
 X-Experience-API-Version: {{version}}
 Authorization: {{basicAuth}}
+Content-Type: application/json
 
 ###
 # @name moreStatements

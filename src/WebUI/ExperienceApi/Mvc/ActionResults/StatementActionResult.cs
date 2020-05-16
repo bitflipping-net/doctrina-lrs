@@ -1,6 +1,7 @@
 ﻿using Doctrina.ExperienceApi.Client.Http;
 using Doctrina.ExperienceApi.Data;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -20,33 +21,37 @@ namespace Doctrina.WebUI.ExperienceApi.Mvc.ActionResults
             _format = format;
         }
 
-        public Task ExecuteResultAsync(ActionContext context)
+        public async Task ExecuteResultAsync(ActionContext context)
         {
             string strJson = _statement.ToJson(_format);
-            var stringContent = new StringContent(strJson, Encoding.UTF8, MediaTypes.Application.Json);
+            HttpContent httpContent = new StringContent(strJson, Encoding.UTF8, MediaTypes.Application.Json);
 
+            var attachmentsWithPayload = _statement.Attachments.Where(a => a.Payload != null);
             if (_statement.Attachments.Any(x => x.Payload != null))
             {
-                var multipart = new MultipartContent("mixed")
+                string boundary = Guid.NewGuid().ToString();
+                httpContent = new MultipartContent("mixed", boundary)
                 {
-                    stringContent
+                    httpContent
                 };
+
                 foreach (var attachment in _statement.Attachments)
                 {
                     if (attachment.Payload != null)
                     {
-                        var byteArrayContent = new ByteArrayContent(attachment.Payload);
-                        byteArrayContent.Headers.ContentType = new MediaTypeHeaderValue(attachment.ContentType);
-                        byteArrayContent.Headers.Add(ApiHeaders.ContentTransferEncoding, "binary");
-                        byteArrayContent.Headers.Add(ApiHeaders.XExperienceApiHash, attachment.SHA2);
-                        multipart.Add(byteArrayContent);
+                        ((MultipartContent)httpContent).AddAttachment(attachment);
                     }
                 }
-
-                return multipart.CopyToAsync(context.HttpContext.Response.Body);
             }
 
-            return stringContent.CopyToAsync(context.HttpContext.Response.Body);
+            foreach(var header in httpContent.Headers)
+            {
+                context.HttpContext.Response.Headers.Add(header.Key, header.Value.ToString());
+            }
+            context.HttpContext.Response.Headers.Add(ApiHeaders.XExperienceApiVersion, ApiVersion.GetLatest().ToString());
+            await httpContent.CopyToAsync(context.HttpContext.Response.Body);
+
+            httpContent.Dispose();
         }
     }
 }

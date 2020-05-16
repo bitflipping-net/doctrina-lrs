@@ -5,6 +5,7 @@ using Doctrina.ExperienceApi.Data.Documents;
 using Doctrina.WebUI.ExperienceApi.Mvc.Filters;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
@@ -37,9 +38,9 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
         [HttpGet(Order = 1)]
         [HttpHead(Order = 1)]
         public async Task<IActionResult> GetProfile(
-            [BindRequired, FromQuery] string profileId, 
-            [BindRequired, FromQuery] Iri activityId, 
-            [FromQuery]Guid? registration = null, 
+            [BindRequired, FromQuery] string profileId,
+            [BindRequired, FromQuery] Iri activityId,
+            [FromQuery] Guid? registration = null,
             CancellationToken cancelToken = default)
         {
             if (!ModelState.IsValid)
@@ -77,8 +78,8 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
         [HttpGet(Order = 2)]
         [HttpHead(Order = 2)]
         public async Task<ActionResult<string[]>> GetProfiles(
-            [BindRequired, FromQuery] Iri activityId, 
-            [FromQuery] DateTimeOffset? since = null, 
+            [BindRequired, FromQuery] Iri activityId,
+            [FromQuery] DateTimeOffset? since = null,
             CancellationToken cancelToken = default)
         {
             if (!ModelState.IsValid)
@@ -99,8 +100,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
 
             IEnumerable<string> ids = profiles.Select(x => x.ProfileId);
             string lastModified = profiles.OrderByDescending(x => x.LastModified)
-                .FirstOrDefault()?
-                .LastModified?.ToString("o");
+                .FirstOrDefault()?.LastModified?.ToString("o");
 
             Response.Headers.Add("Last-Modified", lastModified);
             return Ok(ids);
@@ -116,28 +116,59 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
         [HttpPost]
         [HttpPut]
         public async Task<IActionResult> SaveProfile(
-            [BindRequired, FromQuery]string profileId, 
-            [BindRequired, FromQuery]Iri activityId,
-            [BindRequired, FromHeader(Name = "Content-Type")]string contentType,
-            [BindRequired, FromBody]byte[] body, 
-            [FromQuery]Guid? registration = null, 
-            CancellationToken cancelToken = default)
+            [BindRequired, FromQuery] string profileId,
+            [BindRequired, FromQuery] Iri activityId,
+            [BindRequired, FromHeader(Name = "Content-Type")] string contentType,
+            [BindRequired, FromBody] byte[] body,
+            [FromQuery] Guid? registration = null,
+            CancellationToken cancellationToken = default)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            ActivityProfileDocument profile = await _mediator.Send(new CreateActivityProfileCommand()
+            ActivityProfileDocument profile = await _mediator.Send(new GetActivityProfileQuery()
             {
-                ProfileId = profileId,
                 ActivityId = activityId,
-                Content = body,
-                ContentType = contentType,
+                ProfileId = profileId,
                 Registration = registration
-            }, cancelToken);
+            }, cancellationToken);
 
-            //Response.Headers["ETag"] = profile.Tag;
+            if (Request.TryConcurrencyCheck(profile?.Tag, profile?.LastModified, out int statusCode))
+            {
+                return StatusCode(statusCode);
+            }
+
+            if (profile != null)
+            {
+                // Optimistic Concurrency
+                if(HttpMethods.IsPut(Request.Method))
+                {
+                    return Conflict();
+                }
+
+                await _mediator.Send(new UpdateActivityProfileCommand()
+                {
+
+                    ProfileId = profileId,
+                    ActivityId = activityId,
+                    Content = body,
+                    ContentType = contentType,
+                    Registration = registration
+                }, cancellationToken);
+            }
+            else
+            {
+                await _mediator.Send(new CreateActivityProfileCommand()
+                {
+                    ProfileId = profileId,
+                    ActivityId = activityId,
+                    Content = body,
+                    ContentType = contentType,
+                    Registration = registration
+                }, cancellationToken);
+            }
 
             return NoContent();
         }
@@ -150,8 +181,8 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
         /// <returns>204 No Content</returns>
         [HttpDelete]
         public async Task<IActionResult> DeleteProfileAsync(
-            [BindRequired, FromQuery]string profileId, 
-            [BindRequired, FromQuery]Iri activityId,
+            [BindRequired, FromQuery] string profileId,
+            [BindRequired, FromQuery] Iri activityId,
             [FromQuery] Guid? registration = null,
             CancellationToken cancelToken = default)
         {
@@ -160,15 +191,21 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            ActivityProfileDocument profile = await _mediator.Send(new GetActivityProfileQuery() { 
-            ActivityId = activityId,
-            ProfileId = profileId,
-            Registration = registration
+            ActivityProfileDocument profile = await _mediator.Send(new GetActivityProfileQuery()
+            {
+                ActivityId = activityId,
+                ProfileId = profileId,
+                Registration = registration
             }, cancelToken);
 
             if (profile == null)
             {
                 return NotFound();
+            }
+
+            if(Request.TryConcurrencyCheck(profile.Tag, profile.LastModified, out int statusCode))
+            {
+                return StatusCode(statusCode);
             }
 
             await _mediator.Send(new DeleteActivityProfileCommand()

@@ -47,9 +47,14 @@ namespace Doctrina.Domain.Entities.Documents
         // Methods:
         private string GenerateChecksum()
         {
-            using (var md5 = MD5.Create())
+            if(Content == null)
             {
-                byte[] checksum = md5.ComputeHash(Content);
+                throw new NullReferenceException("Content is null or empty");
+            }
+
+            using (var sha1 = SHA1.Create())
+            {
+                byte[] checksum = sha1.ComputeHash(Content);
                 return BitConverter.ToString(checksum).Replace("-", string.Empty).ToLower();
             }
         }

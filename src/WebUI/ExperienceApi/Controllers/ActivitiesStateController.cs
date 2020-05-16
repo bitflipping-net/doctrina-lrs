@@ -36,15 +36,27 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
         [HttpGet]
         [HttpHead]
         public async Task<IActionResult> GetSingleState(
-        [BindRequired, FromQuery] string stateId,
-        [BindRequired, FromQuery] Iri activityId,
-        [BindRequired, FromQuery] Agent agent,
-        [FromQuery] Guid? registration = null,
-        CancellationToken cancelToken = default)
+            [BindRequired, FromQuery] Iri activityId,
+            [BindRequired, FromQuery] Agent agent,
+            [FromQuery] string stateId = null,
+            [FromQuery]DateTime? since = null,
+            [FromQuery] Guid? registration = null,
+            CancellationToken cancelToken = default)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
+            }
+
+            if(string.IsNullOrEmpty(stateId))
+            {
+                return await GetMutipleStates(
+                    activityId,
+                    agent,
+                    registration,
+                    since,
+                    cancelToken
+                );
             }
 
             ActivityStateDocument stateDocument = await _mediator.Send(new GetActivityStateQuery()
@@ -60,12 +72,53 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 return NotFound();
             }
 
+            if(Request.TryConcurrencyCheck(stateDocument.Tag, stateDocument.LastModified, out int statusCode))
+            {
+                return StatusCode(statusCode);
+            }
+
             var content = new FileContentResult(stateDocument.Content, stateDocument.ContentType.ToString())
             {
                 LastModified = stateDocument.LastModified,
                 EntityTag = new EntityTagHeaderValue($"\"{stateDocument.Tag}\"")
             };
             return content;
+        }
+
+        /// <summary>
+        /// Fetches State ids of all state data for this context (Activity + Agent [ + registration if specified]). If "since" parameter is specified, this is limited to entries that have been stored or updated since the specified timestamp (exclusive).
+        /// </summary>
+        /// <param name="activityId"></param>
+        /// <param name="strAgent"></param>
+        /// <param name="stateId"></param>
+        /// <param name="registration"></param>
+        /// <returns></returns>
+        private async Task<IActionResult> GetMutipleStates(
+            [BindRequired, FromQuery]Iri activityId,
+            [BindRequired, FromQuery]Agent agent,
+            [FromQuery]Guid? registration = null,
+            [FromQuery]DateTime? since = null,
+            CancellationToken cancelToken = default)
+        {
+            ICollection<ActivityStateDocument> states = await _mediator.Send(new GetActivityStatesQuery()
+            {
+                ActivityId = activityId,
+                Agent = agent,
+                Registration = registration,
+                Since = since
+            }, cancelToken);
+
+            if (states.Count <= 0)
+            {
+                return Ok(Array.Empty<string>());
+            }
+
+            IEnumerable<string> ids = states.Select(x => x.StateId);
+            string lastModified = states.OrderByDescending(x => x.LastModified)
+                .FirstOrDefault()?.LastModified?.ToString("o");
+            Response.Headers.Add("LastModified", lastModified);
+
+            return Ok(ids);
         }
 
         // PUT|POST xapi/activities/state
@@ -160,47 +213,6 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             return NoContent();
         }
 
-        /// <summary>
-        /// Fetches State ids of all state data for this context (Activity + Agent [ + registration if specified]). If "since" parameter is specified, this is limited to entries that have been stored or updated since the specified timestamp (exclusive).
-        /// </summary>
-        /// <param name="activityId"></param>
-        /// <param name="strAgent"></param>
-        /// <param name="stateId"></param>
-        /// <param name="registration"></param>
-        /// <returns></returns>
-        [HttpGet]
-        public async Task<IActionResult> GetMutipleStates(
-            [BindRequired, FromQuery]Iri activityId,
-            [BindRequired, FromQuery]Agent agent,
-            [FromQuery]Guid? registration = null,
-            [FromQuery]DateTime? since = null,
-            CancellationToken cancelToken = default)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
 
-            ICollection<ActivityStateDocument> states = await _mediator.Send(new GetActivityStatesQuery()
-            {
-                ActivityId = activityId,
-                Agent = agent,
-                Registration = registration,
-                Since = since
-            }, cancelToken);
-
-            if (states.Count <= 0)
-            {
-                return Ok(Array.Empty<string>());
-            }
-
-            IEnumerable<string> ids = states.Select(x => x.StateId);
-            string lastModified = states.OrderByDescending(x => x.LastModified)
-                .FirstOrDefault()?
-                    .LastModified?.ToString("o");
-            Response.Headers.Add("LastModified", lastModified);
-
-            return Ok(ids);
-        }
     }
 }

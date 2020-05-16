@@ -23,38 +23,30 @@ namespace Doctrina.WebUI.ExperienceApi.Mvc.ActionResults
 
         public async Task ExecuteResultAsync(ActionContext context)
         {
-            var stringContent = new StringContent(result.ToJson(format), Encoding.UTF8, MediaTypes.Application.Json);
+            HttpContent httpContent = new StringContent(result.ToJson(format), Encoding.UTF8, MediaTypes.Application.Json);
 
             var attachmentsWithPayload = result.Statements.SelectMany(x => x.Attachments.Where(a => a.Payload != null));
             if (attachmentsWithPayload.Count() > 0)
             {
                 string boundary = Guid.NewGuid().ToString();
-                using var multipart = new MultipartContent("mixed", boundary)
+                httpContent = new MultipartContent("mixed", boundary)
                 {
-                    stringContent
+                    httpContent
                 };
 
                 foreach (var attachment in attachmentsWithPayload)
                 {
-                    var byteArrayContent = new ByteArrayContent(attachment.Payload);
-                    var attachmentMediaType = MediaTypeHeaderValue.Parse(attachment.ContentType);
-
-                    byteArrayContent.Headers.ContentType = attachmentMediaType;
-                    byteArrayContent.Headers.Add(ApiHeaders.ContentTransferEncoding, "binary");
-                    byteArrayContent.Headers.Add(ApiHeaders.XExperienceApiHash, attachment.SHA2);
-                    multipart.Add(byteArrayContent);
+                    ((MultipartContent)httpContent).AddAttachment(attachment);
                 }
+            }
 
-                // Write Content-Type header with Boundary parameter
-                var mediaType = MediaTypeHeaderValue.Parse(MediaTypes.Multipart.Mixed);
-                mediaType.Parameters.Add(new NameValueHeaderValue("boundary", boundary));
-                context.HttpContext.Response.ContentType = mediaType.ToString();
-                
-                await multipart.CopyToAsync(context.HttpContext.Response.Body);
+            foreach(var header in httpContent.Headers)
+            {
+                context.HttpContext.Response.Headers.Add(header.Key, header.Value.ToString());
             }
 
             context.HttpContext.Response.ContentType = MediaTypes.Application.Json;
-            await stringContent.CopyToAsync(context.HttpContext.Response.Body);
+            await httpContent.CopyToAsync(context.HttpContext.Response.Body);
         }
     }
 }

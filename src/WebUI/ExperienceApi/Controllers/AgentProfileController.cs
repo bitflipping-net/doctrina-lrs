@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.Net.Http.Headers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,10 +53,16 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 return NotFound();
             }
 
+            if(Request.TryConcurrencyCheck(profile?.Tag, profile?.LastModified, out int statusCode))
+            {
+                return StatusCode(statusCode);
+            }
+
             var result = new FileContentResult(profile.Content, profile.ContentType)
             {
                 LastModified = profile.LastModified
             };
+            Response.Headers.Add(HeaderNames.ETag, $"\"{profile.Tag}\"");
             return result;
         }
 
@@ -80,11 +87,8 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             IEnumerable<string> ids = profiles.Select(x => x.ProfileId).ToList();
 
             string lastModified = profiles.OrderByDescending(x => x.LastModified)
-                .FirstOrDefault()?
-                .LastModified?
-                .ToString("o");
-
-            Response.Headers.Add("Last-Modified", lastModified);
+                .FirstOrDefault()?.LastModified?.ToString("o");
+            Response.Headers.Add(HeaderNames.LastModified, lastModified);
             return Ok(ids);
         }
 
@@ -95,23 +99,35 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             [BindRequired, FromQuery]Agent agent,
             [BindRequired, FromHeader(Name = "Content-Type")] string contentType,
             [BindRequired, FromBody]byte[] content,
-            CancellationToken cancelToken = default)
+            CancellationToken cancellationToken = default)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            AgentProfileDocument profile = await _mediator.Send(new MergeAgentProfileCommand()
-            {
-                Agent = agent,
-                ProfileId = profileId,
-                Content = content,
-                ContentType = contentType
-            }, cancelToken);
+            AgentProfileDocument profile = await _mediator.Send(GetAgentProfileQuery.Create(agent, profileId), cancellationToken);
 
-            Response.Headers.Add("ETag", $"\"{profile.Tag}\"");
-            Response.Headers.Add("Last-Modified", profile.LastModified?.ToString("o"));
+            if(Request.TryConcurrencyCheck(profile?.Tag, profile?.LastModified, out int statusCode))
+            {
+                return StatusCode(statusCode);
+            }
+
+            if(profile == null)
+            {
+                profile = await _mediator.Send(
+                    CreateAgentProfileCommand.Create(agent, profileId, content, contentType),
+                    cancellationToken);
+            }
+            else
+            {
+                profile = await _mediator.Send(
+                    UpdateAgentProfileCommand.Create(agent, profileId, content, contentType),
+                    cancellationToken);
+            }
+
+            Response.Headers.Add(HeaderNames.ETag, $"\"{profile.Tag}\"");
+            Response.Headers.Add(HeaderNames.LastModified, profile.LastModified?.ToString("o"));
 
             return NoContent();
         }
@@ -128,14 +144,17 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 return BadRequest(ModelState);
             }
 
-
             var profile = await _mediator.Send(GetAgentProfileQuery.Create(agent, profileId), cancelToken);
+
+            if(Request.TryConcurrencyCheck(profile?.Tag, profile?.LastModified, out int statusCode))
+            {
+                return StatusCode(statusCode);
+            }
+
             if (profile == null)
             {
                 return NotFound();
             }
-
-            // TODO: Concurrency
 
             await _mediator.Send(new DeleteAgentProfileCommand()
             {

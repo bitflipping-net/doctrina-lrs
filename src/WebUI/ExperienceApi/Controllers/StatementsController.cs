@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
+using Microsoft.Net.Http.Headers;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -52,7 +53,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             }
 
             ResultFormat format = parameters.Format ?? ResultFormat.Exact;
-            if(!StringValues.IsNullOrEmpty(Request.Headers["Accept-Language"]))
+            if(!StringValues.IsNullOrEmpty(Request.Headers[HeaderNames.AcceptLanguage]))
             {
                 format = ResultFormat.Canonical;
             }
