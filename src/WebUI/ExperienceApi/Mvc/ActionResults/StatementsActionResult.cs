@@ -1,6 +1,7 @@
 ﻿using Doctrina.ExperienceApi.Client.Http;
 using Doctrina.ExperienceApi.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
 using System;
 using System.Linq;
 using System.Net.Http;
@@ -12,21 +13,22 @@ namespace Doctrina.WebUI.ExperienceApi.Mvc.ActionResults
 {
     public class StatementsActionResult : IActionResult
     {
-        private readonly StatementsResult result;
-        private readonly ResultFormat format;
+        private readonly StatementsResult _result;
+        private readonly ResultFormat _format;
+        private readonly bool _attachments;
 
-        public StatementsActionResult(StatementsResult result, ResultFormat format)
+        public StatementsActionResult(StatementsResult result, ResultFormat format, bool attachments)
         {
-            this.result = result;
-            this.format = format;
+            _result = result;
+            _format = format;
+            _attachments = attachments;
         }
 
         public async Task ExecuteResultAsync(ActionContext context)
         {
-            HttpContent httpContent = new StringContent(result.ToJson(format), Encoding.UTF8, MediaTypes.Application.Json);
+            HttpContent httpContent = new StringContent(_result.ToJson(_format), Encoding.UTF8, MediaTypes.Application.Json);
 
-            var attachmentsWithPayload = result.Statements.SelectMany(x => x.Attachments.Where(a => a.Payload != null));
-            if (attachmentsWithPayload.Count() > 0)
+            if (_attachments)
             {
                 string boundary = Guid.NewGuid().ToString();
                 httpContent = new MultipartContent("mixed", boundary)
@@ -34,6 +36,7 @@ namespace Doctrina.WebUI.ExperienceApi.Mvc.ActionResults
                     httpContent
                 };
 
+                var attachmentsWithPayload = _result.Statements.SelectMany(x => x.Attachments.Where(a => a.Payload != null));
                 foreach (var attachment in attachmentsWithPayload)
                 {
                     ((MultipartContent)httpContent).AddAttachment(attachment);
@@ -42,10 +45,12 @@ namespace Doctrina.WebUI.ExperienceApi.Mvc.ActionResults
 
             foreach(var header in httpContent.Headers)
             {
-                context.HttpContext.Response.Headers.Add(header.Key, header.Value.ToString());
+                context.HttpContext.Response.Headers.Add(
+                    header.Key,
+                    new StringValues(header.Value.ToArray())
+                );
             }
 
-            context.HttpContext.Response.ContentType = MediaTypes.Application.Json;
             await httpContent.CopyToAsync(context.HttpContext.Response.Body);
         }
     }

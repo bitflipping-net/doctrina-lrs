@@ -1,6 +1,7 @@
 ﻿using Doctrina.ExperienceApi.Client.Http;
 using Doctrina.ExperienceApi.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
 using System;
 using System.Linq;
 using System.Net.Http;
@@ -46,8 +47,12 @@ namespace Doctrina.WebUI.ExperienceApi.Mvc.ActionResults
 
             foreach(var header in httpContent.Headers)
             {
-                context.HttpContext.Response.Headers.Add(header.Key, header.Value.ToString());
+                context.HttpContext.Response.Headers.Add(
+                    header.Key,
+                    new StringValues(header.Value.ToArray())
+                );
             }
+
             context.HttpContext.Response.Headers.Add(ApiHeaders.XExperienceApiVersion, ApiVersion.GetLatest().ToString());
             await httpContent.CopyToAsync(context.HttpContext.Response.Body);
 

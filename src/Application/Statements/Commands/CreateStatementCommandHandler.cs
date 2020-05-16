@@ -40,8 +40,8 @@ namespace Doctrina.Application.Statements.Commands
         {
             if (request.Statement.Id.HasValue)
             {
-                int count = await _context.Statements.CountAsync(x => x.StatementId == request.Statement.Id, cancellationToken);
-                if (count > 0)
+                bool any = await _context.Statements.AnyAsync(x => x.StatementId == request.Statement.Id, cancellationToken);
+                if (any)
                 {
                     return request.Statement.Id.Value;
                 }

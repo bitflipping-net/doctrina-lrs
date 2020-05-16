@@ -58,10 +58,10 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 format = ResultFormat.Canonical;
             }
 
+            bool attachments = parameters.Attachments.GetValueOrDefault();
+
             if (parameters.StatementId.HasValue || parameters.VoidedStatementId.HasValue)
             {
-                bool attachments = parameters.Attachments.GetValueOrDefault();
-
                 IRequest<Statement> requestQuery = null;
                 if (parameters.StatementId.HasValue)
                 {
@@ -96,7 +96,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 result.More = new Uri($"/xapi/statements?more={pagedResult.MoreToken}", UriKind.Relative);
             }
 
-            return new StatementsActionResult(result, format);
+            return new StatementsActionResult(result, format, attachments);
         }
 
         /// <summary>

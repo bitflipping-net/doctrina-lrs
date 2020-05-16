@@ -55,7 +55,7 @@ namespace Doctrina.WebUI.ExperienceApi.Routing
                 }
                 else
                 {
-                    logger.LogError(ex, "Request failed");
+                    logger.LogError(ex, "Exception was thrown");
 
                     context.Response.ContentType = "application/json";
                     context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
