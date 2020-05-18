@@ -5,7 +5,7 @@ using System;
 
 namespace Doctrina.Application.ActivityStates.Commands
 {
-    public class MergeStateDocumentCommand : IRequest<ActivityStateDocument>
+    public class UpdateStateDocumentCommand : IRequest<ActivityStateDocument>
     {
         public string StateId { get; set; }
         public Iri ActivityId { get; set; }

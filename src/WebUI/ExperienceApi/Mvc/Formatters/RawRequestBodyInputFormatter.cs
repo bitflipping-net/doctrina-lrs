@@ -10,7 +10,7 @@ namespace Doctrina.WebUI.ExperienceApi.Mvc.Formatters
     /// Formatter that allows content of type text/plain and application/octet stream
     /// or no content type to be parsed to raw data. Allows for a single input parameter
     /// in the form of:
-    /// 
+    ///
     /// public string RawString([FromBody] string data)
     /// public byte[] RawData([FromBody] byte[] data)
     /// </summary>
@@ -21,6 +21,7 @@ namespace Doctrina.WebUI.ExperienceApi.Mvc.Formatters
             SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/plain"));
             SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/json"));
             SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/octet-stream"));
+            SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/x-www-form-urlencoded"));
         }
 
         /// <summary>
@@ -33,8 +34,9 @@ namespace Doctrina.WebUI.ExperienceApi.Mvc.Formatters
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            var contentType = context.HttpContext.Request.ContentType;
-            return SupportedMediaTypes.Contains(contentType);
+            // var contentType = context.HttpContext.Request.ContentType;
+            // return SupportedMediaTypes.Contains(contentType);
+            return true;
         }
 
         /// <summary>
@@ -47,6 +49,7 @@ namespace Doctrina.WebUI.ExperienceApi.Mvc.Formatters
         {
             var request = context.HttpContext.Request;
 
+            // TODO: Use BodyReader and the NEW Span<T>
             if (context.ModelType == typeof(string))
             {
                 using (var reader = new StreamReader(request.Body))

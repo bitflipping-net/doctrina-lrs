@@ -1,7 +1,9 @@
 ﻿using Doctrina.Application.ActivityStates.Commands;
 using Doctrina.Application.ActivityStates.Queries;
+using Doctrina.ExperienceApi.Client.Http;
 using Doctrina.ExperienceApi.Data;
 using Doctrina.ExperienceApi.Data.Documents;
+using Doctrina.ExperienceApi.Data.Json;
 using Doctrina.WebUI.ExperienceApi.Mvc.Filters;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -9,9 +11,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Net.Http.Headers;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -41,7 +45,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             [FromQuery] string stateId = null,
             [FromQuery]DateTime? since = null,
             [FromQuery] Guid? registration = null,
-            CancellationToken cancelToken = default)
+            CancellationToken cancellationToken = default)
         {
             if (!ModelState.IsValid)
             {
@@ -55,7 +59,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                     agent,
                     registration,
                     since,
-                    cancelToken
+                    cancellationToken
                 );
             }
 
@@ -65,7 +69,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 ActivityId = activityId,
                 Agent = agent,
                 Registration = registration
-            }, cancelToken);
+            }, cancellationToken);
 
             if (stateDocument == null)
             {
@@ -98,7 +102,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             [BindRequired, FromQuery]Agent agent,
             [FromQuery]Guid? registration = null,
             [FromQuery]DateTime? since = null,
-            CancellationToken cancelToken = default)
+            CancellationToken cancellationToken = default)
         {
             ICollection<ActivityStateDocument> states = await _mediator.Send(new GetActivityStatesQuery()
             {
@@ -106,7 +110,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 Agent = agent,
                 Registration = registration,
                 Since = since
-            }, cancelToken);
+            }, cancellationToken);
 
             if (states.Count <= 0)
             {
@@ -131,37 +135,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             [BindRequired, FromBody]byte[] body,
             [BindRequired, FromHeader(Name = "Content-Type")]string contentType,
             [FromQuery]Guid? registration = null,
-            CancellationToken cancelToken = default)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            await _mediator.Send(new MergeStateDocumentCommand()
-            {
-                StateId = stateId,
-                ActivityId = activityId,
-                Agent = agent,
-                Content = body,
-                ContentType = contentType,
-                Registration = registration,
-            }, cancelToken);
-
-            //var etag = EntityTagHeaderValue.Parse($"\"{document.Tag}\"");
-            //Response.Headers.Add("ETag", etag.ToString());
-            return NoContent();
-        }
-
-
-        // DELETE xapi/activities/state
-        [HttpDelete]
-        public async Task<IActionResult> DeleteSingleState(
-            [BindRequired, FromQuery] string stateId,
-            [BindRequired, FromQuery] Iri activityId,
-            [BindRequired, FromQuery] Agent agent,
-            [FromQuery] Guid? registration = null,
-            CancellationToken cancelToken = default)
+            CancellationToken cancellationToken = default)
         {
             if (!ModelState.IsValid)
             {
@@ -174,45 +148,90 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 ActivityId = activityId,
                 Agent = agent,
                 Registration = registration
-            });
+            }, cancellationToken);
 
-            if (stateDocument == null)
+            if(stateDocument != null)
             {
-                return NotFound();
+                stateDocument = await _mediator.Send(new UpdateStateDocumentCommand()
+                {
+                    StateId = stateId,
+                    ActivityId = activityId,
+                    Agent = agent,
+                    Content = body,
+                    ContentType = contentType,
+                    Registration = registration
+                }, cancellationToken);
+            }
+            else
+            {
+                stateDocument = await _mediator.Send(new CreateStateDocumentCommand()
+                {
+                    StateId = stateId,
+                    ActivityId = activityId,
+                    Agent = agent,
+                    Content = body,
+                    ContentType = contentType,
+                    Registration = registration
+                }, cancellationToken);
             }
 
-            await _mediator.Send(new DeleteActivityStateCommand()
-            {
-                StateId = stateId,
-                ActivityId = activityId,
-                Agent = agent,
-                Registration = registration
-            }, cancelToken);
+            Response.Headers.Add(HeaderNames.ETag, $"\"{stateDocument.Tag}\"");
+            Response.Headers.Add(HeaderNames.LastModified, stateDocument.LastModified?.ToString("o"));
 
             return NoContent();
         }
 
+
         // DELETE xapi/activities/state
         [HttpDelete]
-        public async Task<IActionResult> DeleteStatesAsync([FromQuery]Iri activityId, [FromQuery(Name = "agent")]string strAgent, [FromQuery]Guid? registration = null, CancellationToken cancelToken = default)
+        public async Task<IActionResult> DeleteSingleState(
+            [BindRequired, FromQuery] Iri activityId,
+            [BindRequired, FromQuery] Agent agent,
+            [FromQuery] string stateId = null,
+            [FromQuery] Guid? registration = null,
+            CancellationToken cancellationToken = default)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            Agent agent = new Agent(strAgent);
-
-            await _mediator.Send(new DeleteActivityStatesCommand()
+            if(string.IsNullOrEmpty(stateId))
             {
-                ActivityId = activityId,
-                Agent = agent,
-                Registration = registration
-            }, cancelToken);
+                await _mediator.Send(new DeleteActivityStatesCommand()
+                {
+                    ActivityId = activityId,
+                    Agent = agent,
+                    Registration = registration
+                }, cancellationToken);
+
+                return NoContent();
+            }
+            else
+            {
+                ActivityStateDocument stateDocument = await _mediator.Send(new GetActivityStateQuery()
+                {
+                    StateId = stateId,
+                    ActivityId = activityId,
+                    Agent = agent,
+                    Registration = registration
+                }, cancellationToken);
+
+                if (stateDocument == null)
+                {
+                    return NotFound();
+                }
+
+                await _mediator.Send(new DeleteActivityStateCommand()
+                {
+                    StateId = stateId,
+                    ActivityId = activityId,
+                    Agent = agent,
+                    Registration = registration
+                }, cancellationToken);
+            }
 
             return NoContent();
         }
-
-
     }
 }

@@ -29,6 +29,8 @@ namespace Doctrina.Application.ActivityStates
 
             _context.ActivityStates.RemoveRange(activities);
 
+            await _context.SaveChangesAsync(cancellationToken);
+
             return await Unit.Task;
         }
     }
