@@ -1,5 +1,7 @@
 ﻿using Doctrina.Application.AgentProfiles.Commands;
 using Doctrina.Application.AgentProfiles.Queries;
+using Doctrina.Application.Agents.Commands;
+using Doctrina.Application.Agents.Queries;
 using Doctrina.ExperienceApi.Data;
 using Doctrina.ExperienceApi.Data.Documents;
 using Doctrina.WebUI.ExperienceApi.Mvc.Filters;
@@ -53,16 +55,16 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 return NotFound();
             }
 
-            if(Request.TryConcurrencyCheck(profile?.Tag, profile?.LastModified, out int statusCode))
+            if(Request.TryConcurrencyCheck(profile?.Document.Checksum, profile?.Document.LastModified, out int statusCode))
             {
                 return StatusCode(statusCode);
             }
 
-            var result = new FileContentResult(profile.Content, profile.ContentType)
+            var result = new FileContentResult(profile.Document.Content, profile.Document.ContentType)
             {
-                LastModified = profile.LastModified
+                LastModified = profile.Document.LastModified
             };
-            Response.Headers.Add(HeaderNames.ETag, $"\"{profile.Tag}\"");
+            Response.Headers.Add(HeaderNames.ETag, $"\"{profile.Document.Checksum}\"");
             return result;
         }
 
@@ -77,17 +79,17 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            ICollection<AgentProfileDocument> profiles = await _mediator.Send(new GetAgentProfilesQuery(agent, since), cancelToken);
+            var profiles = await _mediator.Send(GetAgentProfilesQuery.Create(agent, since), cancelToken);
 
-            if (profiles == null)
+            if (profiles == null || profiles.Count == 0)
             {
                 return Ok(Array.Empty<Guid>());
             }
 
             IEnumerable<string> ids = profiles.Select(x => x.ProfileId).ToList();
 
-            string lastModified = profiles.OrderByDescending(x => x.LastModified)
-                .FirstOrDefault()?.LastModified?.ToString("o");
+            string lastModified = profiles.OrderByDescending(x => x.Document.LastModified)
+                .FirstOrDefault()?.Document.LastModified?.ToString("o");
             Response.Headers.Add(HeaderNames.LastModified, lastModified);
             return Ok(ids);
         }
@@ -106,9 +108,9 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            AgentProfileDocument profile = await _mediator.Send(GetAgentProfileQuery.Create(agent, profileId), cancellationToken);
+            var profile = await _mediator.Send(GetAgentProfileQuery.Create(agent, profileId), cancellationToken);
 
-            if(Request.TryConcurrencyCheck(profile?.Tag, profile?.LastModified, out int statusCode))
+            if(Request.TryConcurrencyCheck(profile?.Document.Checksum, profile?.Document.LastModified, out int statusCode))
             {
                 return StatusCode(statusCode);
             }
@@ -126,8 +128,8 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                     cancellationToken);
             }
 
-            Response.Headers.Add(HeaderNames.ETag, $"\"{profile.Tag}\"");
-            Response.Headers.Add(HeaderNames.LastModified, profile.LastModified?.ToString("o"));
+            Response.Headers.Add(HeaderNames.ETag, $"\"{profile.Document.Checksum}\"");
+            Response.Headers.Add(HeaderNames.LastModified, profile.Document.LastModified?.ToString("o"));
 
             return NoContent();
         }
@@ -146,7 +148,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
 
             var profile = await _mediator.Send(GetAgentProfileQuery.Create(agent, profileId), cancelToken);
 
-            if(Request.TryConcurrencyCheck(profile?.Tag, profile?.LastModified, out int statusCode))
+            if(Request.TryConcurrencyCheck(profile?.Document.Checksum, profile?.Document.LastModified, out int statusCode))
             {
                 return StatusCode(statusCode);
             }
@@ -156,11 +158,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 return NotFound();
             }
 
-            await _mediator.Send(new DeleteAgentProfileCommand()
-            {
-                ProfileId = profileId,
-                Agent = agent
-            });
+            await _mediator.Send(DeleteAgentProfileCommand.Create(profileId, agent), cancelToken);
 
             return NoContent();
         }

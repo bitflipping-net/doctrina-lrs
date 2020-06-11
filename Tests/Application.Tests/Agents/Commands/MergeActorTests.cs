@@ -42,7 +42,7 @@ namespace Application.Tests.Agents.Commands
                     }
                 }
             };
-            var handler = new UpsertActorCommand.Handler(_context, mediatorMock.Object, mapperMock.Object);
+            var handler = new UpsertActorCommandHandler(_context, mediatorMock.Object, mapperMock.Object);
             var validator = new UpsertActorCommandValidator();
             var cmd = UpsertActorCommand.Create(actor);
 
@@ -54,7 +54,6 @@ namespace Application.Tests.Agents.Commands
 
             // Assert
             result.AgentId.ShouldNotBe(Guid.Empty);
-            result.Hash.ShouldNotBeNullOrWhiteSpace();
             result.ShouldBeOfType<GroupEntity>();
         }
     }

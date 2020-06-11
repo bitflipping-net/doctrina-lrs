@@ -28,7 +28,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
         [HttpGet]
         [HttpHead]
         public async Task<IActionResult> GetAgentProfile(
-            [BindRequired, FromQuery]Agent agent, 
+            [BindRequired, FromQuery]Agent agent,
             CancellationToken cancellationToken = default)
         {
             if (!ModelState.IsValid)
@@ -36,7 +36,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            var person = await _mediator.Send(GetPersonCommand.Create(agent), cancellationToken);
+            var person = await _mediator.Send(GetPersonQuery.Create(agent), cancellationToken);
             if (person == null)
             {
                 return NotFound();

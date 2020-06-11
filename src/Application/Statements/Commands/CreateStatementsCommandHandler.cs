@@ -30,9 +30,7 @@ namespace Application.Statements.Commands
 
             var ids = await Task.WhenAll(tasks);
 
-            await _context.SaveChangesAsync(cancellationToken);
-
-            await _mediator.Publish(new StatementsSaved());
+            await _mediator.Publish(StatementsSaved.Create(ids));
 
             return ids;
         }

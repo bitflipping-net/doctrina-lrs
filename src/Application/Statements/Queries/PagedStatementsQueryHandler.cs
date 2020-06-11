@@ -48,8 +48,9 @@ namespace Doctrina.Application.Statements.Queries
             if (request.Agent != null)
             {
                 var actor = _mapper.Map<AgentEntity>(request.Agent);
-                var currentAgent = await _context.Agents.AsNoTracking().FirstOrDefaultAsync(x => x.ObjectType == actor.ObjectType 
-                    && x.Hash == actor.Hash, cancellationToken);
+                var currentAgent = await _context.Agents.AsNoTracking()
+                    .FirstOrDefaultAsync(x => x.ObjectType == actor.ObjectType
+                    && x.AgentId == actor.AgentId, cancellationToken);
                 if (currentAgent != null)
                 {
                     Guid agentId = currentAgent.AgentId;
@@ -73,7 +74,7 @@ namespace Doctrina.Application.Statements.Queries
                     }
                     else
                     {
-                        query = query.Where(x => x.Actor.Hash == actor.Hash);
+                        query = query.Where(x => x.Actor.AgentId == actor.AgentId);
                     }
                 }
                 else
@@ -139,12 +140,12 @@ namespace Doctrina.Application.Statements.Queries
 
             if (request.Since.HasValue)
             {
-                query = query.Where(x => x.Stored >= request.Since.Value);
+                query = query.Where(x => x.Stored > request.Since.Value);
             }
 
             if (request.Until.HasValue)
             {
-                query = query.Where(x => x.Stored <= request.Until.Value);
+                query = query.Where(x => x.Stored < request.Until.Value);
             }
 
             int pageSize = request.Limit ?? 1000;
@@ -152,10 +153,13 @@ namespace Doctrina.Application.Statements.Queries
 
             IQueryable<StatementEntity> pagedQuery = null;
 
+            // Include voiding statements
+            query = query.Select(p => p.VoidingStatementId != null ? p.VoidingStatement : p);
+
             if (!request.Attachments.GetValueOrDefault())
             {
                 pagedQuery = query.Select(p => new StatementEntity
-                { 
+                {
                     StatementId = p.StatementId,
                     FullStatement = p.FullStatement
                 });
@@ -178,9 +182,7 @@ namespace Doctrina.Application.Statements.Queries
                 return new PagedStatementsResult();
             }
 
-            List<Statement> statements = result.Take(pageSize).Select(p => _mapper.Map<Statement>(p)).ToList();
-
-            var statementCollection = new StatementCollection(statements);
+            List<StatementEntity> statements = result.Take(pageSize).ToList();
 
             if (result.Count > pageSize)
             {
@@ -194,10 +196,10 @@ namespace Doctrina.Application.Statements.Queries
                     .SetSlidingExpiration(TimeSpan.FromSeconds(60 * 10));
                 await _distributedCache.SetStringAsync(request.MoreToken, request.ToJson(), options, cancellationToken);
 
-                return new PagedStatementsResult(statementCollection, request.MoreToken);
+                return new PagedStatementsResult(statements, request.MoreToken);
             }
 
-            return new PagedStatementsResult(statementCollection);
+            return new PagedStatementsResult(statements);
         }
     }
 }

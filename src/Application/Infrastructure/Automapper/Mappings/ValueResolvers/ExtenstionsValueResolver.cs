@@ -5,7 +5,7 @@ namespace Doctrina.Application.Mappings.ValueResolvers
 {
     using Doctrina.ExperienceApi.Data;
 
-    public class ExtenstionsValueResolver :
+    public class ExtensionsValueResolver :
         IMemberValueResolver<object, object, ExtensionsCollection, ExtensionsDictionary>,
         IMemberValueResolver<object, object, ExtensionsDictionary, ExtensionsCollection>
     {

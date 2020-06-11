@@ -25,11 +25,10 @@ namespace Doctrina.Application.ActivityStates.Commands
         public async Task<Unit> Handle(DeleteActivityStateCommand request, CancellationToken cancellationToken)
         {
             string activityHash = request.ActivityId.ComputeHash();
-            var agent = _mapper.Map<AgentEntity>(request.Agent);
             var activity = await _context.ActivityStates
                 .Where(x => x.StateId == request.StateId && x.Activity.Hash == activityHash &&
                 (!request.Registration.HasValue || x.Registration == request.Registration))
-                .Where(x => x.Agent.Hash == agent.Hash)
+                .Where(x => x.Agent.AgentId == request.AgentId)
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (activity != null)

@@ -1,17 +1,18 @@
-﻿using Doctrina.ExperienceApi.Data;
+﻿using Doctrina.Domain.Entities;
+using Doctrina.ExperienceApi.Data;
 using MediatR;
 using System;
 
 namespace Doctrina.Application.Statements.Commands
 {
     /// <summary>
-    /// Creates statement without saving to database
+    /// Prepare XAPI Statement for creation
     /// </summary>
     public class CreateStatementCommand : IRequest<Guid>
     {
-        public IStatement Statement { get; private set; }
+        public Statement Statement { get; private set; }
 
-        internal static CreateStatementCommand Create(IStatement statement)
+        internal static CreateStatementCommand Create(Statement statement)
         {
             return new CreateStatementCommand()
             {

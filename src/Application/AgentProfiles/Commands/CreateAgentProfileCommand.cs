@@ -1,10 +1,12 @@
-﻿using Doctrina.ExperienceApi.Data;
-using Doctrina.ExperienceApi.Data.Documents;
+﻿using System;
+using Doctrina.Domain.Entities;
+using Doctrina.Domain.Entities.Documents;
+using Doctrina.ExperienceApi.Data;
 using MediatR;
 
 namespace Doctrina.Application.AgentProfiles.Commands
 {
-    public class CreateAgentProfileCommand : IRequest<AgentProfileDocument>
+    public class CreateAgentProfileCommand : IRequest<AgentProfileEntity>
     {
         public Agent Agent { get; private set; }
         public string ProfileId { get; private set; }
@@ -13,15 +15,13 @@ namespace Doctrina.Application.AgentProfiles.Commands
 
         public static CreateAgentProfileCommand Create(Agent agent, string profileId, byte[] content, string contentType)
         {
-            var cmd = new CreateAgentProfileCommand()
+            return new CreateAgentProfileCommand()
             {
                 Agent = agent,
                 ProfileId = profileId,
                 Content = content,
                 ContentType = contentType
             };
-
-            return cmd;
         }
     }
 }

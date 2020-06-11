@@ -27,14 +27,11 @@ namespace Doctrina.Application.ActivityStates.Commands
         public async Task<ActivityStateDocument> Handle(CreateStateDocumentCommand request, CancellationToken cancellationToken)
         {
 
-            ActivityEntity activity = (ActivityEntity)await _mediator.Send(MergeActivityCommand.Create(request.ActivityId), cancellationToken);
-            AgentEntity agent = (AgentEntity)await _mediator.Send(UpsertActorCommand.Create(request.Agent), cancellationToken);
-
             var state = new ActivityStateEntity(request.Content, request.ContentType)
             {
                 StateId = request.StateId,
-                Activity = activity,
-                Agent = agent,
+                Activity = request.Activity,
+                Agent = request.Agent,
                 Registration = request.Registration
             };
 

@@ -1,15 +1,17 @@
 ﻿using AutoMapper;
 using Doctrina.Application.Activities.Queries;
 using Doctrina.Application.Common.Interfaces;
+using Doctrina.Domain.Entities;
 using Doctrina.ExperienceApi.Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Doctrina.Application.Activities
 {
-    public class GetActivityQueryHandler : IRequestHandler<GetActivityQuery, Activity>
+    public class GetActivityQueryHandler : IRequestHandler<GetActivityQuery, ActivityEntity>
     {
         private readonly IDoctrinaDbContext _context;
         private readonly IMapper _mapper;
@@ -19,11 +21,16 @@ namespace Doctrina.Application.Activities
             _context = context;
             _mapper = mapper;
         }
-        public async Task<Activity> Handle(GetActivityQuery request, CancellationToken cancellationToken)
+        public async Task<ActivityEntity> Handle(GetActivityQuery request, CancellationToken cancellationToken)
         {
             string activityHash = request.ActivityId.ComputeHash();
-            var activity = await _context.Activities.FirstOrDefaultAsync(x => x.Hash == activityHash);
-            return _mapper.Map<Activity>(activity);
+            ActivityEntity activity = await _context.Activities
+                .AsNoTracking()
+                .Where(x => x.Hash == activityHash)
+                .Include(ac => ac.Definition)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            return activity;
         }
     }
 }

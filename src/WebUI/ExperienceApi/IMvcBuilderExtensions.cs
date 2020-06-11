@@ -19,6 +19,8 @@ namespace Doctrina.WebUI.ExperienceApi
 
                 options.ModelBinderProviders.Insert(0, new IriModelBinderProvider());
                 options.ModelBinderProviders.Insert(0, new AgentModelBinderProvider());
+                options.ModelBinderProviders.Insert(0, new StatementModelBinderProvider());
+                options.ModelBinderProviders.Insert(0, new StatementCollectionModelBinderProvider());
             });
 
             return mvcBuilder;

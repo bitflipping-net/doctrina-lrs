@@ -17,9 +17,7 @@ namespace Doctrina.Domain.Entities.Documents
         public Guid ActivityProfileId { get; set; }
         public string ProfileId { get; set; }
 
-        /// <summary>
-        /// MD5 checksum of Iri
-        /// </summary>
+        public Guid ActivityId {get;set;}
         public virtual ActivityEntity Activity { get; set; }
 
         public Guid? RegistrationId { get; set; }

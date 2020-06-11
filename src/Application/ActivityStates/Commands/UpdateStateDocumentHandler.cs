@@ -9,6 +9,7 @@ using Doctrina.ExperienceApi.Data.Json;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -20,25 +21,22 @@ namespace Doctrina.Application.ActivityStates.Commands
     {
         private readonly IDoctrinaDbContext _context;
         private readonly IMapper _mapper;
-        private readonly IMediator _mediator;
 
-        public UpdateStateDocumentHandler(IDoctrinaDbContext context, IMapper mapper, IMediator mediator)
+        public UpdateStateDocumentHandler(IDoctrinaDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
-            _mediator = mediator;
         }
 
         public async Task<ActivityStateDocument> Handle(UpdateStateDocumentCommand request, CancellationToken cancellationToken)
         {
-            AgentEntity agent = _mapper.Map<AgentEntity>(request.Agent);
             string activityHash = request.ActivityId.ComputeHash();
             var query = _context.ActivityStates
                 .Where(x=> x.StateId == request.StateId)
                 .Where(x => x.Activity.Hash == activityHash)
-                .Where(x => x.Agent.Hash == agent.Hash);
+                .Where(x => x.Agent.AgentId == request.AgentId);
 
-            if (request.Registration.HasValue)
+            if (request.Registration.HasValue && request.Registration.Value != Guid.Empty)
             {
                 query.Where(x => x.Registration == request.Registration);
             }
@@ -59,7 +57,8 @@ namespace Doctrina.Application.ActivityStates.Commands
 
             JsonString jsonString = Encoding.UTF8.GetString(request.Content);
             JsonString savedJsonString = Encoding.UTF8.GetString(stateDocument.Content);
-            jsonString.Merge(savedJsonString);
+            // Merge, and overwrite duplicate props with props in new json document
+            savedJsonString.Merge(jsonString);
 
             byte[] mergedJsonBytes = Encoding.UTF8.GetBytes(jsonString.ToString());
 

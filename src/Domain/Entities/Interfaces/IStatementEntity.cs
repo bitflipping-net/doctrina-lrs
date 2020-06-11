@@ -15,9 +15,8 @@ namespace Doctrina.Domain.Entities.Interfaces
         ICollection<AttachmentEntity> Attachments { get; set; }
         DateTimeOffset? Stored { get; set; }
         string Version { get; set; }
-        Guid? AuthorityId { get; set; }
+        Guid AuthorityId { get; set; }
         string FullStatement { get; set; }
-        bool Voided { get; set; }
         AgentEntity Authority { get; set; }
     }
 }

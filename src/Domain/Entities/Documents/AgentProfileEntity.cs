@@ -15,6 +15,7 @@ namespace Doctrina.Domain.Entities.Documents
 
         public Guid AgentProfileId { get; set; }
         public string ProfileId { get; set; }
+        public Guid AgentId { get; set; }
         public virtual AgentEntity Agent { get; set; }
         public DocumentEntity Document { get; set; }
     }

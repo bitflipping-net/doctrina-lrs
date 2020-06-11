@@ -30,13 +30,12 @@ namespace Doctrina.Application.ActivityStates.Queries
         public async Task<ICollection<ActivityStateDocument>> Handle(GetActivityStatesQuery request, CancellationToken cancellationToken)
         {
             string activityHash = request.ActivityId.ComputeHash();
-
-            AgentEntity agent = _mapper.Map<AgentEntity>(request.Agent);
+            Guid agentId = request.AgentId;
 
             var query = _context.ActivityStates
                 .AsNoTracking()
                 .Where(x => x.Activity.Hash == activityHash)
-                .Where(x => x.Agent.Hash == agent.Hash);
+                .Where(x => x.Agent.AgentId == agentId);
 
             if (request.Registration.HasValue)
             {

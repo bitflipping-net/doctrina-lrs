@@ -13,7 +13,8 @@ namespace Doctrina.Persistence.Configurations
             builder.HasBaseType<AgentEntity>();
 
             builder.HasMany(e => e.Members)
-                .WithOne();
+                .WithOne()
+                .HasForeignKey(x=> x.GroupMemberId);
         }
     }
 }

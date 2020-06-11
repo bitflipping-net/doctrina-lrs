@@ -2,7 +2,7 @@ using System;
 
 namespace Doctrina.Domain.Entities.Interfaces
 {
-    public interface IActivityEntity
+    public interface IActivity
     {
         Guid ActivityId { get; set; }
         string Hash { get; set; }

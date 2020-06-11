@@ -1,9 +1,12 @@
-﻿using Doctrina.Application.Activities.Queries;
+﻿using AutoMapper;
+using Doctrina.Application.Activities.Queries;
 using Doctrina.ExperienceApi.Data;
 using Doctrina.WebUI.ExperienceApi.Mvc.Filters;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
+using Microsoft.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,26 +18,39 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
     public class ActivitiesController : ApiControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
 
-        public ActivitiesController(IMediator mediator)
+        public ActivitiesController(IMediator mediator, IMapper mapper)
         {
             _mediator = mediator;
+            _mapper = mapper;
         }
 
         [HttpGet]
         [HttpHead]
         public async Task<ActionResult> GetActivityDocumentAsync([FromQuery]GetActivityQuery command, CancellationToken cancelToken = default)
         {
-            Activity activity = await _mediator.Send(command, cancelToken);
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            if (activity == null)
+            var activityEntity = await _mediator.Send(command, cancelToken);
+
+            ResultFormat format = ResultFormat.Exact;
+            if(!StringValues.IsNullOrEmpty(Request.Headers[HeaderNames.AcceptLanguage]))
+            {
+                format = ResultFormat.Canonical;
+            }
+
+            if (activityEntity == null)
             {
                 return Ok(new Activity());
             }
 
-            // TODO: Return only canonical that match accept-language header, or und
+            var activity = _mapper.Map<Activity>(activityEntity);
 
-            return Ok(activity);
+            return Ok(activity.ToJson(format));
         }
     }
 }

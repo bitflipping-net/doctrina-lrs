@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
@@ -33,6 +34,19 @@ namespace Doctrina.Domain.Entities.OwnedTypes
             foreach (var value in values)
             {
                 Add(value);
+            }
+        }
+
+        public void Merge(LanguageMapCollection collection)
+        {
+            if(collection == null)
+            {
+                return;
+            }
+
+            foreach (var item in collection)
+            {
+                Values[item.Key] = item.Value;
             }
         }
 

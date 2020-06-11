@@ -1,9 +1,11 @@
 ﻿using Doctrina.Domain.Infrastructure;
+using System;
 using System.Collections.Generic;
 
 namespace Doctrina.Domain.Entities
 {
-    public class Account 
+
+    public class Account : IAccount
     {
         public string HomePage { get; set; }
 

@@ -1,4 +1,5 @@
 ﻿using Doctrina.ExperienceApi.Data;
+using Doctrina.ExperienceApi.Data.Validation;
 using FluentValidation;
 
 namespace Doctrina.Application.Statements.Queries
@@ -21,6 +22,9 @@ namespace Doctrina.Application.Statements.Queries
                 .Must(ValidateParameters)
                 .When(x => x.VoidedStatementId.HasValue)
                 .WithMessage("Only attachments and format parameters are allowed with using voidedStatementId");
+
+            RuleFor(x => x.Agent).SetValidator(new AgentValidator())
+                .When(x=> x.Agent != null);
         }
 
         private static bool ValidateParameters(PagedStatementsQuery parameters)

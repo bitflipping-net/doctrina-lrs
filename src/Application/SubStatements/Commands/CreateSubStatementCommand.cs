@@ -1,14 +1,14 @@
-﻿using Doctrina.Domain.Entities.Interfaces;
+﻿using Doctrina.Domain.Entities;
 using Doctrina.ExperienceApi.Data;
 using MediatR;
 
 namespace Doctrina.Application.SubStatements.Commands
 {
-    public class CreateSubStatementCommand : IRequest<ISubStatementEntity>
+    public class CreateSubStatementCommand : IRequest<SubStatementEntity>
     {
-        public ISubStatement SubStatement { get; private set; }
+        public SubStatement SubStatement { get; private set; }
 
-        internal static CreateSubStatementCommand Create(ISubStatement subStatement)
+        internal static CreateSubStatementCommand Create(SubStatement subStatement)
         {
             return new CreateSubStatementCommand()
             {

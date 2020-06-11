@@ -14,7 +14,6 @@ namespace Doctrina.Application.Infrastructure.AutoMapper
 
         private void LoadConverters()
         {
-
         }
 
         private void LoadStandardMappings()

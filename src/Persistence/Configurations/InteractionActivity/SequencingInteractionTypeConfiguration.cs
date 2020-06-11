@@ -15,6 +15,7 @@ namespace Doctrina.Persistence.Configurations.Interactions
             builder.Property(x => x.Choices)
                 .HasConversion(new InteractionComponentCollectionValueConverter())
                 .HasColumnType("ntext")
+                .HasColumnName("Choices")
                 .Metadata
                 .SetValueComparer(new ValueComparer<InteractionComponentCollection>(false));
         }

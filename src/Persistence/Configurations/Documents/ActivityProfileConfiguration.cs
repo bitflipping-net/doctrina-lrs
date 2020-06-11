@@ -19,7 +19,8 @@ namespace Doctrina.Persistence.Configurations.Documents
                 .IsRequired();
 
             builder.HasOne(e => e.Activity)
-                .WithMany();
+                .WithMany()
+                .HasForeignKey(c => c.ActivityId);
 
             builder.OwnsOne(x => x.Document, a =>
             {

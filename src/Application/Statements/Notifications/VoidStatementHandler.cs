@@ -4,8 +4,9 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;
+using Doctrina.ExperienceApi.Data;
 
-namespace Doctrina.Application.Statements.Models
+namespace Doctrina.Application.Statements.Notifications
 {
     public class VoidStatementHandler : INotificationHandler<StatementAdded>
     {
@@ -20,21 +21,21 @@ namespace Doctrina.Application.Statements.Models
 
         public async Task Handle(StatementAdded notification, CancellationToken cancellationToken)
         {
-            var entity = notification.Entity;
-            if(entity.Verb.Id == "http://adlnet.gov/expapi/verbs/voided")
+            var voidingStatement = notification.Entity;
+            if(voidingStatement.Verb.Id == KnownVerbs.Voided)
             {
-                var @object = entity.Object;
+                var @object = voidingStatement.Object;
                 if (@object.ObjectType == EntityObjectType.StatementRef)
                 {
                     var statementId = @object.StatementRef.StatementId;
-                    var statement = await _context.Statements
+                    var voidedStatement = await _context.Statements
                         .Include(x=> x.Verb)
                         .FirstOrDefaultAsync(x => x.StatementId == statementId, cancellationToken);
 
-                    if(statement != null 
-                        && statement.Verb.Id != "http://adlnet.gov/expapi/verbs/voided")
+                    if(voidedStatement != null
+                        && voidedStatement.Verb.Id != KnownVerbs.Voided)
                     {
-                        statement.Voided = true;
+                        voidedStatement.VoidingStatementId = voidingStatement.StatementId;
                     }
                 }
             }

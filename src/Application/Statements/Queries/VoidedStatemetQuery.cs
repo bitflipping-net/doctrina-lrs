@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Doctrina.Application.Statements.Queries
 {
-    public class VoidedStatemetQuery : IRequest<Statement>
+    public class VoidedStatemetQuery : IRequest<StatementEntity>
     {
         public ResultFormat Format { get; private set; }
         public Guid VoidedStatementId { get; private set; }
@@ -27,7 +27,7 @@ namespace Doctrina.Application.Statements.Queries
             };
         }
 
-        public class Handler : IRequestHandler<VoidedStatemetQuery, Statement>
+        public class Handler : IRequestHandler<VoidedStatemetQuery, StatementEntity>
         {
             private readonly IDoctrinaDbContext _context;
             private readonly IMapper _mapper;
@@ -38,10 +38,11 @@ namespace Doctrina.Application.Statements.Queries
                 _mapper = mapper;
             }
 
-            public async Task<Statement> Handle(VoidedStatemetQuery request, CancellationToken cancellationToken)
+            public async Task<StatementEntity> Handle(VoidedStatemetQuery request, CancellationToken cancellationToken)
             {
                 var query = _context.Statements
-                        .Where(x => x.StatementId == request.VoidedStatementId && x.Voided == true);
+                        .Where(x => x.StatementId == request.VoidedStatementId
+                            && x.VoidingStatementId != null);
 
                 if (request.IncludeAttachments)
                 {
@@ -69,7 +70,7 @@ namespace Doctrina.Application.Statements.Queries
                     return null;
                 }
 
-                return _mapper.Map<Statement>(statementEntity);
+                return statementEntity;
             }
         }
     }

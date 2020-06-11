@@ -16,10 +16,6 @@ namespace Doctrina.Persistence.Configurations
                 .HasValue<AgentEntity>(EntityObjectType.Agent)
                 .HasValue<GroupEntity>(EntityObjectType.Group);
 
-            builder.Property(e => e.Hash)
-                .IsRequired()
-                .HasMaxLength(Constants.SHA1_HASH_LENGTH);
-
             builder.Property(e => e.Name)
                 .HasMaxLength(100);
 
@@ -58,9 +54,6 @@ namespace Doctrina.Persistence.Configurations
             //    .HasIndex("ObjectType", "AccountId")
             //    .HasFilter("[AccountId] IS NOT NULL")
             //    .IsUnique();
-
-            builder.HasIndex(x => new { x.ObjectType, x.Hash })
-                .IsUnique();
         }
     }
 }

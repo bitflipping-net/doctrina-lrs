@@ -111,14 +111,6 @@ namespace Doctrina.Persistence.Migrations
                     b.Property<Guid?>("AccountId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("GroupEntityAgentId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Hash")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(40)")
-                        .HasMaxLength(40);
-
                     b.Property<string>("Mbox")
                         .HasColumnName("Mbox")
                         .HasColumnType("nvarchar(128)")
@@ -143,11 +135,6 @@ namespace Doctrina.Persistence.Migrations
                     b.HasKey("AgentId");
 
                     b.HasIndex("AccountId");
-
-                    b.HasIndex("GroupEntityAgentId");
-
-                    b.HasIndex("ObjectType", "Hash")
-                        .IsUnique();
 
                     b.ToTable("Agents");
 
@@ -263,7 +250,7 @@ namespace Doctrina.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("ActivityId")
+                    b.Property<Guid>("ActivityId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ProfileId")
@@ -315,7 +302,7 @@ namespace Doctrina.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("AgentId")
+                    b.Property<Guid>("AgentId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ProfileId")
@@ -331,6 +318,27 @@ namespace Doctrina.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("AgentProfiles");
+                });
+
+            modelBuilder.Entity("Doctrina.Domain.Entities.GroupMemberEntity", b =>
+                {
+                    b.Property<Guid>("GroupMemberId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AgentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("GroupId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("GroupMemberId");
+
+                    b.HasIndex("AgentId");
+
+                    b.HasIndex("GroupId");
+
+                    b.ToTable("GroupMembers");
                 });
 
             modelBuilder.Entity("Doctrina.Domain.Entities.InteractionActivities.InteractionActivityBase", b =>
@@ -388,10 +396,10 @@ namespace Doctrina.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ActorAgentId")
+                    b.Property<Guid>("ActorId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("AuthorityId")
+                    b.Property<Guid>("AuthorityId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("ContextId")
@@ -420,14 +428,12 @@ namespace Doctrina.Persistence.Migrations
                         .HasColumnType("nvarchar(7)")
                         .HasMaxLength(7);
 
-                    b.Property<bool>("Voided")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
+                    b.Property<Guid?>("VoidingStatementId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("StatementId");
 
-                    b.HasIndex("ActorAgentId");
+                    b.HasIndex("ActorId");
 
                     b.HasIndex("AuthorityId");
 
@@ -436,6 +442,8 @@ namespace Doctrina.Persistence.Migrations
                     b.HasIndex("ResultId");
 
                     b.HasIndex("VerbId");
+
+                    b.HasIndex("VoidingStatementId");
 
                     b.ToTable("Statements");
                 });
@@ -533,6 +541,7 @@ namespace Doctrina.Persistence.Migrations
                     b.HasBaseType("Doctrina.Domain.Entities.InteractionActivities.InteractionActivityBase");
 
                     b.Property<string>("Choices")
+                        .HasColumnName("ChoiceInteractionActivity_Choices")
                         .HasColumnType("ntext");
 
                     b.HasDiscriminator().HasValue("choice");
@@ -604,7 +613,7 @@ namespace Doctrina.Persistence.Migrations
                     b.HasBaseType("Doctrina.Domain.Entities.InteractionActivities.InteractionActivityBase");
 
                     b.Property<string>("Choices")
-                        .HasColumnName("SequencingInteractionActivity_Choices")
+                        .HasColumnName("Choices")
                         .HasColumnType("ntext");
 
                     b.HasDiscriminator().HasValue("sequencing");
@@ -636,10 +645,6 @@ namespace Doctrina.Persistence.Migrations
                     b.HasOne("Doctrina.Domain.Entities.Account", "Account")
                         .WithMany()
                         .HasForeignKey("AccountId");
-
-                    b.HasOne("Doctrina.Domain.Entities.GroupEntity", null)
-                        .WithMany("Members")
-                        .HasForeignKey("GroupEntityAgentId");
                 });
 
             modelBuilder.Entity("Doctrina.Domain.Entities.AttachmentEntity", b =>
@@ -767,7 +772,9 @@ namespace Doctrina.Persistence.Migrations
                 {
                     b.HasOne("Doctrina.Domain.Entities.ActivityEntity", "Activity")
                         .WithMany()
-                        .HasForeignKey("ActivityId");
+                        .HasForeignKey("ActivityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.OwnsOne("Doctrina.Domain.Entities.Documents.DocumentEntity", "Document", b1 =>
                         {
@@ -851,7 +858,9 @@ namespace Doctrina.Persistence.Migrations
                 {
                     b.HasOne("Doctrina.Domain.Entities.AgentEntity", "Agent")
                         .WithMany()
-                        .HasForeignKey("AgentId");
+                        .HasForeignKey("AgentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.OwnsOne("Doctrina.Domain.Entities.Documents.DocumentEntity", "Document", b1 =>
                         {
@@ -887,6 +896,27 @@ namespace Doctrina.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Doctrina.Domain.Entities.GroupMemberEntity", b =>
+                {
+                    b.HasOne("Doctrina.Domain.Entities.AgentEntity", "Agent")
+                        .WithMany()
+                        .HasForeignKey("AgentId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Doctrina.Domain.Entities.GroupEntity", "Group")
+                        .WithMany()
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Doctrina.Domain.Entities.GroupEntity", null)
+                        .WithMany("Members")
+                        .HasForeignKey("GroupMemberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Doctrina.Domain.Entities.ResultEntity", b =>
                 {
                     b.OwnsOne("Doctrina.Domain.Entities.ScoreEntity", "Score", b1 =>
@@ -919,13 +949,15 @@ namespace Doctrina.Persistence.Migrations
                 {
                     b.HasOne("Doctrina.Domain.Entities.AgentEntity", "Actor")
                         .WithMany()
-                        .HasForeignKey("ActorAgentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("ActorId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Doctrina.Domain.Entities.AgentEntity", "Authority")
                         .WithMany()
-                        .HasForeignKey("AuthorityId");
+                        .HasForeignKey("AuthorityId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("Doctrina.Domain.Entities.ContextEntity", "Context")
                         .WithMany()
@@ -940,6 +972,10 @@ namespace Doctrina.Persistence.Migrations
                         .HasForeignKey("VerbId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Doctrina.Domain.Entities.StatementEntity", "VoidingStatement")
+                        .WithMany()
+                        .HasForeignKey("VoidingStatementId");
 
                     b.OwnsOne("Doctrina.Domain.Entities.StatementObjectEntity", "Object", b1 =>
                         {

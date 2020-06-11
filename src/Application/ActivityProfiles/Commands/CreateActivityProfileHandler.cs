@@ -1,14 +1,11 @@
 ﻿using AutoMapper;
 using Doctrina.Application.Activities.Commands;
+using Doctrina.Application.Activities.Queries;
 using Doctrina.Application.Common.Interfaces;
 using Doctrina.Domain.Entities;
 using Doctrina.Domain.Entities.Documents;
 using Doctrina.ExperienceApi.Data.Documents;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -29,12 +26,12 @@ namespace Doctrina.Application.ActivityProfiles.Commands
 
         public async Task<ActivityProfileDocument> Handle(CreateActivityProfileCommand request, CancellationToken cancellationToken)
         {
-            var activity = (ActivityEntity)await _mediator.Send(MergeActivityCommand.Create(request.ActivityId));
+            var activity = await _mediator.Send(UpsertActivityCommand.Create(request.ActivityId));
 
             var profile = new ActivityProfileEntity(request.Content, request.ContentType)
             {
                 ProfileId = request.ProfileId,
-                Activity = activity,
+                ActivityId = activity.ActivityId,
                 RegistrationId = request.Registration
             };
 

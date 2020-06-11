@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Doctrina.Application.SubStatements
 {
-    public class CreateSubStatementCommandHandler : IRequestHandler<CreateSubStatementCommand, ISubStatementEntity>
+    public class CreateSubStatementCommandHandler : IRequestHandler<CreateSubStatementCommand, SubStatementEntity>
     {
         private readonly IDoctrinaDbContext _context;
         private readonly IMediator _mediator;
@@ -27,12 +27,12 @@ namespace Doctrina.Application.SubStatements
             _mapper = mapper;
         }
 
-        public async Task<ISubStatementEntity> Handle(CreateSubStatementCommand request, CancellationToken cancellationToken)
+        public async Task<SubStatementEntity> Handle(CreateSubStatementCommand request, CancellationToken cancellationToken)
         {
             var subStatement = _mapper.Map<SubStatementEntity>(request.SubStatement);
             subStatement.Timestamp = subStatement.Timestamp ?? DateTimeOffset.UtcNow;
 
-            subStatement.Verb = (VerbEntity)await _mediator.Send(MergeVerbCommand.Create(request.SubStatement.Verb));
+            subStatement.Verb = (VerbEntity)await _mediator.Send(UpsertVerbCommand.Create(request.SubStatement.Verb));
             subStatement.Actor = (AgentEntity)await _mediator.Send(UpsertActorCommand.Create(request.SubStatement.Actor));
 
             if (subStatement.Context != null)
@@ -52,11 +52,11 @@ namespace Doctrina.Application.SubStatements
             var objType = subStatement.Object.ObjectType;
             if (objType == EntityObjectType.Activity)
             {
-                subStatement.Object.Activity = (ActivityEntity)await _mediator.Send(MergeActivityCommand.Create((IActivity)request.SubStatement.Object));
+                subStatement.Object.Activity = (ActivityEntity)await _mediator.Send(UpsertActivityCommand.Create((Activity)request.SubStatement.Object));
             }
             else if (objType == EntityObjectType.Agent || objType == EntityObjectType.Group)
             {
-                subStatement.Object.Agent = (AgentEntity)await _mediator.Send(UpsertActorCommand.Create((IAgent)request.SubStatement.Object));
+                subStatement.Object.Agent = await _mediator.Send(UpsertActorCommand.Create((Agent)request.SubStatement.Object));
             }
             else if (objType == EntityObjectType.StatementRef)
             {

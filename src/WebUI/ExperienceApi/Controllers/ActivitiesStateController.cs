@@ -1,5 +1,9 @@
-﻿using Doctrina.Application.ActivityStates.Commands;
+﻿using AutoMapper;
+using Doctrina.Application.Activities.Commands;
+using Doctrina.Application.ActivityStates.Commands;
 using Doctrina.Application.ActivityStates.Queries;
+using Doctrina.Application.Agents.Commands;
+using Doctrina.Domain.Entities;
 using Doctrina.ExperienceApi.Client.Http;
 using Doctrina.ExperienceApi.Data;
 using Doctrina.ExperienceApi.Data.Documents;
@@ -30,10 +34,12 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
     public class ActivitiesStateController : ApiControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
 
-        public ActivitiesStateController(IMediator mediator)
+        public ActivitiesStateController(IMediator mediator, IMapper mapper)
         {
             _mediator = mediator;
+            _mapper = mapper;
         }
 
         // GET|HEAD xapi/activities/state
@@ -52,11 +58,13 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 return BadRequest(ModelState);
             }
 
+            AgentEntity agentEntity = await _mediator.Send(UpsertActorCommand.Create(agent));
+
             if(string.IsNullOrEmpty(stateId))
             {
                 return await GetMutipleStates(
                     activityId,
-                    agent,
+                    agentEntity.AgentId,
                     registration,
                     since,
                     cancellationToken
@@ -67,7 +75,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             {
                 StateId = stateId,
                 ActivityId = activityId,
-                Agent = agent,
+                AgentId = agentEntity.AgentId,
                 Registration = registration
             }, cancellationToken);
 
@@ -98,16 +106,16 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
         /// <param name="registration"></param>
         /// <returns></returns>
         private async Task<IActionResult> GetMutipleStates(
-            [BindRequired, FromQuery]Iri activityId,
-            [BindRequired, FromQuery]Agent agent,
-            [FromQuery]Guid? registration = null,
-            [FromQuery]DateTime? since = null,
+            Iri activityId,
+            Guid agentId,
+            Guid? registration = null,
+            DateTime? since = null,
             CancellationToken cancellationToken = default)
         {
             ICollection<ActivityStateDocument> states = await _mediator.Send(new GetActivityStatesQuery()
             {
                 ActivityId = activityId,
-                Agent = agent,
+                AgentId = agentId,
                 Registration = registration,
                 Since = since
             }, cancellationToken);
@@ -142,11 +150,14 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 return BadRequest(ModelState);
             }
 
+            AgentEntity storedAgent = await _mediator.Send(UpsertActorCommand.Create(agent));
+            ActivityEntity activity = (ActivityEntity)await _mediator.Send(UpsertActivityCommand.Create(activityId), cancellationToken);
+
             ActivityStateDocument stateDocument = await _mediator.Send(new GetActivityStateQuery()
             {
                 StateId = stateId,
                 ActivityId = activityId,
-                Agent = agent,
+                AgentId = storedAgent.AgentId,
                 Registration = registration
             }, cancellationToken);
 
@@ -156,7 +167,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 {
                     StateId = stateId,
                     ActivityId = activityId,
-                    Agent = agent,
+                    AgentId = storedAgent.AgentId,
                     Content = body,
                     ContentType = contentType,
                     Registration = registration
@@ -167,8 +178,8 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 stateDocument = await _mediator.Send(new CreateStateDocumentCommand()
                 {
                     StateId = stateId,
-                    ActivityId = activityId,
-                    Agent = agent,
+                    Activity = activity,
+                    Agent = storedAgent,
                     Content = body,
                     ContentType = contentType,
                     Registration = registration
@@ -196,12 +207,14 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 return BadRequest(ModelState);
             }
 
+            var agentEntity = (await _mediator.Send(UpsertActorCommand.Create(agent)));
+
             if(string.IsNullOrEmpty(stateId))
             {
                 await _mediator.Send(new DeleteActivityStatesCommand()
                 {
                     ActivityId = activityId,
-                    Agent = agent,
+                    AgentId = agentEntity.AgentId,
                     Registration = registration
                 }, cancellationToken);
 
@@ -213,7 +226,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 {
                     StateId = stateId,
                     ActivityId = activityId,
-                    Agent = agent,
+                    AgentId = agentEntity.AgentId,
                     Registration = registration
                 }, cancellationToken);
 
@@ -226,7 +239,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 {
                     StateId = stateId,
                     ActivityId = activityId,
-                    Agent = agent,
+                    AgentId = agentEntity.AgentId,
                     Registration = registration
                 }, cancellationToken);
             }

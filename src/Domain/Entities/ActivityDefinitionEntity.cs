@@ -4,7 +4,7 @@ using System;
 
 namespace Doctrina.Domain.Entities
 {
-    public class ActivityDefinitionEntity
+    public class ActivityDefinitionEntity : IActivityDefinitionEntity
     {
         public Guid ActivityDefinitionId { get; set; }
 

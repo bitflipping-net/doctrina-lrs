@@ -5,6 +5,30 @@
 @moreStatements.response.body.more =
 
 ###
+# @name postStatement
+POST /xapi/statements HTTP/1.1
+Host: {{host}}
+X-Experience-API-Version: {{version}}
+Authorization: {{basicAuth}}
+Content-Type: application/json
+
+{
+    "id": "3e4e8fe5-53ec-41f8-b950-2370beb6739f",
+    "actor": {
+        "name": "Rasmus",
+        "mbox": "mailto:rm@bitflipping.net"
+    },
+    "verb": {
+        "id": "http://adlnet.gov/expapi/verbs/experienced",
+        "display": {
+            "en-US": "experienced"
+        }
+    },
+    "object": {
+    }
+}
+
+###
 # @name attendedStatements
 GET /xapi/statements?verb=http://adlnet.gov/expapi/verbs/attended HTTP/1.1
 Host: {{host}}
@@ -26,5 +50,35 @@ Authorization: {{basicAuth}}
 GET /xapi/statements?statementId=81930f55-fbbc-4e47-b200-a33b9163682f&format=canonical HTTP/1.1
 host: {{host}}
 Accept-Language: en-GB
+X-Experience-API-Version: {{version}}
+Authorization: {{basicAuth}}
+
+###
+GET /xapi/statements?agent=%7B%22objectType%22%3A%22Agent%22%2C%22name%22%3A%22xAPI%20mbox%22%2C%22mbox%22%3A%22mailto%3Axapi%40adlnet.gov%22%7D&statementId=8f4a32cf-ec4c-4324-9e52-84d9a1dd8a84 HTTP/1.1
+host: {{host}}
+Accept-Language: en-GB
+X-Experience-API-Version: {{version}}
+Authorization: {{basicAuth}}
+
+### Voiding
+GET /xapi/statements
+    ?statementId=db0cf429-3572-43d8-a4b7-4331d3bb943a
+host: {{host}}
+X-Experience-API-Version: {{version}}
+Authorization: {{basicAuth}}
+
+###
+GET /xapi/statements
+    ?verb=http://adlnet.gov/expapi/test/voided/target/55e426e9-5baa-4857-b9c2-71bce19a413a
+    &until=2020-05-18T10:13:54.908Z HTTP/1.1
+host: {{host}}
+X-Experience-API-Version: {{version}}
+Authorization: {{basicAuth}}
+
+###
+GET /xapi/statements
+    ?verb=http://adlnet.gov/expapi/test/voided/target/55e426e9-5baa-4857-b9c2-71bce19a413a
+    &until=2020-05-18T10:13:54.908Z HTTP/1.1
+host: {{host}}
 X-Experience-API-Version: {{version}}
 Authorization: {{basicAuth}}

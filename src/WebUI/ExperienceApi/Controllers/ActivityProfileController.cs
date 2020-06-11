@@ -1,4 +1,6 @@
-﻿using Doctrina.Application.ActivityProfiles.Commands;
+﻿using Doctrina.Application.Activities.Commands;
+using Doctrina.Application.Activities.Queries;
+using Doctrina.Application.ActivityProfiles.Commands;
 using Doctrina.Application.ActivityProfiles.Queries;
 using Doctrina.ExperienceApi.Data;
 using Doctrina.ExperienceApi.Data.Documents;
@@ -8,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.Net.Http.Headers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,7 +51,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            ActivityProfileDocument profile = await _mediator.Send(new GetActivityProfileQuery()
+            var profile = await _mediator.Send(new GetActivityProfileQuery()
             {
                 ProfileId = profileId,
                 ActivityId = activityId,
@@ -60,10 +63,10 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 return NotFound();
             }
 
-            var result = new FileContentResult(profile.Content, profile.ContentType)
+            var result = new FileContentResult(profile.Document.Content, profile.Document.ContentType)
             {
-                EntityTag = new Microsoft.Net.Http.Headers.EntityTagHeaderValue($"\"{profile.Tag}\""),
-                LastModified = profile.LastModified
+                EntityTag = new EntityTagHeaderValue($"\"{profile.Document.Checksum}\""),
+                LastModified = profile.Document.LastModified
             };
 
             return result;
@@ -87,11 +90,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            ICollection<ActivityProfileDocument> profiles = await _mediator.Send(new GetActivityProfilesQuery()
-            {
-                ActivityId = activityId,
-                Since = since
-            }, cancelToken);
+            var profiles = await _mediator.Send(GetActivityProfilesQuery.Create(activityId,since), cancelToken);
 
             if (profiles == null)
             {
@@ -99,8 +98,8 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             }
 
             IEnumerable<string> ids = profiles.Select(x => x.ProfileId);
-            string lastModified = profiles.OrderByDescending(x => x.LastModified)
-                .FirstOrDefault()?.LastModified?.ToString("o");
+            string lastModified = profiles.OrderByDescending(x => x.Document.LastModified)
+                .FirstOrDefault()?.Document.LastModified?.ToString("o");
 
             Response.Headers.Add("Last-Modified", lastModified);
             return Ok(ids);
@@ -128,14 +127,14 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            ActivityProfileDocument profile = await _mediator.Send(new GetActivityProfileQuery()
+            var profile = await _mediator.Send(new GetActivityProfileQuery()
             {
                 ActivityId = activityId,
                 ProfileId = profileId,
                 Registration = registration
             }, cancellationToken);
 
-            if (Request.TryConcurrencyCheck(profile?.Tag, profile?.LastModified, out int statusCode))
+            if (Request.TryConcurrencyCheck(profile?.Document.Checksum, profile?.Document.LastModified, out int statusCode))
             {
                 return StatusCode(statusCode);
             }
@@ -191,29 +190,22 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            ActivityProfileDocument profile = await _mediator.Send(new GetActivityProfileQuery()
-            {
-                ActivityId = activityId,
-                ProfileId = profileId,
-                Registration = registration
-            }, cancelToken);
+            var profile = await _mediator.Send(
+                GetActivityProfileQuery.Create(activityId, profileId, registration),
+                cancelToken);
 
             if (profile == null)
             {
                 return NotFound();
             }
 
-            if(Request.TryConcurrencyCheck(profile.Tag, profile.LastModified, out int statusCode))
+            if(Request.TryConcurrencyCheck(profile.Document.Checksum, profile.Document.LastModified, out int statusCode))
             {
                 return StatusCode(statusCode);
             }
 
-            await _mediator.Send(new DeleteActivityProfileCommand()
-            {
-                ProfileId = profileId,
-                ActivityId = activityId,
-                Registration = registration
-            }, cancelToken);
+            await _mediator.Send(DeleteActivityProfileCommand.Create(
+            profileId, activityId, registration), cancelToken);
 
             return NoContent();
         }

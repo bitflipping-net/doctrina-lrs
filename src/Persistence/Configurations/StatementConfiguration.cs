@@ -18,11 +18,14 @@ namespace Doctrina.Persistence.Configurations
             // Actor
             builder.HasOne(e => e.Actor)
                 .WithMany()
-                .IsRequired();
+                .HasForeignKey(st => st.ActorId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.NoAction);
 
             // Verb
             builder.HasOne(e => e.Verb)
                 .WithMany()
+                .HasForeignKey(st => st.VerbId)
                 .IsRequired();
 
             builder.OwnsOne(p => p.Object);
@@ -48,11 +51,14 @@ namespace Doctrina.Persistence.Configurations
                 .HasMaxLength(7);
 
             builder.HasOne(e => e.Authority)
-                .WithMany();
+                .WithMany()
+                .HasForeignKey(e => e.AuthorityId)
+                .OnDelete(DeleteBehavior.NoAction);
 
-            builder.Property(e => e.Voided)
-                .IsRequired()
-                .HasDefaultValue(false);
+            builder.HasOne(e => e.VoidingStatement)
+                .WithMany()
+                .HasForeignKey(c => c.VoidingStatementId)
+                .IsRequired(false);
         }
     }
 }

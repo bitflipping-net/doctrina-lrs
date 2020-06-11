@@ -22,10 +22,9 @@ namespace Doctrina.Application.ActivityStates
 
         public async Task<Unit> Handle(DeleteActivityStatesCommand request, CancellationToken cancellationToken)
         {
-            var agent = _mapper.Map<AgentEntity>(request.Agent);
             string activityHash = request.ActivityId.ComputeHash();
             var activities = _context.ActivityStates.Where(x => x.Activity.Hash == activityHash)
-                .Where(x => x.Agent.Hash == agent.Hash);
+                .Where(x => x.Agent.AgentId == request.AgentId);
 
             _context.ActivityStates.RemoveRange(activities);
 

@@ -13,11 +13,11 @@ namespace Doctrina.WebUI.ExperienceApi.Mvc.ModelBinding.Binders
                 return null;
             }
 
-            string propName = context.Metadata.ParameterName;
-            if (propName == null)
-            {
-                return null;
-            }
+            // string propName = context.Metadata.ParameterName;
+            // if (propName == null)
+            // {
+            //     return null;
+            // }
 
             var modelType = context.Metadata.ModelType;
             if (modelType == null)

@@ -12,7 +12,7 @@ namespace Doctrina.Application.ActivityStates.Commands
         {
             RuleFor(x=> x.StateId).NotEmpty();
             RuleFor(x=> x.ActivityId).NotEmpty();
-            RuleFor(x=> x.Agent).SetValidator(new AgentValidator());
+            RuleFor(x=> x.AgentId).NotEmpty();
             RuleFor(x=> x.Content).NotEmpty();
             RuleFor(x=> x.ContentType).NotEmpty();
 

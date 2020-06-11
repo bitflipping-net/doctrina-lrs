@@ -1,10 +1,11 @@
-﻿using Doctrina.ExperienceApi.Data;
-using Doctrina.ExperienceApi.Data.Documents;
+﻿using System;
+using Doctrina.Domain.Entities.Documents;
+using Doctrina.ExperienceApi.Data;
 using MediatR;
 
 namespace Doctrina.Application.AgentProfiles.Queries
 {
-    public class GetAgentProfileQuery : IRequest<AgentProfileDocument>
+    public class GetAgentProfileQuery : IRequest<AgentProfileEntity>
     {
         public Agent Agent { get; set; }
         public string ProfileId { get; set; }

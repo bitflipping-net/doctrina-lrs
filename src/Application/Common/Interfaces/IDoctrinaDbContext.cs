@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Internal;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,5 +23,6 @@ namespace Doctrina.Application.Common.Interfaces
         DbSet<ActivityStateEntity> ActivityStates { get; set; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
         ChangeTracker ChangeTracker { get; }
+        EntityEntry<TEntity> Entry<TEntity>([NotNullAttribute] TEntity entity) where TEntity : class;
     }
 }

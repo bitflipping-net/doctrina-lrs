@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
+using Doctrina.Application.Activities.Queries;
 using Doctrina.Application.Common.Interfaces;
-using Doctrina.ExperienceApi.Data.Documents;
+using Doctrina.Domain.Entities.Documents;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -10,27 +11,30 @@ using System.Threading.Tasks;
 
 namespace Doctrina.Application.ActivityProfiles.Queries
 {
-    public class GetActivityProfilesHandler : IRequestHandler<GetActivityProfilesQuery, ICollection<ActivityProfileDocument>>
+    public class GetActivityProfilesHandler : IRequestHandler<GetActivityProfilesQuery, ICollection<ActivityProfileEntity>>
     {
         private readonly IDoctrinaDbContext _context;
         private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
 
-        public GetActivityProfilesHandler(IDoctrinaDbContext context, IMapper mapper)
+        public GetActivityProfilesHandler(IDoctrinaDbContext context, IMapper mapper, IMediator mediator)
         {
             _context = context;
             _mapper = mapper;
+            _mediator = mediator;
         }
 
-        public async Task<ICollection<ActivityProfileDocument>> Handle(GetActivityProfilesQuery request, CancellationToken cancellationToken)
+        public async Task<ICollection<ActivityProfileEntity>> Handle(GetActivityProfilesQuery request, CancellationToken cancellationToken)
         {
-            var activityHash = request.ActivityId.ComputeHash();
-            var query = _context.ActivityProfiles.Where(x => x.Activity.Hash == activityHash);
+            var activity = await _mediator.Send(GetActivityQuery.Create(request.ActivityId), cancellationToken);
+
+            var query = _context.ActivityProfiles.Where(x => x.ActivityId == activity.ActivityId);
             if (request.Since.HasValue)
             {
                 query = query.Where(x => x.Document.LastModified >= request.Since);
             }
             query = query.OrderByDescending(x => x.Document.LastModified);
-            return _mapper.Map<ICollection<ActivityProfileDocument>>(await query.ToListAsync(cancellationToken));
+            return await query.ToListAsync(cancellationToken);
         }
     }
 }

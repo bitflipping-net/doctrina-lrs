@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
+using Doctrina.Application.Activities.Queries;
+using Doctrina.Application.Common.Exceptions;
 using Doctrina.Application.Common.Interfaces;
 using Doctrina.Domain.Entities.Documents;
 using MediatR;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,7 +25,14 @@ namespace Doctrina.Application.ActivityProfiles.Commands
 
         public async Task<Unit> Handle(UpdateActivityProfileCommand request, CancellationToken cancellationToken)
         {
-            ActivityProfileEntity profile = await _context.ActivityProfiles.GetProfileAsync(request.ActivityId, request.ProfileId, request.Registration, cancellationToken);
+            var activity = await _mediator.Send(GetActivityQuery.Create(request.ActivityId));
+
+            if(activity == null)
+            {
+                throw new NotFoundException("No activity profiles for activity.");
+            }
+
+            ActivityProfileEntity profile = await _context.ActivityProfiles.GetProfileAsync(activity.ActivityId, request.ProfileId, request.Registration, cancellationToken);
 
             profile.Document.UpdateDocument(request.Content, request.ContentType);
 

@@ -3,6 +3,7 @@ using Doctrina.Application.Activities.Commands;
 using Doctrina.Application.Agents.Commands;
 using Doctrina.Application.Common.Interfaces;
 using Doctrina.Application.Statements.Models;
+using Doctrina.Application.Statements.Notifications;
 using Doctrina.Application.SubStatements.Commands;
 using Doctrina.Application.Verbs.Commands;
 using Doctrina.Domain.Entities;
@@ -38,6 +39,7 @@ namespace Doctrina.Application.Statements.Commands
         /// <returns>Guid of the created statement</returns>
         public async Task<Guid> Handle(CreateStatementCommand request, CancellationToken cancellationToken)
         {
+            // Prepare statement for mapping
             if (request.Statement.Id.HasValue)
             {
                 bool any = await _context.Statements.AnyAsync(x => x.StatementId == request.Statement.Id, cancellationToken);
@@ -55,15 +57,17 @@ namespace Doctrina.Application.Statements.Commands
 
             if (request.Statement.Authority == null)
             {
-                request.Statement.Authority = _authorityContext.Authority;
+                // TODO: Map group?
+                request.Statement.Authority = _mapper.Map<Agent>(_authorityContext.Authority);
             }
             else
             {
                 // TODO: Validate authority
             }
 
+            // Start mapping statement
             StatementEntity newStatement = _mapper.Map<StatementEntity>(request.Statement);
-            newStatement.Verb = (VerbEntity)await _mediator.Send(MergeVerbCommand.Create(request.Statement.Verb), cancellationToken).ConfigureAwait(false);
+            newStatement.Verb = (VerbEntity)await _mediator.Send(UpsertVerbCommand.Create(request.Statement.Verb), cancellationToken).ConfigureAwait(false);
             newStatement.Actor = (AgentEntity)await _mediator.Send(UpsertActorCommand.Create(request.Statement.Actor), cancellationToken).ConfigureAwait(false);
             newStatement.Authority = (AgentEntity)await _mediator.Send(UpsertActorCommand.Create(request.Statement.Authority), cancellationToken).ConfigureAwait(false);
 
@@ -84,15 +88,15 @@ namespace Doctrina.Application.Statements.Commands
             var objType = newStatement.Object.ObjectType;
             if (objType == EntityObjectType.Activity)
             {
-                newStatement.Object.Activity = (ActivityEntity)await _mediator.Send(MergeActivityCommand.Create((IActivity)request.Statement.Object));
+                newStatement.Object.Activity = (ActivityEntity)await _mediator.Send(UpsertActivityCommand.Create((Activity)request.Statement.Object));
             }
             else if (objType == EntityObjectType.Agent || objType == EntityObjectType.Group)
             {
-                newStatement.Object.Agent = (AgentEntity)await _mediator.Send(UpsertActorCommand.Create((IAgent)request.Statement.Object));
+                newStatement.Object.Agent = (AgentEntity)await _mediator.Send(UpsertActorCommand.Create((Agent)request.Statement.Object));
             }
             else if (objType == EntityObjectType.SubStatement)
             {
-                newStatement.Object.SubStatement = (SubStatementEntity)await _mediator.Send(CreateSubStatementCommand.Create((ISubStatement)request.Statement.Object));
+                newStatement.Object.SubStatement = (SubStatementEntity)await _mediator.Send(CreateSubStatementCommand.Create((SubStatement)request.Statement.Object));
             }
             else if (objType == EntityObjectType.StatementRef)
             {
@@ -104,6 +108,7 @@ namespace Doctrina.Application.Statements.Commands
 
             _context.Statements.Add(newStatement);
 
+            // await _context.SaveChangesAsync(cancellationToken);
             await _mediator.Publish(StatementAdded.Create(newStatement), cancellationToken);
 
             return newStatement.StatementId;

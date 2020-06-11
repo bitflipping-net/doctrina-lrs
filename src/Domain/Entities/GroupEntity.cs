@@ -8,12 +8,12 @@ namespace Doctrina.Domain.Entities
     {
         public GroupEntity()
         {
-            Members = new HashSet<AgentEntity>();
+            Members = new HashSet<GroupMemberEntity>();
             ObjectType = EntityObjectType.Group;
         }
 
         public override EntityObjectType ObjectType { get; set; }
 
-        public virtual ICollection<AgentEntity> Members { get; set; }
+        public virtual ICollection<GroupMemberEntity> Members { get; set; }
     }
 }

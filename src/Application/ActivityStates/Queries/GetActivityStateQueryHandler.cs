@@ -31,13 +31,11 @@ namespace Doctrina.Application.ActivityStates.Queries
         {
             string activityHash = request.ActivityId.ComputeHash();
 
-            AgentEntity agent = _mapper.Map<AgentEntity>(request.Agent);
-
             var query = _context.ActivityStates
                 .AsNoTracking()
                 .Where(x=> x.StateId == request.StateId)
                 .Where(x => x.Activity.Hash == activityHash)
-                .Where(x => x.Agent.Hash == agent.Hash);
+                .Where(x => x.Agent.AgentId == request.AgentId);
 
             if (request.Registration.HasValue)
             {

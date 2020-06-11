@@ -1,5 +1,5 @@
 using Doctrina.Application.Common.Interfaces;
-using Doctrina.ExperienceApi.Data;
+using Doctrina.Domain.Entities;
 using Doctrina.Infrastructure.Identity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
@@ -42,11 +42,11 @@ namespace Doctrina.WebUI.ExperienceApi.Authentication
 
             await Task.CompletedTask;
 
-            _authority.Authority = new Agent()
+            _authority.Authority = new Domain.Entities.AgentEntity()
             {
                 Account = new Account()
                 {
-                    HomePage = new Uri($"{Request.Scheme}://{Request.Host}"),
+                    HomePage = $"{Request.Scheme}://{Request.Host}",
                     Name = "TestClientApp" // TODO: Name of the client app authorized
                 }
             };
