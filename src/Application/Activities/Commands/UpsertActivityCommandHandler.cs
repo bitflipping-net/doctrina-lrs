@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Doctrina.Application.Common.Interfaces;
@@ -30,7 +31,7 @@ namespace Doctrina.Application.Activities.Commands
 
             var current = await _context.Activities
                 .Include(ac => ac.Definition)
-                .FirstOrDefaultAsync(x => x.Hash == entity.Hash);
+                .FirstOrDefaultAsync(x => x.Hash == entity.Hash, cancellationToken);
 
             if(current != null)
             {
@@ -45,6 +46,7 @@ namespace Doctrina.Application.Activities.Commands
                 return current;
             }
 
+            entity.ActivityId = Guid.NewGuid();
             _context.Activities.Add(entity);
 
             return entity;

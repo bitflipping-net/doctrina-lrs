@@ -78,7 +78,6 @@ After following the steps for setup, do the following to run the `lrs-conformanc
 ## Technologies
 * .NET Core 3.1
 * Entity Framework Core 3.1
-* Blazor.net
 * Redis/InMemory Cache
 
 ## License

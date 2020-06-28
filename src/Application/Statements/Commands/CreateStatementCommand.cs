@@ -11,12 +11,14 @@ namespace Doctrina.Application.Statements.Commands
     public class CreateStatementCommand : IRequest<Guid>
     {
         public Statement Statement { get; private set; }
+        public bool Persist { get; private set; }
 
-        internal static CreateStatementCommand Create(Statement statement)
+        internal static CreateStatementCommand Create(Statement statement, bool persist = true)
         {
             return new CreateStatementCommand()
             {
-                Statement = statement
+                Statement = statement,
+                Persist = persist
             };
         }
     }

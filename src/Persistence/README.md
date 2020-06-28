@@ -3,5 +3,5 @@
 ## Migrations
 
 ```
-dotnet ef migrations add InitialCreate --project Persistence.csproj
+dotnet ef migrations add <MigrationName> --project Persistence.csproj
 ```

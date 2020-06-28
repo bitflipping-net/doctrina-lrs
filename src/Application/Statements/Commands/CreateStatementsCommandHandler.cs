@@ -25,10 +25,12 @@ namespace Application.Statements.Commands
             var tasks = new List<Task<Guid>>();
             foreach (var statement in request.Statements)
             {
-                tasks.Add(_mediator.Send(CreateStatementCommand.Create(statement), cancellationToken));
+                tasks.Add(_mediator.Send(CreateStatementCommand.Create(statement, persist: false), cancellationToken));
             }
 
-            var ids = await Task.WhenAll(tasks);
+            var ids = await Task.WhenAll(tasks).ConfigureAwait(false);
+
+            await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
             await _mediator.Publish(StatementsSaved.Create(ids));
 

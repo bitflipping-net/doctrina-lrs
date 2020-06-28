@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -31,7 +32,7 @@ namespace Doctrina.Application.Agents.Commands
             // Try find in cache
             AgentEntity actor = await _mediator.Send(GetAgentQuery.Create(request.Actor), cancellationToken);
 
-            if(actor == null)
+            if (actor == null)
             {
                 actor = (request.Actor.ObjectType == ObjectType.Agent
                     ? _mapper.Map<AgentEntity>(request.Actor)
@@ -42,29 +43,27 @@ namespace Doctrina.Application.Agents.Commands
 
             if (request.Actor is Group group && actor is GroupEntity groupEntity)
             {
-                if(_context.Entry(actor).State != EntityState.Added)
+                if (_context.Entry(actor).State != EntityState.Added)
                 {
                     _context.Entry(actor).State = EntityState.Modified;
                 }
 
                 // Perform group update logic, add group member etc.
-                var remove = new HashSet<AgentEntity>();
-                var groupMembers = new HashSet<GroupMemberEntity>();
-
                 foreach (var member in group.Member)
                 {
                     var savedGrpActor = await _mediator.Send(UpsertActorCommand.Create(member), cancellationToken);
 
-                    groupMembers.Add(new GroupMemberEntity(){
+                    if(groupEntity.Members.Any(x=> x.AgentId == savedGrpActor.AgentId))
+                    {
+                        continue;
+                    }
+
+                    groupEntity.Members.Add(new GroupMemberEntity()
+                    {
+                        GroupMemberId = Guid.NewGuid(),
                         AgentId = savedGrpActor.AgentId,
                         GroupId = groupEntity.AgentId,
                     });
-                }
-                // Re-create the list of members
-                groupEntity.Members = new HashSet<GroupMemberEntity>();
-                foreach (var member in groupMembers)
-                {
-                    groupEntity.Members.Add(member);
                 }
 
                 await _mediator.Publish(AgentUpdated.Create(actor)).ConfigureAwait(false);
