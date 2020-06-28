@@ -30,7 +30,13 @@ namespace Doctrina.WebUI.ExperienceApi.Routing
                     throw;
                 }
 
-                if (ex is ValidationException)
+
+                if (ex is TaskCanceledException)
+                {
+                    logger.LogError(ex, "Request was cancelled");
+                    return;
+                }
+                else if (ex is ValidationException)
                 {
                     context.Response.ContentType = "application/json";
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
