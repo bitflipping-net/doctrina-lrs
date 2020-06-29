@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Doctrina.Application.Agents.Commands;
-using Doctrina.Application.Common.Interfaces;
 using Doctrina.Application.Tests.Infrastructure;
 using Doctrina.Domain.Entities;
 using Doctrina.ExperienceApi.Data;
@@ -8,9 +7,6 @@ using MediatR;
 using Moq;
 using Shouldly;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;

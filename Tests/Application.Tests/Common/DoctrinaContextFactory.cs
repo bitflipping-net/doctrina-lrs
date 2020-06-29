@@ -1,7 +1,7 @@
 ﻿using Doctrina.Application.Tests.Common;
 using Doctrina.Domain.Entities;
-using Doctrina.ExperienceApi.Data;
 using Doctrina.Persistence;
+using Doctrina.ExperienceApi.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 
@@ -19,7 +19,6 @@ namespace Doctrina.Application.Tests.Infrastructure
 
             context.Database.EnsureCreated();
 
-            // TODO: Parse statements from file, and map to entities.
             var activityId = new Iri("http://www.example.com/activityId/hashset");
             context.Activities.Add(new ActivityEntity(){
                 Id = activityId.ToString(),

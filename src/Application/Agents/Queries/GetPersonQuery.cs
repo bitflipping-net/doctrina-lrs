@@ -15,35 +15,6 @@ namespace Doctrina.Application.Agents.Queries
     {
         public Agent Agent { get; set; }
 
-        public class Handler : IRequestHandler<GetPersonQuery, Person>
-        {
-            private readonly IDoctrinaDbContext _context;
-            private readonly IMapper _mapper;
-            private readonly IMediator _mediator;
-
-            public Handler(IDoctrinaDbContext context, IMapper mapper, IMediator mediator)
-            {
-                _context = context;
-                _mapper = mapper;
-                _mediator = mediator;
-            }
-
-            public async Task<Person> Handle(GetPersonQuery request, CancellationToken cancellationToken)
-            {
-                var person = new Person();
-                person.Add(request.Agent);
-
-                var agentEntity = await _mediator.Send(GetAgentQuery.Create(request.Agent), cancellationToken);
-
-                if (agentEntity != null)
-                {
-                    person.Add(_mapper.Map<Agent>(agentEntity));
-                }
-
-                return person;
-            }
-        }
-
         public static GetPersonQuery Create(Agent agent)
         {
             return new GetPersonQuery()

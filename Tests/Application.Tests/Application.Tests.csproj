@@ -22,6 +22,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Application\Application.csproj" />
+    <ProjectReference Include="..\..\src\EntityFrameworkCore\Application\Application.csproj" />
+    <ProjectReference Include="..\..\src\EntityFrameworkCore\Persistence\Persistence.csproj" />
     <ProjectReference Include="..\..\src\Domain\Domain.csproj" />
     <ProjectReference Include="..\..\src\Persistence\Persistence.csproj" />
   </ItemGroup>

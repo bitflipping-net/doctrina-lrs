@@ -1,6 +1,6 @@
 using Doctrina.Application.System.Commands.SeedSampleData;
 using Doctrina.Infrastructure.Identity;
-using Doctrina.Persistence;
+using Doctrina.Infrastructure.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -36,14 +36,11 @@ namespace Doctrina.WebUI
 
                 try
                 {
-                    var doctrinaContext = services.GetRequiredService<DoctrinaDbContext>();
-                    doctrinaContext.Database.Migrate();
+                    var doctrinaContext = services.GetRequiredService<IDoctrinaDbProvider>();
+                    doctrinaContext.Migrate();
 
                     var identityContext = services.GetRequiredService<DoctrinaAuthorizationDbContext>();
                     identityContext.Database.Migrate();
-
-                    var mediator = services.GetRequiredService<IMediator>();
-                    await mediator.Send(new SeedSampleDataCommand(), CancellationToken.None);
 
                     await host.RunAsync();
                 }

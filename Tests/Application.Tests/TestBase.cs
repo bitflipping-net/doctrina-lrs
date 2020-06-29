@@ -4,6 +4,7 @@ using Doctrina.Application.Infrastructure.AutoMapper;
 using Doctrina.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System;
+using Doctrina.Persistence;
 
 namespace Doctrina.Application.Tests
 {

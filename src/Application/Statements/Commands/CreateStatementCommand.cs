@@ -13,7 +13,7 @@ namespace Doctrina.Application.Statements.Commands
         public Statement Statement { get; private set; }
         public bool Persist { get; private set; }
 
-        internal static CreateStatementCommand Create(Statement statement, bool persist = true)
+        public static CreateStatementCommand Create(Statement statement, bool persist = true)
         {
             return new CreateStatementCommand()
             {

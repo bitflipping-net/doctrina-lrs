@@ -7,7 +7,7 @@ namespace Doctrina.Application.Statements.Notifications
     {
         public Guid[] Ids { get; private set; }
 
-        internal static StatementsSaved Create(Guid[] ids)
+        public static StatementsSaved Create(Guid[] ids)
         {
             return new StatementsSaved()
             {

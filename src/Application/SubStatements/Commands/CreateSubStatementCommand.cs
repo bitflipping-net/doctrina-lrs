@@ -8,7 +8,7 @@ namespace Doctrina.Application.SubStatements.Commands
     {
         public SubStatement SubStatement { get; private set; }
 
-        internal static CreateSubStatementCommand Create(SubStatement subStatement)
+        public static CreateSubStatementCommand Create(SubStatement subStatement)
         {
             return new CreateSubStatementCommand()
             {

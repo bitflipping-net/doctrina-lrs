@@ -8,7 +8,7 @@ namespace Doctrina.Application.Verbs.Commands
     {
         public Verb Verb { get; set; }
 
-        internal static UpsertVerbCommand Create(Verb verb)
+        public static UpsertVerbCommand Create(Verb verb)
         {
             return new UpsertVerbCommand()
             {

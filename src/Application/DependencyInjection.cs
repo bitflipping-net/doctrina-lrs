@@ -21,38 +21,47 @@ namespace Doctrina.Application
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddMediatR(Assembly.GetExecutingAssembly());
 
-
             // Configure MediatR Pipeline with cache invalidation and cached request behaviors
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestPerformanceBehaviour<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CacheInvalidationBehavior<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CacheBehavior<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehavior<,>));
 
-            services.AddSingleton<IDoctrinaAppContext, DoctrinaAppContext>();
+            services.Scan(scan => scan.FromAssemblies()
+                .AddClasses(clases => clases.AssignableTo(typeof(IApplicationInjector)))
+                    .As<IApplicationInjector>()
+                    .WithSingletonLifetime()
+            );
+            var provider = services.BuildServiceProvider();
+            var injectors = provider.GetServices<IApplicationInjector>();
+            foreach (var injector in injectors)
+            {
+                injector.AddApplication(services, config);
+            }
 
             // Register ICache and ICacheInvalidators using Scrutor
-            services.Scan(scan => scan
-                .FromAssembliesOf(typeof(DependencyInjection))
-                    .AddClasses(classes => classes.AssignableTo(typeof(ICache<,>)))
-                        .AsImplementedInterfaces()
-                    .AddClasses(classes => classes.AssignableTo(typeof(ICacheInvalidator<>)))
-                        .AsImplementedInterfaces()
-            );
+            // services.Scan(scan => scan
+            //     .FromAssembliesOf(typeof(DependencyInjection))
+            //         .AddClasses(classes => classes.AssignableTo(typeof(ICache<,>)))
+            //             .AsImplementedInterfaces()
+            //         .AddClasses(classes => classes.AssignableTo(typeof(ICacheInvalidator<>)))
+            //             .AsImplementedInterfaces()
+            // );
 
-            services.AddMemoryCache();
+            // services.AddMemoryCache();
 
-            if(config["DistCache:Type"] == "Redis")
-            {
-                services.AddStackExchangeRedisCache(options =>
-                {
-                    options.Configuration = config["DistCache:Configuration"];
-                    options.InstanceName = config["DistCache:InstanceName"];
-                });
-            }
-            else
-            {
-                services.AddDistributedMemoryCache();
-            }
+            // if(config["DistCache:Type"] == "Redis")
+            // {
+            //     services.AddStackExchangeRedisCache(options =>
+            //     {
+            //         options.Configuration = config["DistCache:Configuration"];
+            //         options.InstanceName = config["DistCache:InstanceName"];
+            //     });
+            // }
+            // else
+            // {
+            //     services.AddDistributedMemoryCache();
+            // }
 
             return services;
         }

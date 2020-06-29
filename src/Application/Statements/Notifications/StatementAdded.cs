@@ -7,7 +7,7 @@ namespace Doctrina.Application.Statements.Notifications
     {
         public StatementEntity Entity { get; set; }
 
-        internal static StatementAdded Create(StatementEntity newStatemnt)
+        public static StatementAdded Create(StatementEntity newStatemnt)
         {
             return new StatementAdded()
             {

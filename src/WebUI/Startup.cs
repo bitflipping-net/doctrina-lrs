@@ -1,7 +1,7 @@
 using Doctrina.Application;
 using Doctrina.Application.Statements.Commands;
 using Doctrina.Infrastructure;
-using Doctrina.Persistence;
+using Doctrina.Infrastructure.Interfaces;
 using Doctrina.WebUI.Data;
 using Doctrina.WebUI.ExperienceApi;
 using FluentValidation.AspNetCore;
@@ -43,11 +43,17 @@ namespace Doctrina.WebUI
             });
 
             services.AddInfrastructure(Configuration, Environment);
-            services.AddPersistence(Configuration);
+
+            // Add Database providers
+            services.Scan(scan => scan
+               .FromAssemblies()
+                   .AddClasses(classes => classes.AssignableTo(typeof(IDoctrinaDbProvider)))
+                       .AsImplementedInterfaces()
+            );
+
             services.AddApplication(Configuration);
 
-            services.AddHealthChecks()
-              .AddDbContextCheck<DoctrinaDbContext>();
+            services.AddHealthChecks();
 
             services.AddHttpContextAccessor();
 
@@ -146,7 +152,8 @@ namespace Doctrina.WebUI
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapBlazorHub().RequireAuthorization(new AuthorizeAttribute {
+                endpoints.MapBlazorHub().RequireAuthorization(new AuthorizeAttribute
+                {
                     AuthenticationSchemes = "Cookies"
                 });
                 endpoints.MapFallbackToPage("/_Host");
