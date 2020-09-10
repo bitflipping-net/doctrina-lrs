@@ -1,11 +1,11 @@
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Doctrina.Application.Infrastructure;
 using Doctrina.Domain.Entities;
 using Doctrina.ExperienceApi.Data;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Doctrina.Application.Agents
 {

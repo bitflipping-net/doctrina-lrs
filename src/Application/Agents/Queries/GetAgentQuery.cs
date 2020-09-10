@@ -1,5 +1,3 @@
-using System;
-using Doctrina.Application.Infrastructure;
 using Doctrina.Domain.Entities;
 using Doctrina.ExperienceApi.Data;
 using MediatR;

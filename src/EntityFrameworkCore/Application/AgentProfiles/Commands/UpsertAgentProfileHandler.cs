@@ -1,18 +1,11 @@
 using AutoMapper;
 using Doctrina.Application.AgentProfiles.Commands;
 using Doctrina.Application.AgentProfiles.Queries;
-using Doctrina.Application.Agents.Commands;
-using Doctrina.Application.Common.Interfaces;
-using Doctrina.Domain.Entities;
 using Doctrina.Domain.Entities.Documents;
-using Doctrina.ExperienceApi.Data.Documents;
+using Doctrina.Persistence.Infrastructure;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Doctrina.Persistence.Infrastructure;
 
 namespace Doctrina.Application.AgentProfiles
 {
@@ -41,6 +34,5 @@ namespace Doctrina.Application.AgentProfiles
 
             return await _mediator.Send(UpdateAgentProfileCommand.Create(request.Agent, request.ProfileId, request.Content, request.ContentType), cancellationToken);
         }
-
     }
 }

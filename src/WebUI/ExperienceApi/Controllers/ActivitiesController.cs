@@ -28,9 +28,9 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
 
         [HttpGet]
         [HttpHead]
-        public async Task<ActionResult> GetActivityDocumentAsync([FromQuery]GetActivityQuery command, CancellationToken cancelToken = default)
+        public async Task<ActionResult> GetActivityDocumentAsync([FromQuery] GetActivityQuery command, CancellationToken cancelToken = default)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -38,7 +38,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             var activityEntity = await _mediator.Send(command, cancelToken);
 
             ResultFormat format = ResultFormat.Exact;
-            if(!StringValues.IsNullOrEmpty(Request.Headers[HeaderNames.AcceptLanguage]))
+            if (!StringValues.IsNullOrEmpty(Request.Headers[HeaderNames.AcceptLanguage]))
             {
                 format = ResultFormat.Canonical;
             }

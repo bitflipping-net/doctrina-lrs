@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Doctrina.Application.Statements.Notifications
 {
-    public class ConsistentThroughHandler : INotificationHandler<StatementsSaved>
+    public class ConsistentThroughHandler : INotificationHandler<StatementCreated>
     {
         private readonly IDoctrinaAppContext _doctrinaAppContext;
 
@@ -15,7 +15,7 @@ namespace Doctrina.Application.Statements.Notifications
             _doctrinaAppContext = doctrinaAppContext;
         }
 
-        public Task Handle(StatementsSaved notification, CancellationToken cancellationToken)
+        public Task Handle(StatementCreated notification, CancellationToken cancellationToken)
         {
             _doctrinaAppContext.ConsistentThroughDate = DateTimeOffset.UtcNow;
 

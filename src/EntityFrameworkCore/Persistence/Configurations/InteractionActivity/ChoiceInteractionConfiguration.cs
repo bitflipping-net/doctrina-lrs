@@ -1,5 +1,5 @@
 ﻿using Doctrina.Domain.Entities.InteractionActivities;
-using Doctrina.EntityFrameworkCore.Persistence.ValueConverters;
+using Doctrina.Persistence.ValueConverters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

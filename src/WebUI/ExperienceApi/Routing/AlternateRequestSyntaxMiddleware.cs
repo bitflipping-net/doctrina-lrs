@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -98,7 +96,7 @@ namespace Doctrina.WebUI.ExperienceApi.Routing
 
                 string decodedContent = HttpUtility.UrlDecode(urlEncodedContent);
                 var ms = new MemoryStream();
-                using(var sw = new StreamWriter(ms, Encoding.UTF8, leaveOpen: true))
+                using (var sw = new StreamWriter(ms, Encoding.UTF8, leaveOpen: true))
                 {
                     sw.Write(decodedContent);
                 }

@@ -47,7 +47,7 @@ namespace Doctrina.Domain.Entities.Documents
         // Methods:
         private string GenerateChecksum()
         {
-            if(Content == null)
+            if (Content == null)
             {
                 throw new NullReferenceException("Content is null or empty");
             }

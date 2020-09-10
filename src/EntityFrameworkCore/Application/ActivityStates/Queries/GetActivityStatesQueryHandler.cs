@@ -1,15 +1,11 @@
 ﻿using AutoMapper;
-using Doctrina.Application.Common.Interfaces;
-using Doctrina.Domain.Entities;
-using Doctrina.Domain.Entities.Documents;
 using Doctrina.ExperienceApi.Data.Documents;
+using Doctrina.Persistence.Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Doctrina.Persistence.Infrastructure;
 using System.Threading;
 using System.Threading.Tasks;
 

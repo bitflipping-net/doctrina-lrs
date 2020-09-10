@@ -1,8 +1,8 @@
 @host = localhost:5000
 @version = 1.0.3
 @basicAuth = Basic YWRtaW5AZXhhbXBsZS5jb206ektSNGdrWU5IUDV0dkg=
-@moreUrl = {{attendedStatements.response.body.more}}
-@moreStatements.response.body.more =
+@statementId = null
+@resultFormat = exact
 
 ###
 # @name postStatement
@@ -13,7 +13,6 @@ Authorization: {{basicAuth}}
 Content-Type: application/json
 
 {
-    "id": "3e4e8fe5-53ec-41f8-b950-2370beb6739f",
     "actor": {
         "name": "Rasmus",
         "mbox": "mailto:rm@bitflipping.net"
@@ -25,6 +24,7 @@ Content-Type: application/json
         }
     },
     "object": {
+
     }
 }
 
@@ -47,7 +47,7 @@ Authorization: {{basicAuth}}
 @moreUrl = {{moreStatements.response.body.more}}
 
 ###
-GET /xapi/statements?statementId=81930f55-fbbc-4e47-b200-a33b9163682f&format=canonical HTTP/1.1
+GET /xapi/statements?statementId={{statementId}}f&format={{resultFormat}} HTTP/1.1
 host: {{host}}
 Accept-Language: en-GB
 X-Experience-API-Version: {{version}}
@@ -62,7 +62,7 @@ Authorization: {{basicAuth}}
 
 ### Voiding
 GET /xapi/statements
-    ?statementId=db0cf429-3572-43d8-a4b7-4331d3bb943a
+    ?statementId={{statementId}}
 host: {{host}}
 X-Experience-API-Version: {{version}}
 Authorization: {{basicAuth}}
@@ -79,6 +79,38 @@ Authorization: {{basicAuth}}
 GET /xapi/statements
     ?verb=http://adlnet.gov/expapi/test/voided/target/55e426e9-5baa-4857-b9c2-71bce19a413a
     &until=2020-05-18T10:13:54.908Z HTTP/1.1
+host: {{host}}
+X-Experience-API-Version: {{version}}
+Authorization: {{basicAuth}}
+
+
+###
+# VOIDING
+###
+# @name voidedStatement
+POST /xapi/statements HTTP/1.1
+host: {{host}}
+X-Experience-API-Version: {{version}}
+Authorization: {{basicAuth}}
+Content-Type: application/json
+
+{"actor":{"objectType":"Agent","name":"xAPI mbox","mbox":"mailto:xapi@adlnet.gov"},"verb":{"id":"http://adlnet.gov/expapi/verbs/attended","display":{"en-GB":"attended","en-US":"attended"}},"object":{"objectType":"Activity","id":"http://www.example.com/meetings/occurances/34534"}}
+
+###
+# @name voidingStatement
+
+@voidedStatementId = {{voidedStatement.response.body.$[0]}}
+POST /xapi/statements HTTP/1.1
+host: {{host}}
+X-Experience-API-Version: {{version}}
+Authorization: {{basicAuth}}
+Content-Type: application/json
+
+{"actor":{"objectType":"Agent","name":"xAPI account","mbox":"mailto:xapi@adlnet.gov"},"verb":{"id":"http://adlnet.gov/expapi/verbs/voided","display":{"en-US":"voided"}},"object":{"objectType":"StatementRef","id":"{{voidedStatementId}}"}}
+
+###
+GET /xapi/statements
+    ?voidedStatementId={{voidedStatementId}}
 host: {{host}}
 X-Experience-API-Version: {{version}}
 Authorization: {{basicAuth}}

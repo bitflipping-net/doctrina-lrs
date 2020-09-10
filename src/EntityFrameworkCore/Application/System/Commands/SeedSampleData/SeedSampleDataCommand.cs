@@ -1,8 +1,8 @@
 ﻿using Doctrina.Application.Common.Interfaces;
+using Doctrina.Persistence.Infrastructure;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
-using Doctrina.Persistence.Infrastructure;
 
 namespace Doctrina.Application.System.Commands.SeedSampleData
 {

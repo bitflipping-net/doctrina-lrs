@@ -9,17 +9,17 @@ namespace Doctrina.Application.Infrastructure.Automapper.Mappings.TypeConverters
     {
         public ExtensionsCollection Convert(ExtensionsDictionary source, ExtensionsCollection destination, ResolutionContext context)
         {
-            if(source == null)
+            if (source == null)
             {
                 return destination;
             }
 
-            if(destination == null)
+            if (destination == null)
             {
                 destination = new ExtensionsCollection();
             }
 
-            foreach(var sourceItem in source)
+            foreach (var sourceItem in source)
             {
                 destination[sourceItem.Key] = sourceItem.Value;
             }
@@ -29,17 +29,17 @@ namespace Doctrina.Application.Infrastructure.Automapper.Mappings.TypeConverters
 
         public ExtensionsDictionary Convert(ExtensionsCollection source, ExtensionsDictionary destination, ResolutionContext context)
         {
-            if(source == null)
+            if (source == null)
             {
                 return destination;
             }
 
-            if(destination == null)
+            if (destination == null)
             {
                 destination = new ExtensionsDictionary();
             }
 
-            foreach(var sourceItem in source)
+            foreach (var sourceItem in source)
             {
                 destination[sourceItem.Key] = sourceItem.Value;
             }

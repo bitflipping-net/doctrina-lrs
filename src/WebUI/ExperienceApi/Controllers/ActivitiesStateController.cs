@@ -4,22 +4,17 @@ using Doctrina.Application.ActivityStates.Commands;
 using Doctrina.Application.ActivityStates.Queries;
 using Doctrina.Application.Agents.Commands;
 using Doctrina.Domain.Entities;
-using Doctrina.ExperienceApi.Client.Http;
 using Doctrina.ExperienceApi.Data;
 using Doctrina.ExperienceApi.Data.Documents;
-using Doctrina.ExperienceApi.Data.Json;
 using Doctrina.WebUI.ExperienceApi.Mvc.Filters;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Net.Http.Headers;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -49,7 +44,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             [BindRequired, FromQuery] Iri activityId,
             [BindRequired, FromQuery] Agent agent,
             [FromQuery] string stateId = null,
-            [FromQuery]DateTime? since = null,
+            [FromQuery] DateTime? since = null,
             [FromQuery] Guid? registration = null,
             CancellationToken cancellationToken = default)
         {
@@ -60,7 +55,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
 
             AgentEntity agentEntity = await _mediator.Send(UpsertActorCommand.Create(agent));
 
-            if(string.IsNullOrEmpty(stateId))
+            if (string.IsNullOrEmpty(stateId))
             {
                 return await GetMutipleStates(
                     activityId,
@@ -84,7 +79,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 return NotFound();
             }
 
-            if(Request.TryConcurrencyCheck(stateDocument.Tag, stateDocument.LastModified, out int statusCode))
+            if (Request.TryConcurrencyCheck(stateDocument.Tag, stateDocument.LastModified, out int statusCode))
             {
                 return StatusCode(statusCode);
             }
@@ -137,12 +132,12 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
         [HttpPut]
         [HttpPost]
         public async Task<IActionResult> PostSingleState(
-            [BindRequired, FromQuery]string stateId,
-            [BindRequired, FromQuery]Iri activityId,
-            [BindRequired, FromQuery]Agent agent,
-            [BindRequired, FromBody]byte[] body,
-            [BindRequired, FromHeader(Name = "Content-Type")]string contentType,
-            [FromQuery]Guid? registration = null,
+            [BindRequired, FromQuery] string stateId,
+            [BindRequired, FromQuery] Iri activityId,
+            [BindRequired, FromQuery] Agent agent,
+            [BindRequired, FromBody] byte[] body,
+            [BindRequired, FromHeader(Name = "Content-Type")] string contentType,
+            [FromQuery] Guid? registration = null,
             CancellationToken cancellationToken = default)
         {
             if (!ModelState.IsValid)
@@ -161,7 +156,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 Registration = registration
             }, cancellationToken);
 
-            if(stateDocument != null)
+            if (stateDocument != null)
             {
                 stateDocument = await _mediator.Send(new UpdateStateDocumentCommand()
                 {
@@ -209,7 +204,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
 
             var agentEntity = (await _mediator.Send(UpsertActorCommand.Create(agent)));
 
-            if(string.IsNullOrEmpty(stateId))
+            if (string.IsNullOrEmpty(stateId))
             {
                 await _mediator.Send(new DeleteActivityStatesCommand()
                 {

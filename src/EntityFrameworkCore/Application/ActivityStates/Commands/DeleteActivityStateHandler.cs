@@ -1,12 +1,9 @@
 ﻿using AutoMapper;
-using Doctrina.Application.ActivityStates.Commands;
-using Doctrina.Application.Common.Interfaces;
-using Doctrina.Domain.Entities;
+using Doctrina.Persistence.Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading;
-using Doctrina.Persistence.Infrastructure;
 using System.Threading.Tasks;
 
 namespace Doctrina.Application.ActivityStates.Commands

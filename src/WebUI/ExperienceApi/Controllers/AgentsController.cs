@@ -3,10 +3,8 @@ using Doctrina.ExperienceApi.Data;
 using Doctrina.WebUI.ExperienceApi.Mvc.Filters;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -28,7 +26,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
         [HttpGet]
         [HttpHead]
         public async Task<IActionResult> GetAgentProfile(
-            [BindRequired, FromQuery]Agent agent,
+            [BindRequired, FromQuery] Agent agent,
             CancellationToken cancellationToken = default)
         {
             if (!ModelState.IsValid)

@@ -1,5 +1,4 @@
 ﻿using Doctrina.Application.Common.Interfaces;
-using Doctrina.Application.Statements.Queries;
 using Doctrina.Persistence.Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

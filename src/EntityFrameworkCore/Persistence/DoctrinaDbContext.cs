@@ -1,9 +1,7 @@
-﻿using Doctrina.Application.Common.Interfaces;
-using Doctrina.Domain.Entities;
+﻿using Doctrina.Domain.Entities;
 using Doctrina.Domain.Entities.Documents;
 using Doctrina.Persistence.Infrastructure;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 

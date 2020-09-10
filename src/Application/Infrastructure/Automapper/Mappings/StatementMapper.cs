@@ -1,14 +1,10 @@
 ﻿
 using AutoMapper;
-using AutoMapper.Collection;
-using AutoMapper.EquivalencyExpression;
 using Doctrina.Application.Infrastructure.Automapper.Mappings.TypeConverters;
 using Doctrina.Application.Interfaces.Mapping;
-using Doctrina.Application.Mappings.ValueResolvers;
 using Doctrina.Domain.Entities;
 using Doctrina.Domain.Entities.OwnedTypes;
 using Doctrina.ExperienceApi.Data;
-using System;
 using System.Collections.Generic;
 using Data = Doctrina.ExperienceApi.Data;
 

@@ -17,7 +17,7 @@ namespace Doctrina.Application.Infrastructure.Automapper.Mappings.TypeConverters
                 return null;
             }
 
-            if(destination == null)
+            if (destination == null)
             {
                 destination = new StatementObjectEntity();
             }

@@ -1,11 +1,10 @@
-﻿using Doctrina.Application.Common.Interfaces;
-using Doctrina.Application.Statements.Commands;
-using Doctrina.Application.Statements.Notifications;
+﻿using Doctrina.Application.Statements.Notifications;
+using Doctrina.Persistence;
+using Doctrina.Persistence.Infrastructure;
 using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using Doctrina.Persistence.Infrastructure;
 using System.Threading.Tasks;
 
 namespace Doctrina.Application.Statements.Commands
@@ -13,9 +12,9 @@ namespace Doctrina.Application.Statements.Commands
     public class CreateStatementsCommandHandler : IRequestHandler<CreateStatementsCommand, ICollection<Guid>>
     {
         private readonly IMediator _mediator;
-        private readonly IDoctrinaDbContext _context;
+        private readonly DoctrinaDbContext _context;
 
-        public CreateStatementsCommandHandler(IDoctrinaDbContext context, IMediator mediator)
+        public CreateStatementsCommandHandler(DoctrinaDbContext context, IMediator mediator)
         {
             _context = context;
             _mediator = mediator;
@@ -23,19 +22,21 @@ namespace Doctrina.Application.Statements.Commands
 
         public async Task<ICollection<Guid>> Handle(CreateStatementsCommand request, CancellationToken cancellationToken)
         {
-            var tasks = new List<Task<Guid>>();
-            foreach (var statement in request.Statements)
+            using (var transaction = _context.Database.BeginTransaction())
             {
-                tasks.Add(_mediator.Send(CreateStatementCommand.Create(statement, persist: false), cancellationToken));
+                var ids = new List<Guid>();
+                foreach (var statement in request.Statements)
+                {
+                    var id = await _mediator.Send(CreateStatementCommand.Create(statement), cancellationToken).ConfigureAwait(false);
+                    ids.Add(id);
+                }
+
+                await _context.SaveChangesAsync(cancellationToken);
+
+                await transaction.CommitAsync(cancellationToken);
+
+                return ids;
             }
-
-            var ids = await Task.WhenAll(tasks).ConfigureAwait(false);
-
-            await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-
-            await _mediator.Publish(StatementsSaved.Create(ids));
-
-            return ids;
         }
     }
 }

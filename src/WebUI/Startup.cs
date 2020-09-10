@@ -64,6 +64,11 @@ namespace Doctrina.WebUI
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<CreateStatementsCommandValidator>())
                 .AddExperienceApi();
 
+            //services.AddGraphQL(
+            //    SchemaBuilder.New()
+            //        .AddQueryType<QueryType>()
+            //        .AddType<CharacterType>());
+
             services.AddResponseCompression();
 
             // Customise default API behavour

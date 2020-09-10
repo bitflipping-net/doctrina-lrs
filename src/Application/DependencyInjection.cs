@@ -4,13 +4,10 @@ using Doctrina.Application.Common.Caching;
 using Doctrina.Application.Common.Interfaces;
 using Doctrina.Application.Infrastructure;
 using MediatR;
-using MediatR.Pipeline;
 using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
 using System.Reflection;
-using Doctrina.Application.Agents.Queries;
 
 namespace Doctrina.Application
 {
@@ -27,17 +24,16 @@ namespace Doctrina.Application
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CacheBehavior<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehavior<,>));
 
-            services.Scan(scan => scan.FromAssemblies()
-                .AddClasses(clases => clases.AssignableTo(typeof(IApplicationInjector)))
-                    .As<IApplicationInjector>()
-                    .WithSingletonLifetime()
+            services.AddSingleton(typeof(IDoctrinaAppContext), typeof(DoctrinaAppContext));
+
+            services.Scan(scan => scan.FromApplicationDependencies()
+                .AddClasses(clases => clases.AssignableTo(typeof(IDataProviderInjector)))
+                    .AsImplementedInterfaces()
             );
             var provider = services.BuildServiceProvider();
-            var injectors = provider.GetServices<IApplicationInjector>();
-            foreach (var injector in injectors)
-            {
-                injector.AddApplication(services, config);
-            }
+            var injector = provider.GetService<IDataProviderInjector>();
+            injector.AddPersistence(services, config);
+            injector.AddApplication(services, config);
 
             // Register ICache and ICacheInvalidators using Scrutor
             // services.Scan(scan => scan

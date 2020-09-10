@@ -29,30 +29,15 @@ Next pick your development tool
 #### Command line/VS Code (RECOMMENDED)
 Follow these steps to get your development environment set up:
 
-  1. Within the `.\src\` directory, restore required packages by running:
+  1. Within the root directory, restore build and restore:
      ```
-     dotnet restore .\Doctrina.sln
+     dotnet build .\src\Doctrina.sln
      ```
-  2. Next, build the solution by running:
+  2. Start the server:
      ```
-     dotnet build .\Doctrina.sln --no-restore
-     ```
-  4. Next, within the `.\src\WebUI\` start the server by running:
-     ```
-	  dotnet run
+	  dotnet run --project .\src\WebUI --urls=http://localhost:5000/
 	  ```
-  5. Launch [http://localhost:5000/](http://localhost:5000/) in your browser to view the React SPA
-
-  6. Launch [https://localhost:5001/xapi/about](https://localhost:5001/xapi/about) in your browser to view the xAPI about resource
-
-#### Visual Studio
-Follow these steps to get your development environment set up:
-1. Open the `Doctrina.sln` inside the `src` folder.
-2. Hit `F5` or `CTRL+F5` to start from WebUI.csproj
-3. Launch [https://localhost:44393/](https://localhost:44393/) to see Blazor application.
-4. Launch [https://localhost:44393/xapi/about](https://localhost:44393/xapi/about) in your browser to view the xAPI about resource
-
-5. Try posting a statement
+  3. Launch [http://localhost:5000/xapi/about](http://localhost:5000/xapi/about) in your browser to view about resource.
 
 ### Testing
 After following the steps for setup, do the following to run the `lrs-conformance-test-suite`
@@ -68,8 +53,6 @@ After following the steps for setup, do the following to run the `lrs-conformanc
    ```
 2. After npm packages have been installed, run the following:
    ```
-   node bin/console_runner.js -e http://localhost:52209/xapi -a -u admin@example.com -p zKR4gkYNHP5tvH --errors
-   or
    node bin/console_runner.js -e http://localhost:5000/xapi -a -u admin@example.com -p zKR4gkYNHP5tvH --errors
    ```
    IMPORTANT: running tests on https does not work, hence the http schema above.

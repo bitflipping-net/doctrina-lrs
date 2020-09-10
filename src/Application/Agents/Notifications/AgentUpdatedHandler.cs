@@ -1,9 +1,9 @@
-using System.Threading;
-using System.Threading.Tasks;
 using Doctrina.Application.Agents.Queries;
 using Doctrina.Application.Common.Caching;
 using Doctrina.Domain.Entities;
 using MediatR;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Doctrina.Application.Agents.Notifications
 {

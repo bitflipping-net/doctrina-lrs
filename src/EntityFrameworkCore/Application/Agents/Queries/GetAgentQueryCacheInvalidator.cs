@@ -1,6 +1,4 @@
-using System;
 using Doctrina.Application.Agents.Commands;
-using Doctrina.Application.Agents.Queries;
 using Doctrina.Application.Common.Caching;
 using Doctrina.Domain.Entities;
 

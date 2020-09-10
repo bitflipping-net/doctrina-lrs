@@ -1,7 +1,7 @@
-using System;
 using Doctrina.Application.Common.Caching;
 using Doctrina.Domain.Entities;
 using Microsoft.Extensions.Caching.Memory;
+using System;
 
 namespace Doctrina.Application.Statements.Queries
 {

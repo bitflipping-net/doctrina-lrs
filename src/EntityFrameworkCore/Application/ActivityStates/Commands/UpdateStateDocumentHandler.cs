@@ -1,16 +1,12 @@
 ﻿using AutoMapper;
-using Doctrina.Application.ActivityStates.Commands;
 using Doctrina.Application.Common.Exceptions;
-using Doctrina.Application.Common.Interfaces;
-using Doctrina.Domain.Entities;
 using Doctrina.Domain.Entities.Documents;
 using Doctrina.ExperienceApi.Client.Http;
 using Doctrina.ExperienceApi.Data.Documents;
 using Doctrina.ExperienceApi.Data.Json;
-using MediatR;
 using Doctrina.Persistence.Infrastructure;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
 using System.Text;
@@ -34,7 +30,7 @@ namespace Doctrina.Application.ActivityStates.Commands
         {
             string activityHash = request.ActivityId.ComputeHash();
             var query = _context.ActivityStates
-                .Where(x=> x.StateId == request.StateId)
+                .Where(x => x.StateId == request.StateId)
                 .Where(x => x.Activity.Hash == activityHash)
                 .Where(x => x.Agent.AgentId == request.AgentId);
 
@@ -51,7 +47,7 @@ namespace Doctrina.Application.ActivityStates.Commands
             }
 
             var stateDocument = state.Document;
-            if(stateDocument.ContentType != MediaTypes.Application.Json
+            if (stateDocument.ContentType != MediaTypes.Application.Json
             || request.ContentType != MediaTypes.Application.Json)
             {
                 throw new BadRequestException();

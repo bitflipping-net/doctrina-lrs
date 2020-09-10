@@ -6,7 +6,7 @@ namespace Doctrina.Application.Activities.Queries
     {
         public GetActivityQueryValidator()
         {
-            RuleFor(x=> x.ActivityId).NotEmpty();
+            RuleFor(x => x.ActivityId).NotEmpty();
         }
     }
 }

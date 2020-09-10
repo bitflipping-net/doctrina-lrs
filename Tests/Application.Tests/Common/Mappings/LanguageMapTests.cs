@@ -1,8 +1,8 @@
-using System.Collections.Generic;
 using Doctrina.Application.Tests.Infrastructure;
 using Doctrina.Domain.Entities.OwnedTypes;
 using Doctrina.ExperienceApi.Data;
 using Shouldly;
+using System.Collections.Generic;
 using Xunit;
 
 namespace Application.Tests.Infrastructure.Mappings
@@ -22,7 +22,7 @@ namespace Application.Tests.Infrastructure.Mappings
             collection.ShouldContainKey("en-GB");
         }
 
-         [Fact]
+        [Fact]
         public void DictionaryTest()
         {
             var source = new Dictionary<string, string>()

@@ -5,7 +5,6 @@ using Microsoft.Extensions.Primitives;
 using System;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -45,7 +44,7 @@ namespace Doctrina.WebUI.ExperienceApi.Mvc.ActionResults
                 }
             }
 
-            foreach(var header in httpContent.Headers)
+            foreach (var header in httpContent.Headers)
             {
                 context.HttpContext.Response.Headers.Add(
                     header.Key,

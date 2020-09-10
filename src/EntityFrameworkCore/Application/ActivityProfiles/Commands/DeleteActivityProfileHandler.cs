@@ -1,10 +1,8 @@
 ﻿using Doctrina.Application.Activities.Queries;
-using Doctrina.Application.ActivityProfiles.Commands;
 using Doctrina.Persistence.Infrastructure;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
-using Doctrina.Application.ActivityProfiles;
 
 namespace Doctrina.Application.ActivityProfiles.Commands
 {

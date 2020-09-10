@@ -1,5 +1,4 @@
 using Doctrina.Domain.Entities;
-using Doctrina.Domain.Entities.Interfaces;
 using System;
 
 namespace Doctrina.Application.Agents.Models

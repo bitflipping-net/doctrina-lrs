@@ -1,4 +1,3 @@
-using AutoMapper;
 using Doctrina.Application.Tests.Infrastructure;
 using Doctrina.Domain.Entities;
 using Doctrina.ExperienceApi.Data;
@@ -46,7 +45,8 @@ namespace Doctrina.Application.Tests.Statements.Commands
         [Fact]
         public void ShouldReturn_StatementsResult_WithAgent()
         {
-            var entity = new StatementEntity(){
+            var entity = new StatementEntity()
+            {
                 Verb = new VerbEntity()
                 {
                     Id = "https://google.com"

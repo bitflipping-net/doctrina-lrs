@@ -1,7 +1,5 @@
-using Doctrina.Application.System.Commands.SeedSampleData;
 using Doctrina.Infrastructure.Identity;
 using Doctrina.Infrastructure.Interfaces;
-using MediatR;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -11,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using System;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Doctrina.WebUI

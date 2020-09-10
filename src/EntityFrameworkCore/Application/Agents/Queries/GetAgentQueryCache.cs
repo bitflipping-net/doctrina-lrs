@@ -1,10 +1,7 @@
-using System;
-using Doctrina.Application.Agents.Queries;
 using Doctrina.Application.Common.Caching;
-using Doctrina.Application.Infrastructure;
 using Doctrina.Domain.Entities;
-using Doctrina.ExperienceApi.Data;
 using Microsoft.Extensions.Caching.Memory;
+using System;
 
 namespace Doctrina.Application.Agents.Queries
 {

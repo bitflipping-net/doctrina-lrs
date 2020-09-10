@@ -1,13 +1,9 @@
-﻿using AutoMapper;
-using Doctrina.Application.Common.Interfaces;
-using Doctrina.Application.Statements.Queries;
+﻿using Doctrina.Application.Statements.Queries;
 using Doctrina.Application.Tests.Infrastructure;
 using Doctrina.ExperienceApi.Data;
-using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
 using Moq;
 using Shouldly;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;

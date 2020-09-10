@@ -1,5 +1,5 @@
-using System.Threading.Tasks;
 using MediatR;
+using System.Threading.Tasks;
 
 namespace Doctrina.Application.Common.Caching
 {

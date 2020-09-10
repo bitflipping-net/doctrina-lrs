@@ -1,5 +1,4 @@
 ﻿using Doctrina.Domain.Entities.Documents;
-using Doctrina.ExperienceApi.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading;

@@ -1,15 +1,14 @@
 using AutoMapper;
 using Doctrina.Application.AgentProfiles.Queries;
-using Doctrina.Application.Common.Interfaces;
 using Doctrina.Domain.Entities;
 using Doctrina.Domain.Entities.Documents;
+using Doctrina.Persistence.Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Doctrina.Persistence.Infrastructure;
 
 namespace Doctrina.Application.AgentProfiles
 {
@@ -32,7 +31,7 @@ namespace Doctrina.Application.AgentProfiles
             var agentEntity = _mapper.Map<AgentEntity>(request.Agent);
             var query = _context.AgentProfiles
                 .AsNoTracking()
-                .Include(x=> x.Document)
+                .Include(x => x.Document)
                 .Where(a => a.Agent.AgentId == agentEntity.AgentId);
 
             if (request.Since.HasValue)

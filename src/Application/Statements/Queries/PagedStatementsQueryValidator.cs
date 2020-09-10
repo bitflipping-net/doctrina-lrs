@@ -24,7 +24,7 @@ namespace Doctrina.Application.Statements.Queries
                 .WithMessage("Only attachments and format parameters are allowed with using voidedStatementId");
 
             RuleFor(x => x.Agent).SetValidator(new AgentValidator())
-                .When(x=> x.Agent != null);
+                .When(x => x.Agent != null);
         }
 
         private static bool ValidateParameters(PagedStatementsQuery parameters)

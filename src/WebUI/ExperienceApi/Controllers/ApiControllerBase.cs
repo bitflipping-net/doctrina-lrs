@@ -1,6 +1,5 @@
 ﻿using Doctrina.ExperienceApi.Client.Http;
 using Doctrina.ExperienceApi.Data;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Doctrina.WebUI.ExperienceApi.Controllers

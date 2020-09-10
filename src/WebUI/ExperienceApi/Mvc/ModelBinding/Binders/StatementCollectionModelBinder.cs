@@ -27,7 +27,7 @@ namespace Doctrina.WebUI.ExperienceApi.Mvc.ModelBinding
             }
             catch (JsonModelReaderException ex)
             {
-                bindingContext.ModelState.TryAddModelException<StatementCollection>(x=> x, ex);
+                bindingContext.ModelState.TryAddModelException<StatementCollection>(x => x, ex);
                 bindingContext.Result = ModelBindingResult.Failed();
             }
         }

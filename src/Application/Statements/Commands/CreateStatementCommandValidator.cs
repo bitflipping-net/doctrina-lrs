@@ -1,5 +1,4 @@
-﻿using Doctrina.Application.Statements.Queries;
-using Doctrina.ExperienceApi.Data;
+﻿using Doctrina.ExperienceApi.Data;
 using Doctrina.ExperienceApi.Data.Validation;
 using FluentValidation;
 using MediatR;
@@ -27,7 +26,7 @@ namespace Doctrina.Application.Statements.Commands
                     .WithName("id")
                     .WithMessage("A statement is stored with the same id, and it does not match request statement.")
                     .When(cmd => cmd.Statement.Id.HasValue);
-            });
+                });
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Doctrina.Application.Statements.Commands;
 using Doctrina.Application.Statements.Models;
-using Doctrina.Application.Statements.Queries;
 using Doctrina.Domain.Entities;
 using Doctrina.ExperienceApi.Data;
 using Doctrina.WebUI.ExperienceApi.Mvc.ActionResults;
@@ -14,7 +13,6 @@ using Microsoft.Extensions.Primitives;
 using Microsoft.Net.Http.Headers;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Queries = Doctrina.Application.Statements.Queries;
@@ -89,7 +87,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             }
 
             PagedStatementsResult pagedResult = await _mediator.Send(parameters, cancellationToken);
-            var mappedStatements =_mapper.Map<IEnumerable<Statement>>(pagedResult.Statements);
+            var mappedStatements = _mapper.Map<IEnumerable<Statement>>(pagedResult.Statements);
             StatementsResult result = new StatementsResult()
             {
                 Statements = new StatementCollection(mappedStatements)
@@ -109,7 +107,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
         /// </summary>
         [HttpPut]
         [Produces("application/json")]
-        public async Task<IActionResult> PutStatement([FromQuery]Guid statementId, Statement statement, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> PutStatement([FromQuery] Guid statementId, Statement statement, CancellationToken cancellationToken = default)
         {
             if (!ModelState.IsValid)
             {

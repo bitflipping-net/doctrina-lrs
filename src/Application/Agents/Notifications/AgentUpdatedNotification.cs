@@ -1,4 +1,3 @@
-using Doctrina.Application.Agents.Queries;
 using Doctrina.Domain.Entities;
 using MediatR;
 

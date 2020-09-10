@@ -1,9 +1,7 @@
-using System;
-using System.Text;
-using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Caching.Memory;
-using Newtonsoft.Json;
+using System;
+using System.Threading.Tasks;
 
 namespace Doctrina.Application.Common.Caching
 {
@@ -37,7 +35,7 @@ namespace Doctrina.Application.Common.Caching
         public virtual Task<TResponse> Get(TRequest request)
         {
             return _memoryCache.TryGetValue(GetCacheKey(request), out var cachedResponse)
-                ? Task.FromResult((TResponse) cachedResponse)
+                ? Task.FromResult((TResponse)cachedResponse)
                 : Task.FromResult(default(TResponse));
         }
 

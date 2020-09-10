@@ -1,8 +1,4 @@
-﻿using Doctrina.Domain.Infrastructure;
-using System;
-using System.Collections.Generic;
-
-namespace Doctrina.Domain.Entities
+﻿namespace Doctrina.Domain.Entities
 {
 
     public class Account : IAccount

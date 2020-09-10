@@ -1,15 +1,11 @@
 ﻿using AutoMapper;
-using Doctrina.Application.Common.Interfaces;
-using Doctrina.Application.Infrastructure;
 using Doctrina.Domain.Entities;
-using Doctrina.Domain.Entities.Interfaces;
+using Doctrina.Persistence.Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading;
-using Doctrina.Persistence.Infrastructure;
 using System.Threading.Tasks;
-using Doctrina.Application.Verbs.Commands;
 
 namespace Doctrina.Application.Verbs.Commands
 {
@@ -31,7 +27,7 @@ namespace Doctrina.Application.Verbs.Commands
             string hash = request.Verb.Id.ComputeHash();
             VerbEntity verb = await _context.Verbs.SingleOrDefaultAsync(x => x.Hash == hash, cancellationToken);
 
-            if(verb == null)
+            if (verb == null)
             {
                 verb = _mapper.Map<VerbEntity>(request.Verb);
                 verb.VerbId = Guid.NewGuid();
@@ -54,6 +50,8 @@ namespace Doctrina.Application.Verbs.Commands
                 }
                 _context.Verbs.Update(verb);
             }
+
+            await _context.SaveChangesAsync(cancellationToken);
 
             return verb;
         }

@@ -1,11 +1,6 @@
-﻿using AutoMapper;
-using Doctrina.Application.Common.Interfaces;
-using Doctrina.Application.Statements.Queries;
-using Doctrina.ExperienceApi.Data;
+﻿using Doctrina.ExperienceApi.Data;
 using MediatR;
 using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Doctrina.Application.Statements.Commands
 {

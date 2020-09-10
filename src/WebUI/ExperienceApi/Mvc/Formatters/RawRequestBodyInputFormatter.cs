@@ -32,7 +32,8 @@ namespace Doctrina.WebUI.ExperienceApi.Mvc.Formatters
         /// <returns></returns>
         public override bool CanRead(InputFormatterContext context)
         {
-            if (context == null) throw new ArgumentNullException(nameof(context));
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
 
             // var contentType = context.HttpContext.Request.ContentType;
             // return SupportedMediaTypes.Contains(contentType);

@@ -1,12 +1,9 @@
 ﻿using AutoMapper;
 using Doctrina.Application.Activities.Queries;
-using Doctrina.Application.ActivityProfiles.Commands;
 using Doctrina.Application.Common.Exceptions;
-using Doctrina.Application.Common.Interfaces;
 using Doctrina.Domain.Entities.Documents;
-using MediatR;
 using Doctrina.Persistence.Infrastructure;
-using System;
+using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -29,7 +26,7 @@ namespace Doctrina.Application.ActivityProfiles.Commands
         {
             var activity = await _mediator.Send(GetActivityQuery.Create(request.ActivityId));
 
-            if(activity == null)
+            if (activity == null)
             {
                 throw new NotFoundException("No activity profiles for activity.");
             }

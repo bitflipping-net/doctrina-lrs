@@ -1,8 +1,8 @@
-using System;
-using System.Threading.Tasks;
+using Doctrina.Application.Common.Caching.Internal;
 using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
-using Doctrina.Application.Common.Caching.Internal;
+using System;
+using System.Threading.Tasks;
 
 namespace Doctrina.Application.Common.Caching
 {

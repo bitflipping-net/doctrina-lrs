@@ -1,7 +1,6 @@
 ﻿using Doctrina.Domain.Entities.Documents;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
 
 namespace Doctrina.Persistence.Configurations.Documents
 {
@@ -24,7 +23,7 @@ namespace Doctrina.Persistence.Configurations.Documents
 
             builder.HasOne(e => e.Agent)
                 .WithMany()
-                .HasForeignKey(c=> c.AgentId);
+                .HasForeignKey(c => c.AgentId);
 
             builder.OwnsOne(x => x.Document, a =>
             {

@@ -17,12 +17,12 @@ namespace Doctrina.Persistence.Configurations
 
             builder.HasOne(g => g.Group)
                 .WithMany()
-                .HasForeignKey(x=> x.GroupId)
+                .HasForeignKey(x => x.GroupId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(e => e.Agent)
                 .WithMany()
-                .HasForeignKey(x=> x.AgentId)
+                .HasForeignKey(x => x.AgentId)
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }

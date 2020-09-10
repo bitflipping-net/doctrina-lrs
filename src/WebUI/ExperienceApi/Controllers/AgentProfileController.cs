@@ -1,13 +1,9 @@
 ﻿using Doctrina.Application.AgentProfiles.Commands;
 using Doctrina.Application.AgentProfiles.Queries;
-using Doctrina.Application.Agents.Commands;
-using Doctrina.Application.Agents.Queries;
 using Doctrina.ExperienceApi.Data;
-using Doctrina.ExperienceApi.Data.Documents;
 using Doctrina.WebUI.ExperienceApi.Mvc.Filters;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Net.Http.Headers;
@@ -34,8 +30,8 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
         [HttpGet(Order = 1)]
         [HttpHead]
         public async Task<ActionResult> GetAgentProfile(
-            [BindRequired, FromQuery]string profileId,
-            [BindRequired]Agent agent,
+            [BindRequired, FromQuery] string profileId,
+            [BindRequired] Agent agent,
             CancellationToken cancellationToken = default)
         {
 
@@ -55,7 +51,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 return NotFound();
             }
 
-            if(Request.TryConcurrencyCheck(profile?.Document.Checksum, profile?.Document.LastModified, out int statusCode))
+            if (Request.TryConcurrencyCheck(profile?.Document.Checksum, profile?.Document.LastModified, out int statusCode))
             {
                 return StatusCode(statusCode);
             }
@@ -70,8 +66,8 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
 
         [HttpGet(Order = 2)]
         public async Task<ActionResult> GetAgentProfilesAsync(
-            [BindRequired, FromQuery]Agent agent,
-            [FromQuery]DateTimeOffset? since = null,
+            [BindRequired, FromQuery] Agent agent,
+            [FromQuery] DateTimeOffset? since = null,
             CancellationToken cancelToken = default)
         {
             if (!ModelState.IsValid)
@@ -97,10 +93,10 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
         [HttpPut]
         [HttpPost]
         public async Task<ActionResult> SaveAgentProfileAsync(
-            [BindRequired, FromQuery]string profileId,
-            [BindRequired, FromQuery]Agent agent,
+            [BindRequired, FromQuery] string profileId,
+            [BindRequired, FromQuery] Agent agent,
             [BindRequired, FromHeader(Name = "Content-Type")] string contentType,
-            [BindRequired, FromBody]byte[] content,
+            [BindRequired, FromBody] byte[] content,
             CancellationToken cancellationToken = default)
         {
             if (!ModelState.IsValid)
@@ -110,12 +106,12 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
 
             var profile = await _mediator.Send(GetAgentProfileQuery.Create(agent, profileId), cancellationToken);
 
-            if(Request.TryConcurrencyCheck(profile?.Document.Checksum, profile?.Document.LastModified, out int statusCode))
+            if (Request.TryConcurrencyCheck(profile?.Document.Checksum, profile?.Document.LastModified, out int statusCode))
             {
                 return StatusCode(statusCode);
             }
 
-            if(profile == null)
+            if (profile == null)
             {
                 profile = await _mediator.Send(
                     CreateAgentProfileCommand.Create(agent, profileId, content, contentType),
@@ -136,8 +132,8 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
 
         [HttpDelete]
         public async Task<ActionResult> DeleteProfileAsync(
-            [BindRequired, FromQuery]string profileId,
-            [BindRequired]Agent agent,
+            [BindRequired, FromQuery] string profileId,
+            [BindRequired] Agent agent,
             [BindRequired, FromHeader(Name = "Content-Type")] string contentType,
             CancellationToken cancelToken = default)
         {
@@ -148,7 +144,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
 
             var profile = await _mediator.Send(GetAgentProfileQuery.Create(agent, profileId), cancelToken);
 
-            if(Request.TryConcurrencyCheck(profile?.Document.Checksum, profile?.Document.LastModified, out int statusCode))
+            if (Request.TryConcurrencyCheck(profile?.Document.Checksum, profile?.Document.LastModified, out int statusCode))
             {
                 return StatusCode(statusCode);
             }

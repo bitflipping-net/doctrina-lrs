@@ -10,15 +10,15 @@ namespace Doctrina.Application.Infrastructure.Automapper.Mappings.TypeConverters
     {
         public LanguageMapCollection Convert(LanguageMap source, LanguageMapCollection destination, ResolutionContext context)
         {
-            if(source == null)
+            if (source == null)
             {
                 return destination;
             }
-            if(destination == null)
+            if (destination == null)
             {
                 destination = new LanguageMapCollection();
             }
-            foreach(var sourceItem in source)
+            foreach (var sourceItem in source)
             {
                 destination[sourceItem.Key] = sourceItem.Value;
             }
@@ -27,15 +27,15 @@ namespace Doctrina.Application.Infrastructure.Automapper.Mappings.TypeConverters
 
         public LanguageMap Convert(LanguageMapCollection source, LanguageMap destination, ResolutionContext context)
         {
-            if(source == null)
+            if (source == null)
             {
                 return destination;
             }
-            if(destination == null)
+            if (destination == null)
             {
                 destination = new LanguageMap();
             }
-            foreach(var sourceItem in source)
+            foreach (var sourceItem in source)
             {
                 destination[sourceItem.Key] = sourceItem.Value;
             }
@@ -44,15 +44,15 @@ namespace Doctrina.Application.Infrastructure.Automapper.Mappings.TypeConverters
 
         public LanguageMapCollection Convert(LanguageMapCollection source, LanguageMapCollection destination, ResolutionContext context)
         {
-            if(source == null)
+            if (source == null)
             {
                 return destination;
             }
-            if(destination == null)
+            if (destination == null)
             {
                 destination = new LanguageMapCollection();
             }
-            foreach(var sourceItem in source)
+            foreach (var sourceItem in source)
             {
                 destination[sourceItem.Key] = sourceItem.Value;
             }

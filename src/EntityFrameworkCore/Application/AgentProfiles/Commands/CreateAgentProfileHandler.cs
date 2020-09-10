@@ -1,12 +1,9 @@
+using Doctrina.Application.Agents.Commands;
+using Doctrina.Domain.Entities.Documents;
+using Doctrina.Persistence.Infrastructure;
+using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
-using Doctrina.Application.Agents.Commands;
-using Doctrina.Application.Common.Interfaces;
-using Doctrina.Domain.Entities;
-using Doctrina.Domain.Entities.Documents;
-using Doctrina.ExperienceApi.Data.Documents;
-using MediatR;
-using Doctrina.Persistence.Infrastructure;
 
 namespace Doctrina.Application.AgentProfiles.Commands
 {
@@ -18,7 +15,7 @@ namespace Doctrina.Application.AgentProfiles.Commands
         public CreateAgentProfileHandler(IDoctrinaDbContext context, IMediator mediator)
         {
             _context = context;
-            _mediator =mediator;
+            _mediator = mediator;
         }
 
         public async Task<AgentProfileEntity> Handle(CreateAgentProfileCommand request, CancellationToken cancellationToken)

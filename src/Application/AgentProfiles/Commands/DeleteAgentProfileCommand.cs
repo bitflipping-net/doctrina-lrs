@@ -1,5 +1,4 @@
-﻿using System;
-using Doctrina.ExperienceApi.Data;
+﻿using Doctrina.ExperienceApi.Data;
 using MediatR;
 
 namespace Doctrina.Application.AgentProfiles.Commands

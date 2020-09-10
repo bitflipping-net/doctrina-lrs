@@ -1,13 +1,7 @@
 ﻿using AutoMapper;
-using Doctrina.Application.Agents.Queries;
-using Doctrina.Application.Common.Interfaces;
-using Doctrina.Domain.Entities;
-using Doctrina.Persistence.Infrastructure;
 using Doctrina.ExperienceApi.Data;
+using Doctrina.Persistence.Infrastructure;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 

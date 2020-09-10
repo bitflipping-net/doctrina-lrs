@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Doctrina.Domain.Entities.OwnedTypes;
+using System;
 using System.Diagnostics.CodeAnalysis;
-using Doctrina.Domain.Entities.OwnedTypes;
 
 namespace Doctrina.Domain.Entities.InteractionActivities
 {
-    public class InteractionComponent: IEquatable<InteractionComponent>
+    public class InteractionComponent : IEquatable<InteractionComponent>
     {
         public string Id { get; set; }
 

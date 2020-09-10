@@ -1,16 +1,14 @@
 ﻿using AutoMapper;
 using Doctrina.Application.Activities.Commands;
 using Doctrina.Application.Agents.Commands;
-using Doctrina.Application.Common.Interfaces;
 using Doctrina.Application.SubStatements.Commands;
 using Doctrina.Application.Verbs.Commands;
 using Doctrina.Domain.Entities;
-using Doctrina.Domain.Entities.Interfaces;
 using Doctrina.ExperienceApi.Data;
+using Doctrina.Persistence.Infrastructure;
 using MediatR;
 using System;
 using System.Threading;
-using Doctrina.Persistence.Infrastructure;
 using System.Threading.Tasks;
 
 namespace Doctrina.Application.SubStatements

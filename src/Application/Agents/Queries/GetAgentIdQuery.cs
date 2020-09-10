@@ -1,7 +1,6 @@
-using System;
-using Doctrina.Domain.Entities;
 using Doctrina.ExperienceApi.Data;
 using MediatR;
+using System;
 
 namespace Doctrina.Application.Agents.Queries
 {

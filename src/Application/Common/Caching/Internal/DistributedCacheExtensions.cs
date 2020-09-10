@@ -1,7 +1,7 @@
+using Microsoft.Extensions.Caching.Distributed;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Caching.Distributed;
 
 namespace Doctrina.Application.Common.Caching.Internal
 {
@@ -30,7 +30,7 @@ namespace Doctrina.Application.Common.Caching.Internal
             T value,
             DistributedCacheEntryOptions options)
         {
-            if(value == null)
+            if (value == null)
             {
                 return Task.CompletedTask;
             }
@@ -51,12 +51,13 @@ namespace Doctrina.Application.Common.Caching.Internal
             var val = await cache.GetAsync(key);
             var result = default(T);
 
-            if (val == null) return result;
+            if (val == null)
+                return result;
 
             using (var memoryStream = new MemoryStream(val))
             {
                 var binaryFormatter = new BinaryFormatter();
-                result = (T) binaryFormatter.Deserialize(memoryStream);
+                result = (T)binaryFormatter.Deserialize(memoryStream);
             }
 
             return result;
@@ -75,7 +76,7 @@ namespace Doctrina.Application.Common.Caching.Internal
             using (var memoryStream = new MemoryStream(cachedValue))
             {
                 var binaryFormatter = new BinaryFormatter();
-                value = (T) binaryFormatter.Deserialize(memoryStream);
+                value = (T)binaryFormatter.Deserialize(memoryStream);
             }
 
             return (true, value);

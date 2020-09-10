@@ -1,13 +1,12 @@
+using Doctrina.Application.Agents.Queries;
+using Doctrina.Application.Common.Exceptions;
+using Doctrina.Domain.Entities.Documents;
+using Doctrina.Persistence.Infrastructure;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Doctrina.Application.Agents.Queries;
-using Doctrina.Application.Common.Exceptions;
-using Doctrina.Application.Common.Interfaces;
-using Doctrina.Domain.Entities.Documents;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Doctrina.Persistence.Infrastructure;
 
 namespace Doctrina.Application.AgentProfiles.Commands
 {
@@ -27,11 +26,11 @@ namespace Doctrina.Application.AgentProfiles.Commands
             var agent = await _mediator.Send(GetAgentQuery.Create(request.Agent));
 
             var profile = await _context.AgentProfiles
-                            .Include(x=> x.Document)
+                            .Include(x => x.Document)
                             .Where(x => x.AgentId == agent.AgentId)
                             .SingleOrDefaultAsync(x => x.ProfileId == request.ProfileId, cancellationToken);
 
-            if(profile == null)
+            if (profile == null)
             {
                 throw new NotFoundException("AgentProfile", request.ProfileId);
             }

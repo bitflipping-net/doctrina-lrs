@@ -1,6 +1,3 @@
-using Doctrina.Domain.Entities;
-using Doctrina.Domain.Entities.Interfaces;
-using System;
 using System.Collections.Generic;
 
 namespace Doctrina.Application.Agents.Models

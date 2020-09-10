@@ -52,9 +52,9 @@ namespace Application.Tests.ActivityStates.Commands
 
             _context.ActivityStates.Add(new ActivityStateEntity(Encoding.UTF8.GetBytes(strBody1), contentType)
             {
-                    StateId = stateId,
-                    Activity = activityEntity,
-                    Agent = agentEntity
+                StateId = stateId,
+                Activity = activityEntity,
+                Agent = agentEntity
             });
             await _context.SaveChangesAsync();
 

@@ -1,7 +1,7 @@
 ﻿using Doctrina.Application.Tests.Common;
 using Doctrina.Domain.Entities;
-using Doctrina.Persistence;
 using Doctrina.ExperienceApi.Data;
+using Doctrina.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System;
 
@@ -20,7 +20,8 @@ namespace Doctrina.Application.Tests.Infrastructure
             context.Database.EnsureCreated();
 
             var activityId = new Iri("http://www.example.com/activityId/hashset");
-            context.Activities.Add(new ActivityEntity(){
+            context.Activities.Add(new ActivityEntity()
+            {
                 Id = activityId.ToString(),
                 Hash = activityId.ComputeHash()
             });

@@ -7,7 +7,7 @@ namespace Doctrina.Application.Agents.Queries
     {
         public GetPersonQueryValidator()
         {
-            RuleFor(x=> x.Agent).SetValidator(new AgentValidator());
+            RuleFor(x => x.Agent).SetValidator(new AgentValidator());
         }
     }
 }

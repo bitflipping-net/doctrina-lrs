@@ -1,9 +1,4 @@
 ﻿using AutoMapper;
-using Doctrina.Application.Activities.Commands;
-using Doctrina.Application.ActivityStates.Commands;
-using Doctrina.Application.Agents.Commands;
-using Doctrina.Application.Common.Interfaces;
-using Doctrina.Domain.Entities;
 using Doctrina.Domain.Entities.Documents;
 using Doctrina.ExperienceApi.Data.Documents;
 using Doctrina.Persistence.Infrastructure;

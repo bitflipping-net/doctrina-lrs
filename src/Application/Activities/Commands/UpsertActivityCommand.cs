@@ -1,7 +1,4 @@
-﻿using System;
-using Doctrina.Domain.Entities;
-using Doctrina.Domain.Entities.Interfaces;
-using Doctrina.ExperienceApi.Data;
+﻿using Doctrina.ExperienceApi.Data;
 using MediatR;
 using IActivity = Doctrina.Domain.Entities.Interfaces.IActivity;
 

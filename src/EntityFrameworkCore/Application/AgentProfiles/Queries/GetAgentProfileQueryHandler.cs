@@ -1,15 +1,13 @@
 using AutoMapper;
-using Doctrina.Application.AgentProfiles.Commands;
 using Doctrina.Application.AgentProfiles.Queries;
 using Doctrina.Application.Agents.Queries;
-using Doctrina.Application.Common.Interfaces;
 using Doctrina.Domain.Entities.Documents;
+using Doctrina.Persistence.Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Doctrina.Persistence.Infrastructure;
 
 namespace Doctrina.Application.AgentProfiles
 {
@@ -30,13 +28,13 @@ namespace Doctrina.Application.AgentProfiles
         {
             var agent = await _mediator.Send(GetAgentQuery.Create(request.Agent));
 
-            if(agent == null)
+            if (agent == null)
             {
                 return null;
             }
 
             var profile = await _context.AgentProfiles
-                .Include(x=> x.Document)
+                .Include(x => x.Document)
                 .AsNoTracking()
                 .Where(x => x.AgentId == agent.AgentId)
                 .SingleOrDefaultAsync(x => x.ProfileId == request.ProfileId, cancellationToken);

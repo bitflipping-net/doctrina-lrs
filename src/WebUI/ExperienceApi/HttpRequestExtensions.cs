@@ -1,6 +1,6 @@
 
-using System;
 using Microsoft.AspNetCore.Http;
+using System;
 
 namespace Doctrina.WebUI.ExperienceApi
 {
@@ -22,7 +22,7 @@ namespace Doctrina.WebUI.ExperienceApi
 
                     if (noneMatch.Tag.Value == "*")
                     {
-                        if(!string.IsNullOrEmpty(savedEntityTag))
+                        if (!string.IsNullOrEmpty(savedEntityTag))
                         {
                             statusCode = StatusCodes.Status412PreconditionFailed;
                             return true;
@@ -36,9 +36,9 @@ namespace Doctrina.WebUI.ExperienceApi
                 }
             }
 
-            if(headers.IfMatch.Count > 0)
+            if (headers.IfMatch.Count > 0)
             {
-                foreach(var match in headers.IfMatch)
+                foreach (var match in headers.IfMatch)
                 {
                     if (!match.Tag.HasValue)
                     {

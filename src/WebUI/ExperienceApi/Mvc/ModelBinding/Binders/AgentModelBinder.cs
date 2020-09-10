@@ -1,5 +1,4 @@
 ﻿using Doctrina.ExperienceApi.Data;
-using Doctrina.ExperienceApi.Data.Validation;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Threading.Tasks;
 

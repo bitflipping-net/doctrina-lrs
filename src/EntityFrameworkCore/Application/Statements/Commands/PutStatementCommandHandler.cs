@@ -1,11 +1,5 @@
-﻿using AutoMapper;
-using Doctrina.Application.Common.Interfaces;
-using Doctrina.Application.Statements.Commands;
-using Doctrina.Application.Statements.Queries;
-using Doctrina.Persistence.Infrastructure;
-using Doctrina.ExperienceApi.Data;
+﻿using Doctrina.Persistence.Infrastructure;
 using MediatR;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 

@@ -17,7 +17,7 @@ namespace Doctrina.Domain.Entities.Documents
         public Guid ActivityProfileId { get; set; }
         public string ProfileId { get; set; }
 
-        public Guid ActivityId {get;set;}
+        public Guid ActivityId { get; set; }
         public virtual ActivityEntity Activity { get; set; }
 
         public Guid? RegistrationId { get; set; }

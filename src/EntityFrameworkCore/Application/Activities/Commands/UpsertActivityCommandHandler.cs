@@ -1,16 +1,11 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoMapper;
-using Doctrina.Application.Common.Interfaces;
+﻿using AutoMapper;
 using Doctrina.Domain.Entities;
-using Doctrina.Domain.Entities.Interfaces;
-using Doctrina.Domain.Entities.OwnedTypes;
 using Doctrina.Persistence.Infrastructure;
-using Doctrina.ExperienceApi.Data;
-using Doctrina.ExperienceApi.Data.Json;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using IActivity = Doctrina.Domain.Entities.Interfaces.IActivity;
 
 namespace Doctrina.Application.Activities.Commands
@@ -34,11 +29,11 @@ namespace Doctrina.Application.Activities.Commands
                 .Include(ac => ac.Definition)
                 .FirstOrDefaultAsync(x => x.Hash == entity.Hash, cancellationToken);
 
-            if(current != null)
+            if (current != null)
             {
-                if(entity.Definition != null)
+                if (entity.Definition != null)
                 {
-                    if(current.Definition == null)
+                    if (current.Definition == null)
                     {
                         current.Definition = new ActivityDefinitionEntity();
                     }

@@ -1,8 +1,7 @@
-﻿using System.Text;
-using Doctrina.ExperienceApi.Client.Http;
+﻿using Doctrina.ExperienceApi.Client.Http;
 using Doctrina.ExperienceApi.Data.Json;
-using Doctrina.ExperienceApi.Data.Validation;
 using FluentValidation;
+using System.Text;
 
 namespace Doctrina.Application.ActivityStates.Commands
 {
@@ -10,11 +9,11 @@ namespace Doctrina.Application.ActivityStates.Commands
     {
         public UpdateStateDocumentValidator()
         {
-            RuleFor(x=> x.StateId).NotEmpty();
-            RuleFor(x=> x.ActivityId).NotEmpty();
-            RuleFor(x=> x.AgentId).NotEmpty();
-            RuleFor(x=> x.Content).NotEmpty();
-            RuleFor(x=> x.ContentType).NotEmpty();
+            RuleFor(x => x.StateId).NotEmpty();
+            RuleFor(x => x.ActivityId).NotEmpty();
+            RuleFor(x => x.AgentId).NotEmpty();
+            RuleFor(x => x.Content).NotEmpty();
+            RuleFor(x => x.ContentType).NotEmpty();
 
             RuleFor(x => x.Content)
                 .Must((content) =>
@@ -22,7 +21,7 @@ namespace Doctrina.Application.ActivityStates.Commands
                     JsonString jsonString = new JsonString(Encoding.UTF8.GetString(content));
                     return jsonString.IsValid();
                 })
-                .When(x=> x.ContentType == MediaTypes.Application.Json);
+                .When(x => x.ContentType == MediaTypes.Application.Json);
         }
     }
 }

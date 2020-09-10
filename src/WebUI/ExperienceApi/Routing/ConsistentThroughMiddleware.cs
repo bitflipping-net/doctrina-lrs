@@ -1,6 +1,4 @@
-﻿using Doctrina.Application.Common.Interfaces;
-using Doctrina.Application.Statements.Queries;
-using Doctrina.ExperienceApi.Client.Http;
+﻿using Doctrina.ExperienceApi.Client.Http;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using System;

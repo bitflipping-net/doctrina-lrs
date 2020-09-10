@@ -85,13 +85,15 @@ namespace Doctrina.Infrastructure
                     .AddApiAuthorization<DoctrinaUser, DoctrinaAuthorizationDbContext>();
             }
 
-            services.AddAuthentication(auth => {
+            services.AddAuthentication(auth =>
+            {
                 auth.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 auth.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
                 auth.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             })
             .AddCookie()
-            .AddOpenIdConnect(options => {
+            .AddOpenIdConnect(options =>
+            {
                 configuration.GetSection("OpenIdConnect").Bind(options);
             })
             .AddIdentityServerJwt();

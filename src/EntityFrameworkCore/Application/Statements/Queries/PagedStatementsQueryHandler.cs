@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Doctrina.Application.Statements.Models;
 using Doctrina.Domain.Entities;
+using Doctrina.Persistence.Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
@@ -8,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Doctrina.Persistence.Infrastructure;
 using System.Threading.Tasks;
 
 namespace Doctrina.Application.Statements.Queries
@@ -98,7 +98,7 @@ namespace Doctrina.Application.Statements.Queries
                             (
                                 statement.Context != null && statement.Context.ContextActivities != null &&
                                 (
-                                    statement.Context.ContextActivities.Category.Any(x=> x.Hash == activityHash) ||
+                                    statement.Context.ContextActivities.Category.Any(x => x.Hash == activityHash) ||
                                     statement.Context.ContextActivities.Parent.Any(x => x.Hash == activityHash) ||
                                     statement.Context.ContextActivities.Grouping.Any(x => x.Hash == activityHash) ||
                                     statement.Context.ContextActivities.Other.Any(x => x.Hash == activityHash)

@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using Doctrina.Application.Activities.Queries;
-using Doctrina.Application.Common.Interfaces;
 using Doctrina.Domain.Entities;
 using Doctrina.Persistence.Infrastructure;
-using Doctrina.ExperienceApi.Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;

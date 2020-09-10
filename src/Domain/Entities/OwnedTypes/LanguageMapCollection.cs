@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
@@ -39,7 +38,7 @@ namespace Doctrina.Domain.Entities.OwnedTypes
 
         public void Merge(LanguageMapCollection collection)
         {
-            if(collection == null)
+            if (collection == null)
             {
                 return;
             }

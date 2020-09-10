@@ -1,10 +1,8 @@
+using Doctrina.Persistence.Infrastructure;
+using MediatR;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Doctrina.Application.Agents.Queries;
-using Doctrina.Application.Common.Interfaces;
-using Doctrina.Persistence.Infrastructure;
-using MediatR;
 
 namespace Doctrina.Application.Agents.Queries
 {

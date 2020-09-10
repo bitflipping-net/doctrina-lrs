@@ -1,12 +1,9 @@
 ﻿using AutoMapper;
 using Doctrina.Application.Activities.Queries;
-using Doctrina.Application.ActivityProfiles.Queries;
-using Doctrina.Application.Common.Interfaces;
 using Doctrina.Domain.Entities.Documents;
-using Doctrina.ExperienceApi.Data.Documents;
+using Doctrina.Persistence.Infrastructure;
 using MediatR;
 using System.Threading;
-using Doctrina.Persistence.Infrastructure;
 using System.Threading.Tasks;
 
 namespace Doctrina.Application.ActivityProfiles.Queries
@@ -27,7 +24,7 @@ namespace Doctrina.Application.ActivityProfiles.Queries
         public async Task<ActivityProfileEntity> Handle(GetActivityProfileQuery request, CancellationToken cancellationToken)
         {
             var activityEntity = await _mediator.Send(GetActivityQuery.Create(request.ActivityId), cancellationToken);
-            if(activityEntity == null)
+            if (activityEntity == null)
             {
                 return null;
             }

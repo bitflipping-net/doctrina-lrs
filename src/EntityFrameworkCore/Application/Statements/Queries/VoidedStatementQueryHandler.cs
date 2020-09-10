@@ -1,12 +1,11 @@
 using AutoMapper;
 using Doctrina.Domain.Entities;
+using Doctrina.Persistence.Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading;
-using Doctrina.Persistence.Infrastructure;
 using System.Threading.Tasks;
-using Doctrina.Application.Statements.Queries;
 
 namespace Doctrina.Application.Statements.Queries
 {

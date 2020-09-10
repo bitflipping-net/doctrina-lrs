@@ -1,9 +1,6 @@
-﻿using Doctrina.Application.Activities.Commands;
-using Doctrina.Application.Activities.Queries;
-using Doctrina.Application.ActivityProfiles.Commands;
+﻿using Doctrina.Application.ActivityProfiles.Commands;
 using Doctrina.Application.ActivityProfiles.Queries;
 using Doctrina.ExperienceApi.Data;
-using Doctrina.ExperienceApi.Data.Documents;
 using Doctrina.WebUI.ExperienceApi.Mvc.Filters;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -90,7 +87,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            var profiles = await _mediator.Send(GetActivityProfilesQuery.Create(activityId,since), cancelToken);
+            var profiles = await _mediator.Send(GetActivityProfilesQuery.Create(activityId, since), cancelToken);
 
             if (profiles == null)
             {
@@ -142,7 +139,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             if (profile != null)
             {
                 // Optimistic Concurrency
-                if(HttpMethods.IsPut(Request.Method))
+                if (HttpMethods.IsPut(Request.Method))
                 {
                     return Conflict();
                 }
@@ -199,7 +196,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 return NotFound();
             }
 
-            if(Request.TryConcurrencyCheck(profile.Document.Checksum, profile.Document.LastModified, out int statusCode))
+            if (Request.TryConcurrencyCheck(profile.Document.Checksum, profile.Document.LastModified, out int statusCode))
             {
                 return StatusCode(statusCode);
             }

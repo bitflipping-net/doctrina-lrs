@@ -1,5 +1,4 @@
-﻿using Doctrina.Domain.Entities;
-using Doctrina.ExperienceApi.Data;
+﻿using Doctrina.ExperienceApi.Data;
 using MediatR;
 using System;
 
@@ -11,14 +10,12 @@ namespace Doctrina.Application.Statements.Commands
     public class CreateStatementCommand : IRequest<Guid>
     {
         public Statement Statement { get; private set; }
-        public bool Persist { get; private set; }
 
-        public static CreateStatementCommand Create(Statement statement, bool persist = true)
+        public static CreateStatementCommand Create(Statement statement)
         {
             return new CreateStatementCommand()
             {
                 Statement = statement,
-                Persist = persist
             };
         }
     }

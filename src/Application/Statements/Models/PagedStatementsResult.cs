@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using Doctrina.Domain.Entities;
-using Doctrina.ExperienceApi.Data;
+﻿using Doctrina.Domain.Entities;
+using System.Collections.Generic;
 
 namespace Doctrina.Application.Statements.Models
 {

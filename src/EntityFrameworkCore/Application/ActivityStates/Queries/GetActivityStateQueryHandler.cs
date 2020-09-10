@@ -1,16 +1,11 @@
 ﻿using AutoMapper;
-using Doctrina.Application.Common.Interfaces;
-using Doctrina.Domain.Entities;
 using Doctrina.Domain.Entities.Documents;
 using Doctrina.ExperienceApi.Data.Documents;
+using Doctrina.Persistence.Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using Doctrina.Persistence.Infrastructure;
 using System.Threading.Tasks;
 
 namespace Doctrina.Application.ActivityStates.Queries
@@ -34,7 +29,7 @@ namespace Doctrina.Application.ActivityStates.Queries
 
             var query = _context.ActivityStates
                 .AsNoTracking()
-                .Where(x=> x.StateId == request.StateId)
+                .Where(x => x.StateId == request.StateId)
                 .Where(x => x.Activity.Hash == activityHash)
                 .Where(x => x.Agent.AgentId == request.AgentId);
 
