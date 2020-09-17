@@ -55,7 +55,7 @@ namespace Doctrina.Application.Agents.Queries
                         && x.Account.Name == accountName,
                         cancellationToken);
                 }
-                else if (agent.ObjectType == EntityObjectType.Agent)
+                else if (agent.ObjectType == ObjectType.Agent)
                 {
                     throw new ArgumentException("Agent must have an identifier");
                 }

@@ -4,7 +4,7 @@ namespace Doctrina.Domain.Entities.InteractionActivities
 {
     public interface IInteractionActivity
     {
-        string InteractionType { get; set; }
+        string InteractionType { get; }
         ICollection<string> CorrectResponsesPattern { get; set; }
     }
 }

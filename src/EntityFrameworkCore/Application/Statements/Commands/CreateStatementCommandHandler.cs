@@ -89,26 +89,21 @@ namespace Doctrina.Application.Statements.Commands
             }
 
             var objType = request.Statement.Object.ObjectType;
-            newStatement.Object = new StatementObjectEntity();
-            if (objType == ObjectType.Activity)
+            if (objType == ExperienceApi.Data.ObjectType.Activity)
             {
-                newStatement.Object.ObjectType = EntityObjectType.Activity;
-                newStatement.Object.Activity = (ActivityEntity)await _mediator.Send(UpsertActivityCommand.Create((Activity)request.Statement.Object), cancellationToken);
+                newStatement.Object = (ActivityEntity)await _mediator.Send(UpsertActivityCommand.Create((Activity)request.Statement.Object), cancellationToken);
             }
-            else if (objType == ObjectType.Agent || objType == ObjectType.Group)
+            else if (objType == ExperienceApi.Data.ObjectType.Agent || objType == ExperienceApi.Data.ObjectType.Group)
             {
-                newStatement.Object.ObjectType = EntityObjectType.Agent;
-                newStatement.Object.Agent = (AgentEntity)await _mediator.Send(UpsertActorCommand.Create((Agent)request.Statement.Object), cancellationToken);
+                newStatement.Object = (AgentEntity)await _mediator.Send(UpsertActorCommand.Create((Agent)request.Statement.Object), cancellationToken);
             }
-            else if (objType == ObjectType.SubStatement)
+            else if (objType == ExperienceApi.Data.ObjectType.SubStatement)
             {
-                newStatement.Object.ObjectType = EntityObjectType.SubStatement;
-                newStatement.Object.SubStatement = (SubStatementEntity)await _mediator.Send(CreateSubStatementCommand.Create((SubStatement)request.Statement.Object), cancellationToken);
+                newStatement.Object = (SubStatementEntity)await _mediator.Send(CreateSubStatementCommand.Create((SubStatement)request.Statement.Object), cancellationToken);
             }
-            else if (objType == ObjectType.StatementRef)
+            else if (objType == ExperienceApi.Data.ObjectType.StatementRef)
             {
-                newStatement.Object.ObjectType = EntityObjectType.StatementRef;
-                newStatement.Object.StatementRef = _mapper.Map<StatementRefEntity>((StatementRef)request.Statement.Object);
+                newStatement.Object = _mapper.Map<StatementRefEntity>((StatementRef)request.Statement.Object);
             }
 
             if (request.Statement.Result != null)
@@ -116,7 +111,7 @@ namespace Doctrina.Application.Statements.Commands
                 newStatement.Result = _mapper.Map<ResultEntity>(request.Statement.Result);
             }
 
-            newStatement.Stored = request.Statement.Stored;
+            newStatement.CreatedAt = request.Statement.Stored;
             newStatement.Timestamp = request.Statement.Timestamp;
             newStatement.Version = request.Statement.Version.ToString();
             newStatement.FullStatement = request.Statement.ToJson();

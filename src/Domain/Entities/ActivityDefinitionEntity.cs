@@ -20,6 +20,7 @@ namespace Doctrina.Domain.Entities
 
         public ExtensionsCollection Extensions { get; set; }
 
+        public Guid StoreId { get; set; }
         //public string ActivityHash { get; set; }
         //public virtual ActivityEntity Activity { get; set; }
     }

@@ -6,9 +6,6 @@ namespace Doctrina.Domain.Entities.Interfaces
     {
         Guid AgentId { get; set; }
         string Name { get; set; }
-        string Mbox { get; set; }
-        string Mbox_SHA1SUM { get; set; }
-        string OpenId { get; set; }
-        Account Account { get; set; }
+        PersonaIdentifier IFI { get; set; }
     }
 }

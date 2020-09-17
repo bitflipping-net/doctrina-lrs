@@ -24,8 +24,6 @@ namespace Doctrina.Persistence.Configurations
 
             // Verb
             builder.HasOne(e => e.Verb)
-                .WithMany()
-                .HasForeignKey(st => st.VerbId)
                 .IsRequired();
 
             builder.OwnsOne(p => p.Object);
@@ -43,7 +41,7 @@ namespace Doctrina.Persistence.Configurations
             builder.HasMany(x => x.Attachments)
                 .WithOne();
 
-            builder.Property(e => e.Stored)
+            builder.Property(e => e.CreatedAt)
                .IsRequired()
                .ValueGeneratedOnAdd();
 

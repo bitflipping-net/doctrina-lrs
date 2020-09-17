@@ -4,7 +4,7 @@ using System.Globalization;
 
 namespace Doctrina.Domain.Entities
 {
-    public enum EntityObjectType
+    public enum ObjectType
     {
         Agent = 1,
         Group = 2,
@@ -29,9 +29,9 @@ namespace Doctrina.Domain.Entities
         {
             if (value is string)
             {
-                if (Enum.TryParse(typeof(EntityObjectType), value as string, out object converted))
+                if (Enum.TryParse(typeof(ObjectType), value as string, out object converted))
                 {
-                    return (EntityObjectType)converted;
+                    return (ObjectType)converted;
                 }
             }
 

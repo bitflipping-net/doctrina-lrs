@@ -2,6 +2,6 @@
 {
     public interface IStatementObjectEntity
     {
-        EntityObjectType ObjectType { get; }
+        Entities.ObjectType ObjectType { get; }
     }
 }

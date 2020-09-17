@@ -37,7 +37,7 @@ namespace Doctrina.Application.Agents
                 string accountName = ac.Name;
                 return await query.SingleOrDefaultAsync(x => x.Account.HomePage == accountHomepage && x.Account.Name == accountName, cancellationToken);
             }
-            else if (agent.ObjectType == EntityObjectType.Agent)
+            else if (agent.ObjectType == Domain.Entities.ObjectType.Agent)
             {
                 throw new ArgumentException("Agent must have an identifier");
             }

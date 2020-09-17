@@ -6,7 +6,7 @@ namespace Doctrina.Domain.Entities
 
     public class StatementRefEntity : IStatementObjectEntity, IStatementRefEntity
     {
-        public EntityObjectType ObjectType => EntityObjectType.StatementRef;
+        public Entities.ObjectType ObjectType => Entities.ObjectType.StatementRef;
 
         /// <summary>
         /// Primary key

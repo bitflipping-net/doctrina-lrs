@@ -1,4 +1,5 @@
 ﻿using Doctrina.Domain.Entities;
+using Doctrina.ExperienceApi.Data;
 using Doctrina.Persistence.Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +10,7 @@ namespace Doctrina.Application.Statements.Notifications
 {
     public class VoidStatementHandler : INotificationHandler<StatementCreated>
     {
-        private const string VoidedVerb = "http://adlnet.gov/expapi/verbs/voided";
+        private const string VerbVoided = KnownVerbs.Voided;
         private readonly IDoctrinaDbContext _context;
 
         public VoidStatementHandler(IDoctrinaDbContext context)
@@ -20,32 +21,34 @@ namespace Doctrina.Application.Statements.Notifications
         public async Task Handle(StatementCreated notification, CancellationToken cancellationToken)
         {
             var entity = notification.Created;
-            if (entity.Verb.Id == VoidedVerb)
+            if (entity.Verb.Id == VerbVoided)
             {
-                var statementRef = entity.Object;
-                if (statementRef.ObjectType == EntityObjectType.StatementRef)
+                StatementRefEntity statementRef = (StatementRefEntity)entity.Object;
+                if (statementRef.ObjectType == Domain.Entities.ObjectType.StatementRef)
                 {
-                    var statementId = statementRef.StatementRef.StatementId;
+                    var statementId = statementRef.StatementId;
                     var statement = await _context.Statements
                         .Include(x => x.Verb)
                         .FirstOrDefaultAsync(x => x.StatementId == statementId, cancellationToken);
 
                     if (statement != null
-                        && statement.Verb.Id != VoidedVerb)
+                        && statement.Verb.Id != VerbVoided)
                     {
                         statement.VoidingStatement = entity;
                         await _context.SaveChangesAsync(cancellationToken);
                     }
                 }
-            }else{
+            }
+            else
+            {
                 // Detect if current statement has already been voided
-                var voidingStatement = await _context.Statements.SingleOrDefaultAsync(x=> 
-                    x.Object.StatementRef.StatementId == entity.StatementId 
-                    && x.Verb.Id == VoidedVerb, 
+                var voidingStatement = await _context.Statements.SingleOrDefaultAsync(x =>
+                    ((StatementRefEntity)x.Object).StatementId == entity.StatementId
+                    && x.Verb.Id == VerbVoided,
                     cancellationToken
                 );
 
-                if(voidingStatement != null) 
+                if (voidingStatement != null)
                 {
                     entity.VoidingStatement = entity;
                     await _context.SaveChangesAsync(cancellationToken);

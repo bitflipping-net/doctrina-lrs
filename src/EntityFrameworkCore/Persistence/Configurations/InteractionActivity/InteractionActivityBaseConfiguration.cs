@@ -17,7 +17,7 @@ namespace Doctrina.Persistence.Configurations
             builder.HasKey("InteractionId");
 
             builder.ToTable("InteractionActivities")
-                .HasDiscriminator(x => x.InteractionType)
+                .HasDiscriminator<string>("InteractionType")
                 .HasValue<ChoiceInteractionActivity>("choice")
                 .HasValue<FillInInteractionActivity>("fill-in")
                 .HasValue<LongFillInInteractionActivity>("long-fill-in")
@@ -27,6 +27,9 @@ namespace Doctrina.Persistence.Configurations
                 .HasValue<TrueFalseInteractionActivity>("true-false")
                 .HasValue<LikertInteractionActivity>("likert")
                 .HasValue<OtherInteractionActivity>("other");
+
+            builder.Property(x => x.InteractionType)
+                .UsePropertyAccessMode(PropertyAccessMode.FieldDuringConstruction);
 
             builder.Property(e => e.CorrectResponsesPattern)
                 .HasConversion(new StringArrayValueConverter())

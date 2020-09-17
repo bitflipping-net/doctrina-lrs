@@ -17,5 +17,10 @@
         /// The length of a SHA1 hash, if 4 bits per char (160/4)
         /// </summary>
         public static int SHA1_HASH_LENGTH = 40;
+
+        /// <summary>
+        /// Maximum length of a persons full name
+        /// </summary>
+        public static int MAX_NAME_LENGTH = 100;
     }
 }

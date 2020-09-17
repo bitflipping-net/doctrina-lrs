@@ -14,7 +14,7 @@ namespace Doctrina.Application.Tests.Statements.Commands
     public class CreateStatementCommandTests : CommandTestBase
     {
         [Fact]
-        public async void ShouldRaiseStatementCreatingNotification()
+        public async void Should_Publish_StatementCreating()
         {
             // Arrange
             var mediatorMock = new Mock<IMediator>();
@@ -34,7 +34,7 @@ namespace Doctrina.Application.Tests.Statements.Commands
         }
 
         [Fact]
-        public async void Handle_GivenValidRequest_ShouldRaiseStatementCreatedNotification()
+        public async void Should_Publish_StatementCreated()
         {
             // Arrange
             var mediatorMock = new Mock<IMediator>();

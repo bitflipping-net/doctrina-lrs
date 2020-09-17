@@ -13,10 +13,20 @@ namespace Doctrina.Domain.Entities.Documents
             Document = new DocumentEntity(content, contentType);
         }
 
+        /// <summary>
+        /// The primary key
+        /// </summary>
         public Guid AgentProfileId { get; set; }
+
+        /// <summary>
+        /// The unique id of the profile
+        /// </summary>
         public string ProfileId { get; set; }
-        public Guid AgentId { get; set; }
+
+        public PersonaIdentifier IFI { get; set; }
+
         public virtual AgentEntity Agent { get; set; }
+
         public DocumentEntity Document { get; set; }
     }
 }

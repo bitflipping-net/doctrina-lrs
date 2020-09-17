@@ -9,10 +9,9 @@ namespace Doctrina.Domain.Entities
         public GroupEntity()
         {
             Members = new HashSet<GroupMemberEntity>();
-            ObjectType = EntityObjectType.Group;
         }
 
-        public override EntityObjectType ObjectType { get; set; }
+        public override Entities.ObjectType ObjectType => Entities.ObjectType.Group;
 
         public virtual ICollection<GroupMemberEntity> Members { get; set; }
     }

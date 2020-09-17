@@ -66,7 +66,7 @@ namespace Doctrina.Application.Mappings
                 .ForMember(x => x.Result, opt => opt.MapFrom(x => x.Result))
                 .ForMember(x => x.Context, opt => opt.MapFrom(x => x.Context))
                 .ForMember(x => x.Authority, opt => opt.MapFrom(x => x.Authority))
-                .ForMember(x => x.Stored, opt => opt.MapFrom(x => x.Stored))
+                .ForMember(x => x.CreatedAt, opt => opt.MapFrom(x => x.Stored))
                 .ForMember(x => x.Version, opt => opt.MapFrom(x => x.Version))
                 // Database specfic
                 .ForMember(x => x.ActorId, opt => opt.Ignore())

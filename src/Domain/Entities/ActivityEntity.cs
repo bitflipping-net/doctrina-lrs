@@ -5,7 +5,7 @@ namespace Doctrina.Domain.Entities
 {
     public class ActivityEntity : IActivity, IStatementObjectEntity
     {
-        public EntityObjectType ObjectType => EntityObjectType.Activity;
+        public Entities.ObjectType ObjectType => Entities.ObjectType.Activity;
 
         /// <summary>
         /// Entity Id

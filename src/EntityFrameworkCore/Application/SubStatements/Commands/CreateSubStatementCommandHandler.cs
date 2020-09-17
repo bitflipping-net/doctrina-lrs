@@ -49,15 +49,15 @@ namespace Doctrina.Application.SubStatements
             }
 
             var objType = subStatement.Object.ObjectType;
-            if (objType == EntityObjectType.Activity)
+            if (objType == Domain.Entities.ObjectType.Activity)
             {
                 subStatement.Object.Activity = (ActivityEntity)await _mediator.Send(UpsertActivityCommand.Create((Activity)request.SubStatement.Object));
             }
-            else if (objType == EntityObjectType.Agent || objType == EntityObjectType.Group)
+            else if (objType == Domain.Entities.ObjectType.Agent || objType == Domain.Entities.ObjectType.Group)
             {
                 subStatement.Object.Agent = await _mediator.Send(UpsertActorCommand.Create((Agent)request.SubStatement.Object));
             }
-            else if (objType == EntityObjectType.StatementRef)
+            else if (objType == Domain.Entities.ObjectType.StatementRef)
             {
                 // It's already mapped from automapper
                 // TODO: Additional logic should be performed here

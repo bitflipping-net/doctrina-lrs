@@ -24,9 +24,9 @@ namespace Doctrina.Application.Statements.Queries
         {
             if (!_appContext.ConsistentThroughDate.HasValue)
             {
-                var first = await _context.Statements.OrderByDescending(x => x.Stored)
+                var first = await _context.Statements.OrderByDescending(x => x.CreatedAt)
                     .FirstOrDefaultAsync(cancellationToken);
-                _appContext.ConsistentThroughDate = first?.Stored ?? DateTimeOffset.UtcNow;
+                _appContext.ConsistentThroughDate = first?.CreatedAt ?? DateTimeOffset.UtcNow;
             }
             return _appContext.ConsistentThroughDate.Value;
         }

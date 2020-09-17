@@ -7,9 +7,14 @@ namespace Doctrina.Domain.Entities
     public class VerbEntity : IVerbEntity
     {
         /// <summary>
-        /// Entity Id of the Verb
+        /// The Primary key
         /// </summary>
         public Guid VerbId { get; set; }
+
+        /// <summary>
+        /// The id of the <see cref="Organisation"/> this belongs to.
+        /// </summary>
+        public Guid OrganisationId { get; set; }
 
         /// <summary>
         /// SHA-1 of <see cref="Id"/>
@@ -21,6 +26,14 @@ namespace Doctrina.Domain.Entities
         /// </summary>
         public string Id { get; set; }
 
+        /// <summary>
+        /// JSON encoded string of the language maps
+        /// </summary>
         public LanguageMapCollection Display { get; set; }
+
+        /// <summary>
+        /// The id of the <see cref="Store"/> this verb belongs to.
+        /// </summary>
+        public Guid StoreId { get; set; }
     }
 }

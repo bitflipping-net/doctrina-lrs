@@ -17,23 +17,23 @@ namespace Doctrina.Application.Mappings.ValueResolvers
                 return null;
             }
 
-            if (sourceMember.ObjectType == EntityObjectType.Agent)
+            if (sourceMember.ObjectType == Domain.Entities.ObjectType.Agent)
             {
                 return context.Mapper.Map<Agent>(sourceMember.Agent);
             }
-            else if (sourceMember.ObjectType == EntityObjectType.Group)
+            else if (sourceMember.ObjectType == Domain.Entities.ObjectType.Group)
             {
                 return context.Mapper.Map<Group>(sourceMember.Agent);
             }
-            else if (sourceMember.ObjectType == EntityObjectType.Activity)
+            else if (sourceMember.ObjectType == Domain.Entities.ObjectType.Activity)
             {
                 return context.Mapper.Map<Activity>(sourceMember.Activity);
             }
-            else if (sourceMember.ObjectType == EntityObjectType.SubStatement)
+            else if (sourceMember.ObjectType == Domain.Entities.ObjectType.SubStatement)
             {
                 return context.Mapper.Map<SubStatement>(sourceMember.SubStatement);
             }
-            else if (sourceMember.ObjectType == EntityObjectType.StatementRef)
+            else if (sourceMember.ObjectType == Domain.Entities.ObjectType.StatementRef)
             {
                 return context.Mapper.Map<StatementRef>(sourceMember.StatementRef);
             }
@@ -54,31 +54,31 @@ namespace Doctrina.Application.Mappings.ValueResolvers
 
                 if (sourceMember.ObjectType == ObjectType.Agent)
                 {
-                    obj.ObjectType = EntityObjectType.Agent;
+                    obj.ObjectType = Domain.Entities.ObjectType.Agent;
                     obj.Agent = context.Mapper.Map<AgentEntity>((Agent)sourceMember);
                     return obj;
                 }
                 else if (sourceMember.ObjectType == ObjectType.Group)
                 {
-                    obj.ObjectType = EntityObjectType.Group;
+                    obj.ObjectType = Domain.Entities.ObjectType.Group;
                     obj.Agent = context.Mapper.Map<GroupEntity>((Group)sourceMember);
                     return obj;
                 }
                 else if (sourceMember.ObjectType == ObjectType.Activity)
                 {
-                    obj.ObjectType = EntityObjectType.Activity;
+                    obj.ObjectType = Domain.Entities.ObjectType.Activity;
                     obj.Activity = context.Mapper.Map<ActivityEntity>((Activity)sourceMember);
                     return obj;
                 }
                 else if (sourceMember.ObjectType == ObjectType.SubStatement)
                 {
-                    obj.ObjectType = EntityObjectType.SubStatement;
+                    obj.ObjectType = Domain.Entities.ObjectType.SubStatement;
                     obj.SubStatement = context.Mapper.Map<SubStatementEntity>((SubStatement)sourceMember);
                     return obj;
                 }
                 else if (sourceMember.ObjectType == ObjectType.StatementRef)
                 {
-                    obj.ObjectType = EntityObjectType.StatementRef;
+                    obj.ObjectType = Domain.Entities.ObjectType.StatementRef;
                     obj.StatementRef = context.Mapper.Map<StatementRefEntity>((StatementRef)sourceMember);
                     return obj;
                 }
