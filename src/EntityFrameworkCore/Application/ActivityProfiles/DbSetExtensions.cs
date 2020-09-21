@@ -14,7 +14,7 @@ namespace Doctrina.Application.ActivityProfiles
                 .Include(x => x.Activity)
                 .FirstOrDefaultAsync(x =>
                     x.ActivityId == activityId &&
-                    x.ProfileId == profileId &&
+                    x.Key == profileId &&
                     x.RegistrationId == registration,
                     cancellationToken);
         }

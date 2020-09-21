@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Doctrina.Application.Common.Exceptions;
+using Doctrina.Application.Common.Interfaces;
 using Doctrina.Domain.Entities.Documents;
 using Doctrina.ExperienceApi.Client.Http;
 using Doctrina.ExperienceApi.Data.Documents;
@@ -18,11 +19,13 @@ namespace Doctrina.Application.ActivityStates.Commands
     public class UpdateStateDocumentHandler : IRequestHandler<UpdateStateDocumentCommand, ActivityStateDocument>
     {
         private readonly IDoctrinaDbContext _context;
+        private readonly IStoreContext _storeContext;
         private readonly IMapper _mapper;
 
-        public UpdateStateDocumentHandler(IDoctrinaDbContext context, IMapper mapper)
+        public UpdateStateDocumentHandler(IDoctrinaDbContext context, IStoreContext storeContext, IMapper mapper)
         {
             _context = context;
+            _storeContext = storeContext;
             _mapper = mapper;
         }
 
@@ -30,13 +33,13 @@ namespace Doctrina.Application.ActivityStates.Commands
         {
             string activityHash = request.ActivityId.ComputeHash();
             var query = _context.ActivityStates
-                .Where(x => x.StateId == request.StateId)
+                .Where(x => x.Key == request.StateId)
                 .Where(x => x.Activity.Hash == activityHash)
-                .Where(x => x.Agent.AgentId == request.AgentId);
+                .Where(x => x.PersonaIdentifier.Id == request.PersonaIdentifier.Id);
 
             if (request.Registration.HasValue && request.Registration.Value != Guid.Empty)
             {
-                query.Where(x => x.Registration == request.Registration);
+                query.Where(x => x.RegistrationId == request.Registration);
             }
 
             ActivityStateEntity state = await query.SingleOrDefaultAsync(cancellationToken);
@@ -46,7 +49,7 @@ namespace Doctrina.Application.ActivityStates.Commands
                 throw new NotFoundException("State", request.StateId);
             }
 
-            var stateDocument = state.Document;
+            var stateDocument = state;
             if (stateDocument.ContentType != MediaTypes.Application.Json
             || request.ContentType != MediaTypes.Application.Json)
             {
@@ -60,9 +63,12 @@ namespace Doctrina.Application.ActivityStates.Commands
 
             byte[] mergedJsonBytes = Encoding.UTF8.GetBytes(jsonString.ToString());
 
-            state.Document.UpdateDocument(mergedJsonBytes, request.ContentType);
+            state.UpdateDocument(mergedJsonBytes, request.ContentType);
+            
             _context.ActivityStates.Update(state);
+
             await _context.SaveChangesAsync(cancellationToken);
+
             return _mapper.Map<ActivityStateDocument>(state);
         }
     }

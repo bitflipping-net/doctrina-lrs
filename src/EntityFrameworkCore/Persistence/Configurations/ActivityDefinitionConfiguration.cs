@@ -1,5 +1,6 @@
 ﻿using Doctrina.Domain.Entities;
 using Doctrina.Domain.Entities.OwnedTypes;
+using Doctrina.Domain.Entities.ValueObjects;
 using Doctrina.Persistence.ValueConverters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -13,9 +14,7 @@ namespace Doctrina.Persistence.Configurations
         {
             builder.ToTable("ActivityDefinitions");
 
-            builder.Property(x => x.ActivityDefinitionId)
-                .ValueGeneratedOnAdd();
-            builder.HasKey(x => x.ActivityDefinitionId);
+            builder.HasKey(x => new { x.ActivityId, x.StoreId });
 
             builder.Property(e => e.Type);
 

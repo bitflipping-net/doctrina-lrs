@@ -1,4 +1,4 @@
-﻿using Doctrina.Domain.Entities.OwnedTypes;
+﻿using Doctrina.Domain.Entities.ValueObjects;
 using System;
 using System.Diagnostics.CodeAnalysis;
 

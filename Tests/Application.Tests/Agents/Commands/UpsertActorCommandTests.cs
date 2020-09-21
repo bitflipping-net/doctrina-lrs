@@ -22,7 +22,7 @@ namespace Application.Tests.Agents.Commands
             var entityId = Guid.NewGuid();
             var agentEntity = new AgentEntity()
             {
-                AgentId = entityId,
+                Id = entityId,
                 Mbox = "mailto:doctrina@doctrina.com"
             };
             var agent = new Agent()
@@ -39,7 +39,7 @@ namespace Application.Tests.Agents.Commands
 
             // Assert
             result.ShouldNotBe(null);
-            result.AgentId.ShouldBe(entityId);
+            result.Id.ShouldBe(entityId);
         }
     }
 }

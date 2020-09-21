@@ -8,9 +8,19 @@ namespace Doctrina.Domain.Entities
         public Entities.ObjectType ObjectType => Entities.ObjectType.Activity;
 
         /// <summary>
-        /// Entity Id
+        /// The primary key
         /// </summary>
         public Guid ActivityId { get; set; }
+
+        /// <summary>
+        /// The id of the <see cref="Store"/>
+        /// </summary>
+        public Guid StoreId { get; set; }
+
+        /// <summary>
+        /// The store this activity is stored in.
+        /// </summary>
+        public virtual Store Store { get; set; }
 
         /// <summary>
         /// Hash of <see cref="Id"/>
@@ -23,5 +33,6 @@ namespace Doctrina.Domain.Entities
         public string Id { get; set; }
 
         public ActivityDefinitionEntity Definition { get; set; }
+        
     }
 }

@@ -4,17 +4,18 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Doctrina.Persistence.Configurations
 {
-    public class GroupConfiguration : IEntityTypeConfiguration<GroupEntity>
+    public class GroupConfiguration : IEntityTypeConfiguration<GroupPersona>
     {
-        public void Configure(EntityTypeBuilder<GroupEntity> builder)
+        public void Configure(EntityTypeBuilder<GroupPersona> builder)
         {
-            //builder.ToTable("Groups");
+            builder.HasBaseType<Persona>();
 
-            builder.HasBaseType<AgentEntity>();
+            builder.HasOne(e => e.Person)
+                .WithMany()
+                .IsRequired(false);
 
-            builder.HasMany(e => e.Members)
-                .WithOne()
-                .HasForeignKey(x => x.GroupMemberId);
+            builder.HasMany(x => x.Personas)
+                 .WithMany();
         }
     }
 }

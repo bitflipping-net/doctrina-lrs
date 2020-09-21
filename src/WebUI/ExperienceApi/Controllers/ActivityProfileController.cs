@@ -60,10 +60,10 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 return NotFound();
             }
 
-            var result = new FileContentResult(profile.Document.Content, profile.Document.ContentType)
+            var result = new FileContentResult(profile.Content, profile.ContentType)
             {
-                EntityTag = new EntityTagHeaderValue($"\"{profile.Document.Checksum}\""),
-                LastModified = profile.Document.LastModified
+                EntityTag = new EntityTagHeaderValue($"\"{profile.Checksum}\""),
+                LastModified = profile.UpdatedAt
             };
 
             return result;
@@ -94,9 +94,9 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 return Ok(Array.Empty<string>());
             }
 
-            IEnumerable<string> ids = profiles.Select(x => x.ProfileId);
-            string lastModified = profiles.OrderByDescending(x => x.Document.LastModified)
-                .FirstOrDefault()?.Document.LastModified?.ToString("o");
+            IEnumerable<string> ids = profiles.Select(x => x.Key);
+            string lastModified = profiles.OrderByDescending(x => x.UpdatedAt)
+                .FirstOrDefault()?.UpdatedAt.ToString("o");
 
             Response.Headers.Add("Last-Modified", lastModified);
             return Ok(ids);
@@ -131,7 +131,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 Registration = registration
             }, cancellationToken);
 
-            if (Request.TryConcurrencyCheck(profile?.Document.Checksum, profile?.Document.LastModified, out int statusCode))
+            if (Request.TryConcurrencyCheck(profile?.Checksum, profile?.UpdatedAt, out int statusCode))
             {
                 return StatusCode(statusCode);
             }
@@ -196,7 +196,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 return NotFound();
             }
 
-            if (Request.TryConcurrencyCheck(profile.Document.Checksum, profile.Document.LastModified, out int statusCode))
+            if (Request.TryConcurrencyCheck(profile.Checksum, profile.UpdatedAt, out int statusCode))
             {
                 return StatusCode(statusCode);
             }

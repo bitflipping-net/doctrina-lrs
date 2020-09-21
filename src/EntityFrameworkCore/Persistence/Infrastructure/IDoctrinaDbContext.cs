@@ -15,13 +15,14 @@ namespace Doctrina.Persistence.Infrastructure
     {
         DbSet<VerbEntity> Verbs { get; set; }
         DbSet<ActivityEntity> Activities { get; set; }
-        DbSet<Persona> Personas { get; set; }
+        DbSet<Person> Personas { get; set; }
         DbSet<StatementEntity> Statements { get; set; }
         DbSet<AgentProfileEntity> AgentProfiles { get; set; }
         DbSet<ActivityProfileEntity> ActivityProfiles { get; set; }
         DbSet<ActivityStateEntity> ActivityStates { get; set; }
         DbSet<Organisation> Organisations { get; set; }
         DbSet<Client> Clients { get; set; }
+        DbSet<Store> Stores { get; set; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
         ChangeTracker ChangeTracker { get; }

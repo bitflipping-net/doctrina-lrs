@@ -10,9 +10,14 @@ namespace Doctrina.Persistence.Configurations
         {
             builder.ToTable("Activities");
 
+            builder.HasKey(x => new { x.ActivityId, x.StoreId });
+
+            builder.Property(a => a.StoreId)
+                .IsRequired();
+
             builder.Property(x => x.ActivityId)
-                .ValueGeneratedOnAdd();
-            builder.HasKey(x => x.ActivityId);
+                .ValueGeneratedOnAdd()
+                .IsRequired();
 
             builder.Property(e => e.Id)
                .HasMaxLength(Constants.MAX_URL_LENGTH)
@@ -21,11 +26,6 @@ namespace Doctrina.Persistence.Configurations
             builder.Property(x => x.Hash)
                 .HasMaxLength(Constants.SHA1_HASH_LENGTH)
                 .IsRequired();
-
-            builder.HasOne(x => x.Definition);
-
-            builder.HasIndex(x => x.Id)
-               .IsUnique();
 
             builder.HasIndex(x => x.Hash)
                 .IsUnique();

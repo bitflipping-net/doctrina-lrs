@@ -8,42 +8,19 @@ namespace Doctrina.Persistence.Configurations.Documents
     {
         public void Configure(EntityTypeBuilder<AgentProfileEntity> builder)
         {
-            builder.ToTable("AgentProfiles");
+            builder.HasBaseType<DocumentEntity>();
 
-            builder.Property(e => e.AgentProfileId)
-                .ValueGeneratedOnAdd();
-            builder.HasKey(x => x.AgentProfileId);
-
-            builder.Property(e => e.ProfileId)
+            builder.Property(e => e.Key);
+                
+            builder.Property(e => e.Key)
                 .HasMaxLength(Constants.MAX_URL_LENGTH)
                 .IsRequired();
 
-            builder.HasIndex(e => e.ProfileId)
-                .IsUnique();
+            builder.HasOne(e => e.PersonaIdentifier)
+                .WithMany();
 
-            builder.HasOne(e => e.Agent)
-                .WithMany()
-                .HasForeignKey(c => c.AgentId);
-
-            builder.OwnsOne(x => x.Document, a =>
-            {
-                a.Property(e => e.ContentType)
-                    .HasMaxLength(255);
-
-                a.Property(e => e.Content);
-
-                a.Property(e => e.Checksum)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                a.Property(e => e.LastModified)
-                    .ValueGeneratedOnAddOrUpdate();
-
-                a.Property(e => e.CreateDate)
-                    .ValueGeneratedOnAdd();
-
-                a.WithOwner();
-            });
+            builder.HasOne(doc => doc.Activity)
+                .WithMany();
         }
     }
 }

@@ -1,10 +1,14 @@
+using Doctrina.Application.Common;
 using Doctrina.Application.Common.Interfaces;
 using Doctrina.Domain.Entities;
 using Doctrina.Infrastructure.Identity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
+using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
@@ -14,9 +18,11 @@ namespace Doctrina.WebUI.ExperienceApi.Authentication
 {
     public class ExperienceApiAuthenticationHandler : AuthenticationHandler<ExperienceApiAuthenticationOptions>
     {
+        private const string AUTHORIZATION = "Authorization";
         private readonly DoctrinaAuthorizationDbContext _authorizationDbContext;
-        private readonly IAuthorityContext _authority;
+        private readonly IClientContext _clientContext;
         private readonly IWebHostEnvironment _environment;
+        public readonly IHttpContextAccessor _httpContextAccessor;
 
         public ExperienceApiAuthenticationHandler(
             IOptionsMonitor<ExperienceApiAuthenticationOptions> options,
@@ -24,33 +30,57 @@ namespace Doctrina.WebUI.ExperienceApi.Authentication
             UrlEncoder encoder,
             ISystemClock clock,
             DoctrinaAuthorizationDbContext authorizationDbContext,
-            IAuthorityContext authority,
-            IWebHostEnvironment environment
+            IClientContext clientContext,
+            IWebHostEnvironment environment,
+            IHttpContextAccessor httpContextAccessor
         ) : base(options, logger, encoder, clock)
         {
             _authorizationDbContext = authorizationDbContext;
-            _authority = authority;
+            _clientContext = clientContext;
             _environment = environment;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            // Create authenticated user
-            var identities = new List<ClaimsIdentity> { new ClaimsIdentity(AuthenticationTypes.Basic) };
-            var ticket = new AuthenticationTicket(new ClaimsPrincipal(identities), ExperienceApiAuthenticationOptions.DefaultScheme);
+            if (!Request.Headers.ContainsKey("Authorization"))
+                return AuthenticateResult.Fail("Unauthorized");
 
-            await Task.CompletedTask;
-
-            _authority.Authority = new Domain.Entities.AgentEntity()
+            string authorizationHeader = Request.Headers["Authorization"];
+            if (string.IsNullOrEmpty(authorizationHeader))
             {
-                Account = new Account()
-                {
-                    HomePage = $"{Request.Scheme}://{Request.Host}",
-                    Name = "TestClientApp" // TODO: Name of the client app authorized
-                }
-            };
+                return AuthenticateResult.NoResult();
+            }
 
-            return AuthenticateResult.Success(ticket);
+            if(!authorizationHeader.StartsWith("Basic", StringComparison.OrdinalIgnoreCase))
+            {
+                return AuthenticateResult.Fail("Unauthorized");
+            }
+
+            string basicAuth = authorizationHeader.Substring("basic".Length).Trim();
+
+            if (string.IsNullOrEmpty(basicAuth))
+            {
+                return AuthenticateResult.Fail("Unauthorized");
+            }
+
+            var result = await _clientContext.AuthenticateAsync(basicAuth);
+
+            if (result.IsSuccess)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, result.Client.Name),
+                };
+
+                var identity = new ClaimsIdentity(claims, Scheme.Name);
+                var principal = new System.Security.Principal.GenericPrincipal(identity, null);
+                var ticket = new AuthenticationTicket(principal, Scheme.Name);
+
+                return AuthenticateResult.Success(ticket);
+            }
+
+            return AuthenticateResult.Fail(result.Message);
         }
     }
 }

@@ -45,6 +45,8 @@ namespace Doctrina.Application.Activities.Commands
             entity.ActivityId = Guid.NewGuid();
             _context.Activities.Add(entity);
 
+            await _context.SaveChangesAsync(cancellationToken);
+
             return entity;
         }
     }

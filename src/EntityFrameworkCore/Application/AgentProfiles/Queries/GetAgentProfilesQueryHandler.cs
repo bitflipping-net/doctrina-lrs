@@ -32,7 +32,7 @@ namespace Doctrina.Application.AgentProfiles
             var query = _context.AgentProfiles
                 .AsNoTracking()
                 .Include(x => x.Document)
-                .Where(a => a.Agent.AgentId == agentEntity.AgentId);
+                .Where(a => a.Agent.AgentId == agentEntity.Id);
 
             if (request.Since.HasValue)
             {

@@ -20,7 +20,7 @@ namespace Doctrina.Application.Agents.Queries
         public async Task<Guid?> Handle(GetAgentIdQuery request, CancellationToken cancellationToken)
         {
             var agent = await _mediator.Send(GetAgentQuery.Create(request.Agent));
-            return agent?.AgentId;
+            return agent?.Id;
         }
     }
 }

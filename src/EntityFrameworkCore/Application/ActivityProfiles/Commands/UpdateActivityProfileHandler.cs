@@ -33,7 +33,7 @@ namespace Doctrina.Application.ActivityProfiles.Commands
 
             ActivityProfileEntity profile = await _context.ActivityProfiles.GetProfileAsync(activity.ActivityId, request.ProfileId, request.Registration, cancellationToken);
 
-            profile.Document.UpdateDocument(request.Content, request.ContentType);
+            profile.UpdateDocument(request.Content, request.ContentType);
 
             _context.ActivityProfiles.Update(profile);
             await _context.SaveChangesAsync(cancellationToken);

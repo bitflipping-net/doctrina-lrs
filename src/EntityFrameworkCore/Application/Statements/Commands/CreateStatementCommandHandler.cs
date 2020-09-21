@@ -21,14 +21,14 @@ namespace Doctrina.Application.Statements.Commands
         private readonly IDoctrinaDbContext _context;
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
-        private readonly IAuthorityContext _authorityContext;
+        private readonly IStoreContext _storeContext;
 
-        public CreateStatementCommandHandler(IDoctrinaDbContext context, IMediator mediator, IMapper mapper, IAuthorityContext currentAuthority)
+        public CreateStatementCommandHandler(IDoctrinaDbContext context, IMediator mediator, IMapper mapper, IStoreContext storeContext)
         {
             _context = context;
             _mediator = mediator;
             _mapper = mapper;
-            _authorityContext = currentAuthority;
+            _storeContext = storeContext;
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace Doctrina.Application.Statements.Commands
             // Prepare statement for mapping
             if (request.Statement.Id.HasValue)
             {
-                bool any = await _context.Statements.AnyAsync(x => x.StatementId == request.Statement.Id, cancellationToken);
+                bool any = await _context.Statements.AnyAsync(x => x.Id == request.Statement.Id, cancellationToken);
                 if (any)
                 {
                     return request.Statement.Id.Value;
@@ -60,7 +60,7 @@ namespace Doctrina.Application.Statements.Commands
             if (request.Statement.Authority == null)
             {
                 // TODO: Map group?
-                request.Statement.Authority = _mapper.Map<Agent>(_authorityContext.Authority);
+                request.Statement.Authority = _storeContext.GetClientAuthority();
             }
             else
             {
@@ -70,13 +70,19 @@ namespace Doctrina.Application.Statements.Commands
             // Start mapping statement
             StatementEntity newStatement = new StatementEntity();
             newStatement.StatementId = request.Statement.Id.GetValueOrDefault();
+
+            (VerbEntity)await _mediator.Send(UpsertVerbCommand.Create(request.Statement.Verb), cancellationToken);
             newStatement.Verb = (VerbEntity)await _mediator.Send(UpsertVerbCommand.Create(request.Statement.Verb), cancellationToken);
-            newStatement.Actor = (AgentEntity)await _mediator.Send(UpsertActorCommand.Create(request.Statement.Actor), cancellationToken);
-            newStatement.Authority = (AgentEntity)await _mediator.Send(UpsertActorCommand.Create(request.Statement.Authority), cancellationToken);
+
+            HandleActor
+
+            newStatement.Actor = request.Statement.Actor.ToJson();
+
+            newStatement.Authority = request.Statement.Authority.ToJson();
 
             if (request.Statement.Context != null)
             {
-                newStatement.Context = _mapper.Map<ContextEntity>(request.Statement.Context);
+                newStatement.Context = request.Statement.Context.ToJson();
                 ContextEntity context = newStatement.Context;
                 if (context.Instructor != null)
                 {
@@ -114,7 +120,6 @@ namespace Doctrina.Application.Statements.Commands
             newStatement.CreatedAt = request.Statement.Stored;
             newStatement.Timestamp = request.Statement.Timestamp;
             newStatement.Version = request.Statement.Version.ToString();
-            newStatement.FullStatement = request.Statement.ToJson();
 
             _context.Statements.Add(newStatement);
 

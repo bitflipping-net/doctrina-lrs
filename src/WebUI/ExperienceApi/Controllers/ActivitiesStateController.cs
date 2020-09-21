@@ -59,7 +59,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             {
                 return await GetMutipleStates(
                     activityId,
-                    agentEntity.AgentId,
+                    agentEntity.Id,
                     registration,
                     since,
                     cancellationToken
@@ -70,8 +70,8 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             {
                 StateId = stateId,
                 ActivityId = activityId,
-                AgentId = agentEntity.AgentId,
-                Registration = registration
+                IFI = agentEntity.Persona,
+                RegistrationId = registration
             }, cancellationToken);
 
             if (stateDocument == null)
@@ -152,8 +152,8 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             {
                 StateId = stateId,
                 ActivityId = activityId,
-                AgentId = storedAgent.AgentId,
-                Registration = registration
+                IFI = storedAgent.Persona,
+                RegistrationId = registration
             }, cancellationToken);
 
             if (stateDocument != null)
@@ -162,7 +162,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 {
                     StateId = stateId,
                     ActivityId = activityId,
-                    AgentId = storedAgent.AgentId,
+                    PersonaIdentifier = storedAgent.Persona,
                     Content = body,
                     ContentType = contentType,
                     Registration = registration
@@ -174,10 +174,10 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 {
                     StateId = stateId,
                     Activity = activity,
-                    Agent = storedAgent,
+                    PersonaIdentifier = storedAgent.Persona,
                     Content = body,
                     ContentType = contentType,
-                    Registration = registration
+                    RegistrationId = registration
                 }, cancellationToken);
             }
 
@@ -209,7 +209,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 await _mediator.Send(new DeleteActivityStatesCommand()
                 {
                     ActivityId = activityId,
-                    AgentId = agentEntity.AgentId,
+                    IFI = agentEntity.Persona,
                     Registration = registration
                 }, cancellationToken);
 
@@ -221,8 +221,8 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 {
                     StateId = stateId,
                     ActivityId = activityId,
-                    AgentId = agentEntity.AgentId,
-                    Registration = registration
+                    IFI = agentEntity.Persona,
+                    RegistrationId = registration
                 }, cancellationToken);
 
                 if (stateDocument == null)
@@ -234,7 +234,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 {
                     StateId = stateId,
                     ActivityId = activityId,
-                    AgentId = agentEntity.AgentId,
+                    IFI = agentEntity.Persona,
                     Registration = registration
                 }, cancellationToken);
             }

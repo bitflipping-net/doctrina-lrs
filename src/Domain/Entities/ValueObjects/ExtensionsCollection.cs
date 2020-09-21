@@ -3,8 +3,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Doctrina.Domain.Entities.OwnedTypes
+namespace Doctrina.Domain.Entities.ValueObjects
 {
+    /// <summary>
+    /// Extensions Object serialized to and from JSON
+    /// </summary>
     public class ExtensionsCollection : IDictionary<Uri, JToken>
     {
         private readonly IDictionary<Uri, JToken> _values = new Dictionary<Uri, JToken>();

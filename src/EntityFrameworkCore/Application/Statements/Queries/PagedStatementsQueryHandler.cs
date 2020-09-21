@@ -70,7 +70,7 @@ namespace Doctrina.Application.Statements.Queries
                 var actor = _mapper.Map<AgentEntity>(request.Agent);
                 var currentAgent = await _context.Agents.AsNoTracking()
                     .FirstOrDefaultAsync(x => x.ObjectType == actor.ObjectType
-                    && x.AgentId == actor.AgentId, cancellationToken);
+                    && x.AgentId == actor.Id, cancellationToken);
                 if (currentAgent != null)
                 {
                     Guid agentId = currentAgent.AgentId;
@@ -98,7 +98,7 @@ namespace Doctrina.Application.Statements.Queries
                     }
                     else
                     {
-                        query = query.Where(x => x.Actor.AgentId == actor.AgentId);
+                        query = query.Where(x => x.Actor.AgentId == actor.Id);
                     }
                 }
                 else

@@ -17,7 +17,7 @@ namespace Doctrina.Application.Tests.Statements.Commands
             };
             var entity = _mapper.Map<VerbEntity>(verb);
             entity.ShouldNotBeNull();
-            entity.Id.ShouldNotBeNull();
+            entity.IRI.ShouldNotBeNull();
 
             var backverb = _mapper.Map<Verb>(entity);
             backverb.ShouldNotBeNull();
@@ -49,7 +49,7 @@ namespace Doctrina.Application.Tests.Statements.Commands
             {
                 Verb = new VerbEntity()
                 {
-                    Id = "https://google.com"
+                    IRI = "https://google.com"
                 }
             };
             var iri = Iri.Parse(entity.Verb.Id);

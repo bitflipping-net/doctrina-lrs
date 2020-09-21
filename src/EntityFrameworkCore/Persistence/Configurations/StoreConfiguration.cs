@@ -22,6 +22,15 @@ namespace Doctrina.Persistence.Configurations
 
             builder.Property(store => store.CreatedAt)
                 .ValueGeneratedOnAdd();
+
+            builder.HasMany(x => x.Statements)
+                .WithOne();
+
+            builder.HasMany(store => store.Clients)
+                .WithOne();
+
+            builder.HasMany(store => store.Verbs)
+                .WithOne();
         }
     }
 }

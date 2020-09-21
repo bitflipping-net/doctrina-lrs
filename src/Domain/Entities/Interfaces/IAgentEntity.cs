@@ -4,8 +4,8 @@ namespace Doctrina.Domain.Entities.Interfaces
 {
     public interface IAgentEntity
     {
-        Guid AgentId { get; set; }
+        Guid Id { get; set; }
         string Name { get; set; }
-        PersonaIdentifier IFI { get; set; }
+        Persona Persona { get; set; }
     }
 }

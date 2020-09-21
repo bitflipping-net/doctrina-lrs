@@ -1,4 +1,4 @@
-﻿using Doctrina.Domain.Entities.OwnedTypes;
+﻿using Doctrina.Domain.Entities.ValueObjects;
 using System;
 
 namespace Doctrina.Domain.Entities
@@ -6,6 +6,7 @@ namespace Doctrina.Domain.Entities
     public class AttachmentEntity
     {
         public Guid Id { get; set; }
+
         public string UsageType { get; set; }
 
         public LanguageMapCollection Description { get; set; }

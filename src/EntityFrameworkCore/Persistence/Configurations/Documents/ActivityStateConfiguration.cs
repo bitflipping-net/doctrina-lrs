@@ -8,46 +8,17 @@ namespace Doctrina.Persistence.Configurations.Documents
     {
         public void Configure(EntityTypeBuilder<ActivityStateEntity> builder)
         {
-            builder.ToTable("ActivityStates");
+            builder.HasBaseType<DocumentEntity>();
 
-            builder.Property(e => e.ActivityStateId)
-                .ValueGeneratedOnAdd();
-            builder.HasKey(x => x.ActivityStateId);
-
-            builder.Property(e => e.StateId)
-                .IsRequired()
-                .HasMaxLength(Constants.MAX_URL_LENGTH);
+            builder.Property(e => e.Key);
 
             builder.HasOne(e => e.Activity)
                 .WithMany();
 
-            builder.HasOne(e => e.Agent)
+            builder.Property(x => x.RegistrationId);
+
+            builder.HasOne(e => e.PersonaIdentifier)
                 .WithMany();
-
-            builder.Property(x => x.Registration);
-
-            //builder.HasIndex(e => new { e.StateId, e.Agent, e.Activity, e.Registration })
-            //    .IsUnique();
-
-            builder.OwnsOne(x => x.Document, a =>
-            {
-                a.Property(e => e.ContentType)
-                    .HasMaxLength(255);
-
-                a.Property(e => e.Content);
-
-                a.Property(e => e.Checksum)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                a.Property(e => e.LastModified)
-                    .ValueGeneratedOnAddOrUpdate();
-
-                a.Property(e => e.CreateDate)
-                    .ValueGeneratedOnAdd();
-
-                a.WithOwner();
-            });
         }
     }
 }

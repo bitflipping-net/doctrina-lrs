@@ -1,12 +1,11 @@
 using Doctrina.Domain.Entities.InteractionActivities;
-using Doctrina.Domain.Entities.OwnedTypes;
+using Doctrina.Domain.Entities.ValueObjects;
 using System;
 
 namespace Doctrina.Domain.Entities
 {
     public interface IActivityDefinitionEntity
     {
-        Guid ActivityDefinitionId { get; set; }
         LanguageMapCollection Names { get; set; }
         LanguageMapCollection Descriptions { get; set; }
         string Type { get; set; }

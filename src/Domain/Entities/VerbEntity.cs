@@ -1,5 +1,5 @@
 ﻿using Doctrina.Domain.Entities.Interfaces;
-using Doctrina.Domain.Entities.OwnedTypes;
+using Doctrina.Domain.Entities.ValueObjects;
 using System;
 
 namespace Doctrina.Domain.Entities
@@ -12,19 +12,14 @@ namespace Doctrina.Domain.Entities
         public Guid VerbId { get; set; }
 
         /// <summary>
-        /// The id of the <see cref="Organisation"/> this belongs to.
-        /// </summary>
-        public Guid OrganisationId { get; set; }
-
-        /// <summary>
-        /// SHA-1 of <see cref="Id"/>
+        /// SHA-1 of <see cref="IRI"/>
         /// </summary>
         public string Hash { get; set; }
 
         /// <summary>
         /// Corresponds to a Verb definition. (IRI)
         /// </summary>
-        public string Id { get; set; }
+        public string IRI { get; set; }
 
         /// <summary>
         /// JSON encoded string of the language maps

@@ -61,7 +61,7 @@ namespace Doctrina.Application.Mappings.ValueResolvers
                 else if (sourceMember.ObjectType == ObjectType.Group)
                 {
                     obj.ObjectType = Domain.Entities.ObjectType.Group;
-                    obj.Agent = context.Mapper.Map<GroupEntity>((Group)sourceMember);
+                    obj.Agent = context.Mapper.Map<Domain.Entities.GroupPersona>((Group)sourceMember);
                     return obj;
                 }
                 else if (sourceMember.ObjectType == ObjectType.Activity)

@@ -25,7 +25,7 @@ namespace Doctrina.Application.AgentProfiles.Commands
             var profile = new AgentProfileEntity(request.Content, request.ContentType)
             {
                 ProfileId = request.ProfileId,
-                AgentId = agent.AgentId
+                AgentId = agent.Id
             };
 
             _context.AgentProfiles.Add(profile);

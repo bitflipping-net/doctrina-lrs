@@ -33,28 +33,28 @@ namespace Doctrina.Application.Agents.Commands
             {
                 actor = (request.Actor.ObjectType == ObjectType.Agent
                     ? _mapper.Map<Entities.AgentEntity>(request.Actor)
-                    : _mapper.Map<Entities.GroupEntity>(request.Actor));
-                actor.AgentId = Guid.NewGuid();
-                _context.Agents.Add(actor);
+                    : _mapper.Map<Entities.GroupPersona>(request.Actor));
+                actor.Id = Guid.NewGuid();
+                _context.Agent.Add(actor);
                 isNew = true;
             }
 
             if (!isNew)
             {
-                if (request.Actor is Group group && actor is Entities.GroupEntity groupEntity)
+                if (request.Actor is Group group && actor is Entities.GroupPersona groupEntity)
                 {
                     // Perform group update logic, add group member etc.
                     foreach (var member in group.Member)
                     {
                         var savedGrpActor = await _mediator.Send(UpsertActorCommand.Create(member), cancellationToken);
 
-                        if (groupEntity.Members.Any(x => x.AgentId == savedGrpActor.AgentId))
+                        if (groupEntity.Personas.Any(x => x.Identifier == savedGrpActor.Id))
                             continue;
 
-                        groupEntity.Members.Add(new Entities.GroupMemberEntity()
+                        groupEntity.Personas.Add(new Entities.GroupMemberIdentifier()
                         {
-                            AgentId = savedGrpActor.AgentId,
-                            GroupId = groupEntity.AgentId,
+                            PersonaIdentifier = savedGrpActor.Persona,
+                            GroupId = groupEntity.Id,
                         });
                     }
 

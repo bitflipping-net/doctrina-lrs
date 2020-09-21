@@ -13,17 +13,12 @@ namespace Doctrina.Domain.Entities
         /// <summary>
         /// The primary key
         /// </summary>
-        public int StatementId { get; set; }
-
-        /// <summary>
-        /// The id of the statement
-        /// </summary>
-        public Guid Id { get; set; }
+        public Guid StatementId { get; set; }
 
         /// <summary>
         /// The actor of the statement (IFI)
         /// </summary>
-        public PersonaIdentifier Actor { get; set; }
+        public Persona Actor { get; set; }
 
         /// <summary>
         /// JSON representation of the verb
@@ -33,17 +28,17 @@ namespace Doctrina.Domain.Entities
         /// <summary>
         /// JSON representation of the statement object
         /// </summary>
-        public string Object { get; set; }
+        public StatementObject Object { get; set; }
 
         /// <summary>
         /// JSON representation of the statement context
         /// </summary>
-        public string Context { get; set; }
+        public ContextEntity Context { get; set; }
 
         /// <summary>
         /// JSON representation of the statement result
         /// </summary>
-        public string Result { get; set; }
+        public ResultEntity Result { get; set; }
 
         /// <summary>
         /// The date and time this statement was stamped.
@@ -69,6 +64,11 @@ namespace Doctrina.Domain.Entities
         /// The store this statements belongs to
         /// </summary>
         public Guid StoreId { get; set; }
+
+        /// <summary>
+        /// The xAPI version
+        /// </summary>
+        public string Version { get; set; }
 
         #region Navigation Properties
         public virtual StatementEntity VoidingStatement { get; set; }

@@ -21,7 +21,7 @@ namespace Application.Tests.Agents.Commands
             // Arrange
             var mediatorMock = new Mock<IMediator>();
             var mapperMock = new Mock<IMapper>();
-            var actor = new Group()
+            var actor = new Doctrina.ExperienceApi.Data.Group()
             {
                 Member = new[]{
                     new Agent()
@@ -49,8 +49,8 @@ namespace Application.Tests.Agents.Commands
             var result = await handler.Handle(cmd, CancellationToken.None);
 
             // Assert
-            result.AgentId.ShouldNotBe(Guid.Empty);
-            result.ShouldBeOfType<GroupEntity>();
+            result.Id.ShouldNotBe(Guid.Empty);
+            result.ShouldBeOfType<Doctrina.Domain.Entities.GroupPersona>();
         }
     }
 }

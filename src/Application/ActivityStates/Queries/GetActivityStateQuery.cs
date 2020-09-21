@@ -1,4 +1,5 @@
-﻿using Doctrina.ExperienceApi.Data;
+﻿using Doctrina.Domain.Entities;
+using Doctrina.ExperienceApi.Data;
 using Doctrina.ExperienceApi.Data.Documents;
 using MediatR;
 using System;
@@ -9,7 +10,7 @@ namespace Doctrina.Application.ActivityStates.Queries
     {
         public string StateId { get; set; }
         public Iri ActivityId { get; set; }
-        public Guid AgentId { get; set; }
-        public Guid? Registration { get; set; }
+        public Persona IFI { get; set; }
+        public Guid? RegistrationId { get; set; }
     }
 }

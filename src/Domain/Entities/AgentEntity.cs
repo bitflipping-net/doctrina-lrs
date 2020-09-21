@@ -8,9 +8,9 @@ namespace Doctrina.Domain.Entities
         public virtual Entities.ObjectType ObjectType => Entities.ObjectType.Agent;
 
         /// <summary>
-        /// The primary key
+        /// The primary key of the agent of group
         /// </summary>
-        public Guid AgentId { get; set; }
+        public Guid Id { get; set; }
 
         /// <summary>
         /// The name of the agent
@@ -18,8 +18,10 @@ namespace Doctrina.Domain.Entities
         public string Name { get; set; }
 
         /// <summary>
-        /// 
+        /// The persona of the agent (required)
         /// </summary>
-        public PersonaIdentifier IFI { get; set; }
+        public Persona Persona { get; set; }
+
+        public Guid StoreId { get; set; }
     }
 }

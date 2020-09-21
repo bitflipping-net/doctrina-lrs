@@ -20,9 +20,9 @@ public class AgentMppings : IHaveCustomMapping
            .ForMember(ent => ent.Account, opt => opt.MapFrom(x => x.Account))
            .ReverseMap();
 
-        configuration.CreateMap<Group, GroupEntity>()
+        configuration.CreateMap<Group, Group>()
            .IncludeBase<Agent, AgentEntity>()
-           .ForMember(ent => ent.Members, opt => opt.Ignore())
+           .ForMember(ent => ent.People, opt => opt.Ignore())
            .ReverseMap();
     }
 }

@@ -18,40 +18,43 @@ namespace Doctrina.Persistence.Configurations
             // Actor
             builder.HasOne(e => e.Actor)
                 .WithMany()
-                .HasForeignKey(st => st.ActorId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.NoAction);
 
             // Verb
             builder.HasOne(e => e.Verb)
+                .WithMany()
                 .IsRequired();
 
-            builder.OwnsOne(p => p.Object);
+            builder.HasOne(p => p.Object)
+                .WithOne();
 
             builder.HasOne(e => e.Result)
-                .WithMany();
+                .WithMany()
+                .IsRequired(false);
 
             builder.HasOne(e => e.Context)
-               .WithMany();
+               .WithMany()
+               .IsRequired(false);
 
             builder.Property(e => e.Timestamp)
-                .IsRequired()
+                .IsRequired(true)
                 .ValueGeneratedOnAdd();
 
             builder.HasMany(x => x.Attachments)
-                .WithOne();
+                .WithOne()
+                .IsRequired(false);
 
             builder.Property(e => e.CreatedAt)
                .IsRequired()
                .ValueGeneratedOnAdd();
 
             builder.Property(e => e.Version)
-                .HasMaxLength(7);
+                .HasMaxLength(7)
+                .IsRequired(true);
 
-            builder.HasOne(e => e.Authority)
-                .WithMany()
-                .HasForeignKey(e => e.AuthorityId)
-                .OnDelete(DeleteBehavior.NoAction);
+            builder.Property(e => e.Authority)
+                .IsRequired();
 
             builder.HasOne(e => e.VoidingStatement)
                 .WithMany()

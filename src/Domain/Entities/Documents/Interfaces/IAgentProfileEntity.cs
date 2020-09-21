@@ -1,10 +1,6 @@
 ﻿namespace Doctrina.Domain.Entities.Documents
 {
-    public interface IAgentProfileEntity
+    public interface IAgentProfileEntity : IDocumentEntity
     {
-        string ProfileId { get; set; }
-        AgentEntity Agent { get; set; }
-        DocumentEntity Document { get; set; }
-
     }
 }

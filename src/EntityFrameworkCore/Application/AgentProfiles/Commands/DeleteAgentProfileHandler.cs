@@ -32,7 +32,7 @@ namespace Doctrina.Application.AgentProfiles
 
             AgentProfileEntity profile = await _context.AgentProfiles
                             .AsNoTracking()
-                            .Where(x => x.AgentId == agentEntity.AgentId)
+                            .Where(x => x.AgentId == agentEntity.Id)
                             .SingleOrDefaultAsync(x => x.ProfileId == request.ProfileId, cancellationToken);
 
             if (profile != null)

@@ -14,7 +14,7 @@ namespace Doctrina.Persistence
         {
         }
 
-        public DbSet<Persona> Personas { get; set; }
+        public DbSet<Person> Personas { get; set; }
         public DbSet<Organisation> Organisations { get; set; }
         public DbSet<Client> Clients { get; set; }
         public DbSet<Store> Stores { get; set; }

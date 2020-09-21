@@ -36,7 +36,7 @@ namespace Doctrina.Application.AgentProfiles
             var profile = await _context.AgentProfiles
                 .Include(x => x.Document)
                 .AsNoTracking()
-                .Where(x => x.AgentId == agent.AgentId)
+                .Where(x => x.AgentId == agent.Id)
                 .SingleOrDefaultAsync(x => x.ProfileId == request.ProfileId, cancellationToken);
 
             return profile;

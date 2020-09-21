@@ -1,5 +1,6 @@
-﻿using Doctrina.Domain.Entities.OwnedTypes;
+﻿using Doctrina.Domain.Entities.ValueObjects;
 using System;
+using System.Collections.Generic;
 
 namespace Doctrina.Domain.Entities
 {
@@ -13,6 +14,6 @@ namespace Doctrina.Domain.Entities
         public string Platform { get; set; }
         public string Language { get; set; }
         public ExtensionsCollection Extensions { get; set; }
-        public ContextActivitiesEntity ContextActivities { get; set; }
+        public ICollection<ContextActivity> ContextActivities { get; set; }
     }
 }

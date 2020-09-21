@@ -31,11 +31,11 @@ namespace Doctrina.Application.ActivityStates.Queries
                 .AsNoTracking()
                 .Where(x => x.StateId == request.StateId)
                 .Where(x => x.Activity.Hash == activityHash)
-                .Where(x => x.Agent.AgentId == request.AgentId);
+                .Where(x => x.Agent.AgentId == request.IFI);
 
-            if (request.Registration.HasValue)
+            if (request.RegistrationId.HasValue)
             {
-                query.Where(x => x.Registration == request.Registration);
+                query.Where(x => x.Registration == request.RegistrationId);
             }
 
             ActivityStateEntity state = await query.SingleOrDefaultAsync(cancellationToken);

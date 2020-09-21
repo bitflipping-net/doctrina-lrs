@@ -10,14 +10,16 @@ namespace Doctrina.Domain.Entities.Documents
     {
         public DocumentEntity() { }
 
-        public DocumentEntity(byte[] body, string contentType)
+        public DocumentEntity(byte[] content, string contentType)
         {
-            Content = body;
+            Content = content;
             ContentType = contentType;
-            LastModified = DateTimeOffset.UtcNow;
-            CreateDate = DateTimeOffset.UtcNow;
+            UpdatedAt = DateTimeOffset.UtcNow;
+            CreatedAt = DateTimeOffset.UtcNow;
             Checksum = GenerateChecksum();
         }
+
+        public string Key { get; set; }
 
         /// <summary>
         /// Representation of the Content-Type header received
@@ -37,12 +39,37 @@ namespace Doctrina.Domain.Entities.Documents
         /// <summary>
         /// UTC Date when the document was last modified
         /// </summary>
-        public DateTimeOffset? LastModified { get; set; }
+        public DateTimeOffset UpdatedAt { get; set; }
 
         /// <summary>
         /// UTC Date when the document was created
         /// </summary>
-        public DateTimeOffset CreateDate { get; set; }
+        public DateTimeOffset CreatedAt { get; set; }
+
+        /// <summary>
+        /// Persona identifier this belongs to. (optional)
+        /// </summary>
+        public Persona PersonaIdentifier { get; set; }
+
+        /// <summary>
+        /// Activity this belongs to. (optional)
+        /// </summary>
+        public ActivityEntity Activity { get; set; }
+
+        /// <summary>
+        /// Registration Id (optional)
+        /// </summary>
+        public Guid? RegistrationId { get; set; }
+
+        /// <summary>
+        /// The id of the <see cref="Store"/>
+        /// </summary>
+        public Guid StoreId { get; set; }
+
+        /// <summary>
+        /// The <see cref="Store"/> this belongs to.
+        /// </summary>
+        public virtual Store Store { get; set; }
 
         // Methods:
         private string GenerateChecksum()
@@ -62,10 +89,10 @@ namespace Doctrina.Domain.Entities.Documents
         // Factories:
         public void UpdateDocument(byte[] content, string contentType)
         {
-            this.Content = content;
-            this.ContentType = contentType;
-            this.LastModified = DateTimeOffset.UtcNow;
-            Checksum = this.GenerateChecksum();
+            Content = content;
+            ContentType = contentType;
+            UpdatedAt = DateTimeOffset.UtcNow;
+            Checksum = GenerateChecksum();
         }
     }
 }

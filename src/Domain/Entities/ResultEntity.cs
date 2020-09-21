@@ -1,4 +1,5 @@
 ﻿using Doctrina.Domain.Entities.OwnedTypes;
+using Doctrina.Domain.Entities.ValueObjects;
 using System;
 
 namespace Doctrina.Domain.Entities

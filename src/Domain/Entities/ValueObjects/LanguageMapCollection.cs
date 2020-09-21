@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Doctrina.Domain.Entities.OwnedTypes
+namespace Doctrina.Domain.Entities.ValueObjects
 {
     public class LanguageMapCollection : IDictionary<string, string>, IEqualityComparer<LanguageMapCollection>
     {

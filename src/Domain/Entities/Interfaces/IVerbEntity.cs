@@ -1,4 +1,5 @@
 using Doctrina.Domain.Entities.OwnedTypes;
+using Doctrina.Domain.Entities.ValueObjects;
 using System;
 
 namespace Doctrina.Domain.Entities.Interfaces
@@ -7,7 +8,7 @@ namespace Doctrina.Domain.Entities.Interfaces
     {
         Guid VerbId { get; set; }
         string Hash { get; set; }
-        string Id { get; set; }
+        string IRI { get; set; }
         LanguageMapCollection Display { get; set; }
     }
 }

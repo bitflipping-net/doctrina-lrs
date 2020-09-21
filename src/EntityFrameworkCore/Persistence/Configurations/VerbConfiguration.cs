@@ -1,5 +1,5 @@
 ﻿using Doctrina.Domain.Entities;
-using Doctrina.Domain.Entities.OwnedTypes;
+using Doctrina.Domain.Entities.ValueObjects;
 using Doctrina.Persistence.ValueConverters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -13,15 +13,13 @@ namespace Doctrina.Persistence.Configurations
         {
             builder.ToTable("Verbs");
 
-            builder.Property(x => x.VerbId)
-                .ValueGeneratedOnAdd();
-            builder.HasKey(e => e.VerbId);
+            builder.HasKey(e => new { e.Hash, e.StoreId } );
 
             builder.Property(e => e.Hash)
                 .IsRequired()
                 .HasMaxLength(Constants.SHA1_HASH_LENGTH);
 
-            builder.Property(e => e.Id)
+            builder.Property(e => e.IRI)
                 .IsRequired()
                 .HasMaxLength(Constants.MAX_URL_LENGTH);
 
@@ -30,12 +28,6 @@ namespace Doctrina.Persistence.Configurations
                 .HasColumnType("ntext")
                 .Metadata
                 .SetValueComparer(new ValueComparer<LanguageMapCollection>(false));
-
-            builder.HasIndex(x => x.Hash)
-               .IsUnique();
-
-            builder.HasIndex(x => x.Id)
-               .IsUnique();
         }
     }
 }

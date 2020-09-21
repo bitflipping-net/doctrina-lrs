@@ -6,14 +6,29 @@ namespace Doctrina.Domain.Entities
     {
         public Guid ClientId { get; set; }
 
-        public DateTime CreatedAt { get; set; }
+        /// <summary>
+        /// Was created at
+        /// </summary>
+        public DateTimeOffset CreatedAt { get; set; }
 
-        public DateTime UpdatedAt { get; set; }
+        /// <summary>
+        /// Was last updated at
+        /// </summary>
+        public DateTimeOffset UpdatedAt { get; set; }
 
+        /// <summary>
+        /// Name of the client
+        /// </summary>
         public string Name { get; set; }
 
+        /// <summary>
+        /// API key for authorization
+        /// </summary>
         public string API { get; set; }
 
+        /// <summary>
+        /// Wether client is enabled or not.
+        /// </summary>
         public bool Enabled { get; set; }
 
         /// <summary>
@@ -27,15 +42,18 @@ namespace Doctrina.Domain.Entities
         public string[] Scopes { get; set; }
 
         /// <summary>
-        /// The organisation this client belong to.
-        /// </summary>
-        public Guid OrganisationId { get; set; }
-
-        /// <summary>
-        /// The id of the <see cref="Store"/> that pushed statements are stored in.
+        /// The id of the <see cref="Store"/> that statements are stored in.
         /// </summary>
         public Guid StoreId { get; set; }
 
+        /// <summary>
+        /// The store this client belongs to.
+        /// </summary>
         public virtual Store Store { get; set; }
+
+        /// <summary>
+        /// The organisation this client belong to.
+        /// </summary>
+        public virtual Organisation Organisation { get; set; }
     }
 }

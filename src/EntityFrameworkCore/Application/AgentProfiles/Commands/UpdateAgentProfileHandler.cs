@@ -27,7 +27,7 @@ namespace Doctrina.Application.AgentProfiles.Commands
 
             var profile = await _context.AgentProfiles
                             .Include(x => x.Document)
-                            .Where(x => x.AgentId == agent.AgentId)
+                            .Where(x => x.AgentId == agent.Id)
                             .SingleOrDefaultAsync(x => x.ProfileId == request.ProfileId, cancellationToken);
 
             if (profile == null)

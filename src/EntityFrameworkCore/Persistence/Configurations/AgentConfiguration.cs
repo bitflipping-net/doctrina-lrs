@@ -8,23 +8,21 @@ namespace Doctrina.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<AgentEntity> builder)
         {
-            builder.Property(x => x.AgentId)
+            builder.Property(x => x.Id)
                 .ValueGeneratedOnAdd();
-            builder.HasKey(x => x.AgentId);
+            builder.HasKey(x => x.Id);
 
             builder.ToTable("Agents")
                 .HasDiscriminator<string>("ObjectType")
-                .HasValue<AgentEntity>(Domain.Entities.ObjectType.Agent.ToString())
-                .HasValue<GroupEntity>(Domain.Entities.ObjectType.Group.ToString());
+                .HasValue<AgentEntity>(ObjectType.Agent.ToString())
+                .HasValue<GroupPersona>(ObjectType.Group.ToString());
 
             builder.Property(e => e.Name)
                 .HasMaxLength(100);
 
-            builder.HasOne(x => x.IFI)
-                .WithMany();
-
-            builder.Property(x => x.IFI)
-                .HasColumnName("ifi");
+            builder.HasOne(x => x.Persona)
+                .WithMany()
+                .IsRequired();
         }
     }
 }

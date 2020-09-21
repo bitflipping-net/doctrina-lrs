@@ -26,10 +26,10 @@ namespace Doctrina.Application.ActivityStates.Commands
 
             var state = new ActivityStateEntity(request.Content, request.ContentType)
             {
-                StateId = request.StateId,
+                Key = request.StateId,
                 Activity = request.Activity,
-                Agent = request.Agent,
-                Registration = request.Registration
+                PersonaIdentifier = request.PersonaIdentifier,
+                RegistrationId = request.RegistrationId
             };
 
             _context.ActivityStates.Add(state);

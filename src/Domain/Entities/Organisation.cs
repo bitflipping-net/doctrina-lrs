@@ -45,5 +45,10 @@ namespace Doctrina.Domain.Entities
         /// Stores in this organisation
         /// </summary>
         public virtual ICollection<Store> Stores { get; set; }
+
+        /// <summary>
+        /// People in this organisation
+        /// </summary>
+        public virtual ICollection<Person> People { get; set; }
     }
 }
