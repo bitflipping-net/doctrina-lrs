@@ -1,7 +1,7 @@
 using AutoMapper;
 using Doctrina.Application.AgentProfiles.Commands;
 using Doctrina.Application.AgentProfiles.Queries;
-using Doctrina.Domain.Entities.Documents;
+using Doctrina.Domain.Models.Documents;
 using Doctrina.Persistence.Infrastructure;
 using MediatR;
 using System.Threading;
@@ -24,15 +24,15 @@ namespace Doctrina.Application.AgentProfiles
 
         public async Task<AgentProfileEntity> Handle(UpsertAgentProfileCommand request, CancellationToken cancellationToken)
         {
-            var profile = await _mediator.Send(GetAgentProfileQuery.Create(request.Agent, request.ProfileId), cancellationToken);
+            var profile = await _mediator.Send(GetAgentProfileQuery.Create(request.Persona, request.ProfileId), cancellationToken);
             if (profile == null)
             {
                 return await _mediator.Send(
-                    CreateAgentProfileCommand.Create(request.Agent, request.ProfileId, request.Content, request.ContentType),
+                    CreateAgentProfileCommand.Create(request.Persona, request.ProfileId, request.Content, request.ContentType),
                 cancellationToken);
             }
 
-            return await _mediator.Send(UpdateAgentProfileCommand.Create(request.Agent, request.ProfileId, request.Content, request.ContentType), cancellationToken);
+            return await _mediator.Send(UpdateAgentProfileCommand.Create(request.Persona, request.ProfileId, request.Content, request.ContentType), cancellationToken);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Doctrina.Domain.Entities;
+﻿using Doctrina.Domain.Models;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -10,10 +10,10 @@ namespace Doctrina.Application.Statements.Notifications
 {
     public class StatementVoided : INotification
     {
-        public StatementEntity Voiding { get; private set; }
-        public StatementEntity Voided { get; private set; }
+        public StatementModel Voiding { get; private set; }
+        public StatementModel Voided { get; private set; }
 
-        public static StatementVoided Create(StatementEntity voidingStatement, StatementEntity voidedStatement)
+        public static StatementVoided Create(StatementModel voidingStatement, StatementModel voidedStatement)
         {
             return new StatementVoided()
             {

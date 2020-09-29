@@ -1,26 +1,29 @@
-﻿using Doctrina.Domain.Entities;
+﻿using Doctrina.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Doctrina.Persistence.Configurations
 {
-    public class ContextActivitiesConfiguration : IEntityTypeConfiguration<ContextActivitiesEntity>
+    public class ContextActivitiesConfiguration : IEntityTypeConfiguration<ContextActivity>
     {
-        public void Configure(EntityTypeBuilder<ContextActivitiesEntity> builder)
+        public void Configure(EntityTypeBuilder<ContextActivity> builder)
         {
-            builder.ToTable("ContextActivities");
+            builder.HasKey(ac => new { ac.ContextId, ac.ContextType, ac.ActivityId });
 
-            builder.Property(e => e.ContextActivitiesId)
-                .ValueGeneratedOnAdd();
-            builder.HasKey(e => e.ContextActivitiesId);
+            builder.HasOne(ac => ac.Context)
+                .WithMany()
+                .HasForeignKey(ac => ac.ContextId)
+                .IsRequired();
 
-            builder.OwnsMany(e => e.Parent);
+            builder.HasOne(ac => ac.Activity)
+                .WithMany()
+                .HasForeignKey(ac => ac.ActivityId)
+                .IsRequired();
 
-            builder.OwnsMany(e => e.Grouping);
-
-            builder.OwnsMany(e => e.Category);
-
-            builder.OwnsMany(e => e.Other);
+            builder.Property(ac => ac.ContextType)
+                .HasConversion(new EnumToStringConverter<ContextType>())
+                .IsRequired();
         }
     }
 }

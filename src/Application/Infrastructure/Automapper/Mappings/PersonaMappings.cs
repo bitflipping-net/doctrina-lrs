@@ -1,7 +1,8 @@
 using AutoMapper;
+using Doctrina.Application.Infrastructure.ExperienceApi;
 using Doctrina.Application.Interfaces.Mapping;
-using Doctrina.Domain.Entities;
-using Doctrina.Domain.Entities.Interfaces;
+using Doctrina.Domain.Models;
+using Doctrina.Domain.Models.Interfaces;
 using Doctrina.ExperienceApi.Data;
 
 public class PersonaMappings : IHaveCustomMapping
@@ -11,21 +12,17 @@ public class PersonaMappings : IHaveCustomMapping
         configuration.CreateMap<IAgentEntity, IAgentEntity>();
 
         configuration.CreateMap<Agent, Persona>()
-            .ForMember(ent => ent.Id, opt => opt.Ignore())
-            .ForMember(ent => ent.Persona, opt => opt.Ignore())
             .ForMember(ent => ent.PersonaId, opt => opt.Ignore())
             .ForMember(ent => ent.StoreId, opt => opt.Ignore())
             .ForMember(ent => ent.Store, opt => opt.Ignore())
-           .ForMember(ent => ent.Type, opt => opt.MapFrom(x => x.GetIdentifierKey()))
+            .ForMember(ent => ent.ObjectType, opt => opt.MapFrom(x => x.ObjectType))
+           .ForMember(ent => ent.Key, opt => opt.MapFrom(x => x.GetIdentifierKey()))
            .ForMember(ent => ent.Value, opt => opt.MapFrom(x => x.GetIdentifierValue()))
            .ReverseMap();
 
-        configuration.CreateMap<Group, Group>()
+        configuration.CreateMap<Group, PersonaGroup>()
            .IncludeBase<Agent, Persona>()
-           .ForMember(ent => ent.People, opt => opt.Ignore())
+           .ForMember(ent => ent.Members, opt => opt.Ignore()) // Members are mapped when created from Agent
            .ReverseMap();
-
-        configuration.CreateMap<Agent, Persona>()
-            .ForMember(x=> x.Type, opt=> opt.MapFrom(x=> x.GetIdentifierKey()))
     }
 }

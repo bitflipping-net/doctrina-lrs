@@ -1,6 +1,6 @@
-﻿using Doctrina.ExperienceApi.Data;
-using MediatR;
 using System;
+using Doctrina.ExperienceApi.Data;
+using MediatR;
 
 namespace Doctrina.Application.Statements.Commands
 {

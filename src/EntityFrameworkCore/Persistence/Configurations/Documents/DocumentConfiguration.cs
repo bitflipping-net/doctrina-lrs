@@ -1,4 +1,4 @@
-﻿using Doctrina.Domain.Entities.Documents;
+using Doctrina.Domain.Models.Documents;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -8,6 +8,8 @@ namespace Doctrina.Persistence.Configurations.Documents
     {
         public void Configure(EntityTypeBuilder<DocumentEntity> builder)
         {
+            builder.HasKey(p => new { p.StoreId, p.Key });
+
             builder.HasDiscriminator<string>("DocumentType")
                 .HasValue<ActivityProfileEntity>("ActivityProfile")
                 .HasValue<ActivityStateEntity>("ActivityState")
@@ -28,10 +30,12 @@ namespace Doctrina.Persistence.Configurations.Documents
                 .HasMaxLength(50);
 
             builder.Property(document => document.UpdatedAt)
-                .ValueGeneratedOnAddOrUpdate();
+                .ValueGeneratedOnAddOrUpdate()
+                .IsRequired();
 
             builder.Property(document => document.CreatedAt)
-                .ValueGeneratedOnAdd();
+                .ValueGeneratedOnAdd()
+                .IsRequired();
 
             builder.HasOne(document => document.Store)
                 .WithMany()

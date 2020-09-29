@@ -1,4 +1,4 @@
-﻿using Doctrina.Domain.Entities.Documents;
+using Doctrina.Domain.Models.Documents;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -10,13 +10,15 @@ namespace Doctrina.Persistence.Configurations.Documents
         {
             builder.HasBaseType<DocumentEntity>();
 
-            builder.Property(e => e.Key);
+            builder.Property(p=> p.ProfileId)
+                .HasColumnName("Key")
+                .IsRequired();
                 
             builder.Property(e => e.Key)
                 .HasMaxLength(Constants.MAX_URL_LENGTH)
                 .IsRequired();
 
-            builder.HasOne(e => e.PersonaIdentifier)
+            builder.HasOne(e => e.Persona)
                 .WithMany();
 
             builder.HasOne(doc => doc.Activity)

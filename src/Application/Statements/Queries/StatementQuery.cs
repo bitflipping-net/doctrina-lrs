@@ -1,4 +1,4 @@
-﻿using Doctrina.Domain.Entities;
+﻿using Doctrina.Domain.Models;
 using Doctrina.ExperienceApi.Data;
 using MediatR;
 using System;
@@ -8,7 +8,7 @@ namespace Doctrina.Application.Statements.Queries
     /// <summary>
     /// Request a single statement
     /// </summary>
-    public class StatementQuery : IRequest<StatementEntity>
+    public class StatementQuery : IRequest<StatementModel>
     {
         public Guid StatementId { get; set; }
         public bool IncludeAttachments { get; set; }

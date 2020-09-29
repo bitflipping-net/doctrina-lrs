@@ -1,10 +1,11 @@
-﻿using System.Reflection;
+using System.Reflection;
 using Doctrina.Application.Common.Caching;
 using Doctrina.Infrastructure.Interfaces;
 using Doctrina.Persistence;
 using Doctrina.Persistence.Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -18,6 +19,13 @@ namespace Doctrina.Application
                 options.UseSqlServer(configuration.GetConnectionString("DoctrinaDatabase")));
 
             services.AddScoped<IDoctrinaDbContext>(provider => provider.GetService<DoctrinaDbContext>());
+
+            services.AddScoped<StoreDbContext>().AddDbContext<StoreDbContext>(options =>
+            {
+                services.AddScoped<IInterceptor, StoreColumnIntercepter>();
+                options.UseInternalServiceProvider(services.BuildServiceProvider());
+                options.UseSqlServer(configuration.GetConnectionString("DoctrinaDatabase"));
+            });
 
             services.AddScoped(typeof(IDoctrinaDbProvider), typeof(EntityFrameworkCoreDbProvider));
 

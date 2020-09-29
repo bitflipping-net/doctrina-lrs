@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Doctrina.Application.Activities.Queries;
-using Doctrina.Domain.Entities;
+using Doctrina.Domain.Models;
 using Doctrina.Persistence.Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Doctrina.Application.Activities
 {
-    public class GetActivityQueryHandler : IRequestHandler<GetActivityQuery, ActivityEntity>
+    public class GetActivityQueryHandler : IRequestHandler<GetActivityQuery, ActivityModel>
     {
         private readonly IDoctrinaDbContext _context;
         private readonly IMapper _mapper;
@@ -20,10 +20,10 @@ namespace Doctrina.Application.Activities
             _context = context;
             _mapper = mapper;
         }
-        public async Task<ActivityEntity> Handle(GetActivityQuery request, CancellationToken cancellationToken)
+        public async Task<ActivityModel> Handle(GetActivityQuery request, CancellationToken cancellationToken)
         {
             string activityHash = request.ActivityId.ComputeHash();
-            ActivityEntity activity = await _context.Activities
+            ActivityModel activity = await _context.Activities
                 .AsNoTracking()
                 .Where(x => x.Hash == activityHash)
                 .Include(ac => ac.Definition)

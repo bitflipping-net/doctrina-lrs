@@ -1,21 +1,17 @@
-﻿using Doctrina.Domain.Entities;
+using Doctrina.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Doctrina.Persistence.Configurations
 {
-    public class GroupConfiguration : IEntityTypeConfiguration<GroupPersona>
+    public class GroupConfiguration : IEntityTypeConfiguration<PersonaGroup>
     {
-        public void Configure(EntityTypeBuilder<GroupPersona> builder)
+        public void Configure(EntityTypeBuilder<PersonaGroup> builder)
         {
             builder.HasBaseType<Persona>();
 
-            builder.HasOne(e => e.Person)
-                .WithMany()
-                .IsRequired(false);
-
-            builder.HasMany(x => x.Personas)
-                 .WithMany();
+            builder.HasMany(x => x.Members)
+                 .WithOne();
         }
     }
 }

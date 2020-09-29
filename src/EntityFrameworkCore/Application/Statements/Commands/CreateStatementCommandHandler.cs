@@ -1,31 +1,36 @@
-﻿using AutoMapper;
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoMapper;
 using Doctrina.Application.Activities.Commands;
 using Doctrina.Application.Agents.Commands;
+using Doctrina.Application.Common;
 using Doctrina.Application.Common.Interfaces;
+using Doctrina.Application.Personas.Commands;
 using Doctrina.Application.Statements.Notifications;
-using Doctrina.Application.SubStatements.Commands;
 using Doctrina.Application.Verbs.Commands;
-using Doctrina.Domain.Entities;
+using Doctrina.Domain.Models;
+using Doctrina.Domain.Models.Relations;
 using Doctrina.ExperienceApi.Data;
 using Doctrina.Persistence.Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Doctrina.Application.Statements.Commands
 {
     public class CreateStatementCommandHandler : IRequestHandler<CreateStatementCommand, Guid>
     {
-        private readonly IDoctrinaDbContext _context;
+        private readonly IStoreDbContext _dbContext;
+        private readonly IClientHttpContext _clientHttpContext;
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
-        private readonly IStoreContext _storeContext;
+        private readonly IStoreHttpContext _storeContext;
 
-        public CreateStatementCommandHandler(IDoctrinaDbContext context, IMediator mediator, IMapper mapper, IStoreContext storeContext)
+        public CreateStatementCommandHandler(IStoreDbContext dbContext, IClientHttpContext clientHttpContext, IMediator mediator, IMapper mapper, IStoreHttpContext storeContext)
         {
-            _context = context;
+            _dbContext = dbContext;
+            _clientHttpContext = clientHttpContext;
             _mediator = mediator;
             _mapper = mapper;
             _storeContext = storeContext;
@@ -44,8 +49,13 @@ namespace Doctrina.Application.Statements.Commands
             // Prepare statement for mapping
             if (request.Statement.Id.HasValue)
             {
-                bool any = await _context.Statements.AnyAsync(x => x.Id == request.Statement.Id, cancellationToken);
-                if (any)
+                bool exist = await _dbContext.Statements.OfType<StatementModel>()
+                    .AnyAsync(x =>
+                        x.StoreId == _dbContext.StoreId
+                        && x.Id == request.Statement.Id.Value,
+                    cancellationToken);
+
+                if (exist)
                 {
                     return request.Statement.Id.Value;
                 }
@@ -59,75 +69,153 @@ namespace Doctrina.Application.Statements.Commands
 
             if (request.Statement.Authority == null)
             {
-                // TODO: Map group?
-                request.Statement.Authority = _storeContext.GetClientAuthority();
+                request.Statement.Authority = new Agent(_storeContext.GetClientAuthority());
             }
             else
             {
                 // TODO: Validate authority
+                // Find client in store, where authority is a match.
+                // Check if client is enabled, and has rights to this store.
             }
 
             // Start mapping statement
-            StatementEntity newStatement = new StatementEntity();
-            newStatement.StatementId = request.Statement.Id.GetValueOrDefault();
+            StatementModel newStatement = new StatementModel();
+            newStatement.Id = request.Statement.Id.GetValueOrDefault();
 
-            (VerbEntity)await _mediator.Send(UpsertVerbCommand.Create(request.Statement.Verb), cancellationToken);
-            newStatement.Verb = (VerbEntity)await _mediator.Send(UpsertVerbCommand.Create(request.Statement.Verb), cancellationToken);
-
-            HandleActor
-
-            newStatement.Actor = request.Statement.Actor.ToJson();
-
-            newStatement.Authority = request.Statement.Authority.ToJson();
-
-            if (request.Statement.Context != null)
-            {
-                newStatement.Context = request.Statement.Context.ToJson();
-                ContextEntity context = newStatement.Context;
-                if (context.Instructor != null)
-                {
-                    context.Instructor = (AgentEntity)await _mediator.Send(UpsertActorCommand.Create(request.Statement.Context.Instructor), cancellationToken);
-                }
-                if (context.Team != null)
-                {
-                    context.Team = (AgentEntity)await _mediator.Send(UpsertActorCommand.Create(request.Statement.Context.Team), cancellationToken);
-                }
-            }
-
-            var objType = request.Statement.Object.ObjectType;
-            if (objType == ExperienceApi.Data.ObjectType.Activity)
-            {
-                newStatement.Object = (ActivityEntity)await _mediator.Send(UpsertActivityCommand.Create((Activity)request.Statement.Object), cancellationToken);
-            }
-            else if (objType == ExperienceApi.Data.ObjectType.Agent || objType == ExperienceApi.Data.ObjectType.Group)
-            {
-                newStatement.Object = (AgentEntity)await _mediator.Send(UpsertActorCommand.Create((Agent)request.Statement.Object), cancellationToken);
-            }
-            else if (objType == ExperienceApi.Data.ObjectType.SubStatement)
-            {
-                newStatement.Object = (SubStatementEntity)await _mediator.Send(CreateSubStatementCommand.Create((SubStatement)request.Statement.Object), cancellationToken);
-            }
-            else if (objType == ExperienceApi.Data.ObjectType.StatementRef)
-            {
-                newStatement.Object = _mapper.Map<StatementRefEntity>((StatementRef)request.Statement.Object);
-            }
-
-            if (request.Statement.Result != null)
-            {
-                newStatement.Result = _mapper.Map<ResultEntity>(request.Statement.Result);
-            }
+            await HandleBase(request.Statement, newStatement, cancellationToken);
 
             newStatement.CreatedAt = request.Statement.Stored;
-            newStatement.Timestamp = request.Statement.Timestamp;
-            newStatement.Version = request.Statement.Version.ToString();
+            newStatement.Client = _clientHttpContext.GetClient();
+            //newStatement.Version = request.Statement.Version.ToString();
 
-            _context.Statements.Add(newStatement);
+            _dbContext.Statements.Add(newStatement);
 
-            await _context.SaveChangesAsync(cancellationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken);
 
             await _mediator.Publish(StatementCreated.Create(newStatement), cancellationToken);
 
-            return newStatement.StatementId;
+            return newStatement.Id;
+        }
+
+        private async Task HandleBase(StatementBase statement, Domain.Models.StatementBaseModel newStatement, CancellationToken cancellationToken)
+        {
+            newStatement.Verb = await _mediator.Send(UpsertVerbCommand.Create(statement.Verb), cancellationToken);
+
+            newStatement.Persona = await HandleActor(statement.Actor, cancellationToken);
+
+            await HandleContext(statement.Context, newStatement, cancellationToken);
+
+            await HandleObject(statement.Object, newStatement, cancellationToken);
+
+            if (statement.Result != null)
+            {
+                newStatement.Result = _mapper.Map<ResultModel>(statement.Result);
+            }
+
+
+            newStatement.Timestamp = statement.Timestamp;
+        }
+
+        private async Task HandleContext(Context context, StatementBaseModel stmt, CancellationToken cancellationToken)
+        {
+            if (context != null)
+            {
+                stmt.Context = _mapper.Map<StatementContext>(context);
+                if (stmt.Context.Instructor != null)
+                {
+                    var instructor = await HandleActor(context.Instructor, cancellationToken);
+                    stmt.Context.Instructor = instructor;
+                    await CreateRelations(stmt.StatementId, instructor.ObjectType, instructor.PersonaId, cancellationToken);
+                }
+                if (stmt.Context.Team != null)
+                {
+                    var team = await HandleActor(context.Team, cancellationToken);
+                    await CreateRelations(stmt.StatementId, team.ObjectType, team.PersonaId, cancellationToken);
+                    stmt.Context.Team = team;
+                }
+            }
+        }
+
+        private async Task HandleObject(ExperienceApi.Data.IStatementObject @object, StatementBaseModel newStatement, CancellationToken cancellationToken)
+        {
+            // Serialize object as json
+            //newStatement.Object = @object.ToJson();
+            var objType = @object.ObjectType;
+            if (@object is Activity activity)
+            {
+                var ac = await HandleActivity(activity, newStatement, cancellationToken);
+                newStatement.ObjectType = Domain.Models.ObjectType.Activity;
+                newStatement.ObjectId = ac.ActivityId;
+            }
+            else if (@object is SubStatement subStatement)
+            {
+                var model = await HandleSubStatement(subStatement, newStatement, cancellationToken);
+                newStatement.ObjectType = model.ObjectType;
+                newStatement.ObjectId = model.ObjectId;
+                await CreateRelations(newStatement.StatementId, Domain.Models.ObjectType.SubStatement, model.StatementId, cancellationToken);
+            }
+            else if (@object is StatementRef statementRef)
+            {
+                //var saved = await HandleStatementRef(statementRef, newStatement, cancellationToken);
+                newStatement.ObjectType = Domain.Models.ObjectType.StatementRef;
+                newStatement.ObjectId = statementRef.Id;
+                //await CreateRelations(newStatement.StatementId, Domain.Models.ObjectType.StatementRef, )
+            }
+            else
+            {
+                //Agen or group
+                var persona = await HandleActor((Agent)@object, cancellationToken);
+                newStatement.ObjectType = persona.ObjectType;
+                newStatement.ObjectId = persona.PersonaId;
+            }
+        }
+
+        private async Task<SubStatementEntity> HandleSubStatement(SubStatement subStatement, StatementBaseModel parent, CancellationToken cancellationToken)
+        {
+            var newSubStatement = new SubStatementEntity();
+            await HandleBase(subStatement, newSubStatement, cancellationToken);
+            _dbContext.Statements.Add(newSubStatement);
+            return newSubStatement;
+        }
+
+        private async Task<Persona> HandleActor(Agent actor, CancellationToken cancellationToken)
+        {
+            return await _mediator.Send(UpsertActorCommand.Create(actor));
+        }
+
+        private async Task CreateRelations(Guid parentId, Domain.Models.ObjectType objectType, Guid childId, CancellationToken cancellationToken)
+        {
+            var relation = new StatementRelation()
+            {
+                ObjectType = objectType.ToString(),
+                ParentId = parentId,
+                ChildId = childId,
+                StoreId = _dbContext.StoreId,
+            };
+
+            StatementRelation currentRelation = await _dbContext.Relations.SingleOrDefaultAsync(x =>
+                 x.ObjectType == relation.ObjectType
+                 && x.ParentId == relation.ParentId
+                 && x.StoreId == relation.StoreId
+            , cancellationToken);
+
+            if (currentRelation != null)
+            {
+                return;
+            }
+
+            await _dbContext.Relations.AddAsync(relation, cancellationToken);
+
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
+
+        private async Task<ActivityModel> HandleActivity(Activity requestActivity, StatementBaseModel newStatement, CancellationToken cancellationToken)
+        {
+            ActivityModel activity = (ActivityModel)await _mediator.Send(UpsertActivityCommand.Create(requestActivity), cancellationToken);
+
+            await CreateRelations(newStatement.StatementId, Domain.Models.ObjectType.Activity, activity.ActivityId, cancellationToken);
+
+            return activity;
         }
     }
 }

@@ -1,10 +1,10 @@
-using Doctrina.Domain.Entities;
+using Doctrina.Domain.Models;
 using Doctrina.ExperienceApi.Data;
 using MediatR;
 
 namespace Doctrina.Application.Agents.Queries
 {
-    public class GetAgentQuery : IRequest<AgentEntity>
+    public class GetAgentQuery : IRequest<Persona>
     {
         public Agent Agent { get; set; }
 

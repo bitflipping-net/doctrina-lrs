@@ -1,5 +1,5 @@
-﻿using Doctrina.Domain.Entities;
-using Doctrina.Domain.Entities.ValueObjects;
+﻿using Doctrina.Domain.Models;
+using Doctrina.Domain.Models.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Newtonsoft.Json;

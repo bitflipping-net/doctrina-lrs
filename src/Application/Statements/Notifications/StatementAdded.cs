@@ -1,13 +1,13 @@
-﻿using Doctrina.Domain.Entities;
+﻿using Doctrina.Domain.Models;
 using MediatR;
 
 namespace Doctrina.Application.Statements.Notifications
 {
     public class StatementAdded : INotification
     {
-        public StatementEntity Entity { get; set; }
+        public StatementModel Entity { get; set; }
 
-        public static StatementAdded Create(StatementEntity newStatemnt)
+        public static StatementAdded Create(StatementModel newStatemnt)
         {
             return new StatementAdded()
             {

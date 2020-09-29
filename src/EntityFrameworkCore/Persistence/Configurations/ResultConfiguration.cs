@@ -1,5 +1,5 @@
-﻿using Doctrina.Domain.Entities;
-using Doctrina.Domain.Entities.OwnedTypes;
+using Doctrina.Domain.Models;
+using Doctrina.Domain.Models.ValueObjects;
 using Doctrina.Persistence.ValueConverters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -7,9 +7,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Doctrina.Persistence.Configurations
 {
-    public class ResultConfiguration : IEntityTypeConfiguration<ResultEntity>
+    public class ResultConfiguration : IEntityTypeConfiguration<ResultModel>
     {
-        public void Configure(EntityTypeBuilder<ResultEntity> builder)
+        public void Configure(EntityTypeBuilder<ResultModel> builder)
         {
             builder.ToTable("Results");
 
@@ -17,7 +17,9 @@ namespace Doctrina.Persistence.Configurations
                 .ValueGeneratedOnAdd();
             builder.HasKey(e => e.ResultId);
 
-            builder.OwnsOne(e => e.Score);
+            builder.Property(e => e.Score)
+                .HasConversion(new JsonValueConverter<Score>())
+                .IsRequired(false);
 
             builder.Property(e => e.Extensions)
                 .HasConversion(new ExtensionsCollectionValueConverter())

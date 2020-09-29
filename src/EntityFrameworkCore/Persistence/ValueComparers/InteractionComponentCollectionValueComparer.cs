@@ -1,8 +1,8 @@
-using Doctrina.Domain.Entities.OwnedTypes;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
+using Doctrina.Domain.Models.ValueObjects;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Doctrina.Persistence.ValueComparer
 {

@@ -1,26 +1,21 @@
+using System;
+using System.Collections.Generic;
+using System.Security.Claims;
+using System.Text.Encodings.Web;
+using System.Threading.Tasks;
 using Doctrina.Application.Common;
-using Doctrina.Application.Common.Interfaces;
-using Doctrina.Domain.Entities;
 using Doctrina.Infrastructure.Identity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Primitives;
-using System;
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
 
 namespace Doctrina.WebUI.ExperienceApi.Authentication
 {
     public class ExperienceApiAuthenticationHandler : AuthenticationHandler<ExperienceApiAuthenticationOptions>
     {
-        private const string AUTHORIZATION = "Authorization";
-        private readonly DoctrinaAuthorizationDbContext _authorizationDbContext;
-        private readonly IClientContext _clientContext;
+        private readonly IClientHttpContext _clientContext;
         private readonly IWebHostEnvironment _environment;
         public readonly IHttpContextAccessor _httpContextAccessor;
 
@@ -30,12 +25,11 @@ namespace Doctrina.WebUI.ExperienceApi.Authentication
             UrlEncoder encoder,
             ISystemClock clock,
             DoctrinaAuthorizationDbContext authorizationDbContext,
-            IClientContext clientContext,
+            IClientHttpContext clientContext,
             IWebHostEnvironment environment,
             IHttpContextAccessor httpContextAccessor
         ) : base(options, logger, encoder, clock)
         {
-            _authorizationDbContext = authorizationDbContext;
             _clientContext = clientContext;
             _environment = environment;
             _httpContextAccessor = httpContextAccessor;

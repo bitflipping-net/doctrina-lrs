@@ -1,4 +1,4 @@
-﻿using Doctrina.Domain.Entities.InteractionActivities;
+using Doctrina.Domain.Models.InteractionActivities;
 using Doctrina.Persistence.ValueConverters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -32,7 +32,7 @@ namespace Doctrina.Persistence.Configurations
                 .UsePropertyAccessMode(PropertyAccessMode.FieldDuringConstruction);
 
             builder.Property(e => e.CorrectResponsesPattern)
-                .HasConversion(new StringArrayValueConverter())
+                .HasConversion(new JsonValueConverter<ICollection<string>>())
                 .Metadata
                 .SetValueComparer(new ValueComparer<ICollection<string>>(false));
         }

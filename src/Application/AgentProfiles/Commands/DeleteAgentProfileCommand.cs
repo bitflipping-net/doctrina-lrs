@@ -1,4 +1,5 @@
-﻿using Doctrina.ExperienceApi.Data;
+using Doctrina.Domain.Models;
+using Doctrina.ExperienceApi.Data;
 using MediatR;
 
 namespace Doctrina.Application.AgentProfiles.Commands
@@ -7,14 +8,14 @@ namespace Doctrina.Application.AgentProfiles.Commands
     {
         public string ProfileId { get; private set; }
 
-        public Agent Agent { get; private set; }
+        public Persona Persona { get; private set; }
 
-        public static DeleteAgentProfileCommand Create(string profileId, Agent agent)
+        public static DeleteAgentProfileCommand Create(string profileId, Persona persona)
         {
             return new DeleteAgentProfileCommand()
             {
                 ProfileId = profileId,
-                Agent = agent
+                Persona = persona
             };
         }
     }

@@ -1,5 +1,5 @@
-﻿using Doctrina.Domain.Entities;
-using Doctrina.Domain.Entities.OwnedTypes;
+using Doctrina.Domain.Models;
+using Doctrina.Domain.Models.ValueObjects;
 using Doctrina.Persistence.ValueConverters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -26,13 +26,13 @@ namespace Doctrina.Persistence.Configurations
 
             builder.Property(e => e.Display)
                 .IsRequired()
-                .HasConversion(new LanguageMapCollectionValueConverter())
+                .HasConversion(new JsonValueConverter<LanguageMapCollection>())
                 .HasColumnType("ntext")
                 .Metadata
                 .SetValueComparer(new ValueComparer<LanguageMapCollection>(false));
 
             builder.Property(e => e.Description)
-                .HasConversion(new LanguageMapCollectionValueConverter())
+                .HasConversion(new JsonValueConverter<LanguageMapCollection>())
                 .HasColumnType("ntext")
                 .Metadata
                 .SetValueComparer(new ValueComparer<LanguageMapCollection>(false));

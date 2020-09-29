@@ -1,6 +1,6 @@
 using Doctrina.Application.ActivityStates.Commands;
 using Doctrina.Application.Tests.Infrastructure;
-using Doctrina.Domain.Entities.Documents;
+using Doctrina.Domain.Models.Documents;
 using Doctrina.ExperienceApi.Data;
 using Doctrina.ExperienceApi.Data.Json;
 using Newtonsoft.Json.Linq;
@@ -24,7 +24,7 @@ namespace Application.Tests.ActivityStates.Commands
 
             string stateId = "cc6605d6-b12f-41d4-bd76-6a5a2fc5f13b";
             var activityEntity = _context.Activities.FirstOrDefault();
-            var agentEntity = _context.Agents.FirstOrDefault();
+            var agentEntity = _context.Personas.FirstOrDefault();
             string contentType = "application/json";
 
             string strBody1 = "{\"car\":\"Honda\"}";
@@ -54,7 +54,7 @@ namespace Application.Tests.ActivityStates.Commands
             {
                 StateId = stateId,
                 Activity = activityEntity,
-                Agent = agentEntity
+                Persona = agentEntity
             });
             await _context.SaveChangesAsync();
 
@@ -62,13 +62,13 @@ namespace Application.Tests.ActivityStates.Commands
             var civic = new UpdateStateDocumentCommand()
             {
                 StateId = stateId,
-                ActivityId = new Iri(activityEntity.Id),
-                AgentId = agentEntity.AgentId,
+                ActivityId = new Iri(activityEntity.Iri),
+                Persona = agentEntity,
                 Content = Encoding.UTF8.GetBytes(strBody2),
                 ContentType = contentType,
                 Registration = Guid.Empty
             };
-            var updateHandler = new UpdateStateDocumentHandler(_context, _mapper);
+            var updateHandler = new UpdateStateDocumentHandler(_storeContext, _mapper);
             var stateDocument2 = await updateHandler.Handle(civic, CancellationToken.None);
             JsonString strBodyReturned = Encoding.UTF8.GetString(stateDocument2.Content);
             strBodyReturned.IsValid().ShouldBe(true);

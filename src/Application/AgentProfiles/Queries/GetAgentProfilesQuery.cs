@@ -1,4 +1,5 @@
-﻿using Doctrina.Domain.Entities.Documents;
+using Doctrina.Domain.Models;
+using Doctrina.Domain.Models.Documents;
 using Doctrina.ExperienceApi.Data;
 using MediatR;
 using System;
@@ -8,14 +9,14 @@ namespace Doctrina.Application.AgentProfiles.Queries
 {
     public class GetAgentProfilesQuery : IRequest<ICollection<AgentProfileEntity>>
     {
-        public Agent Agent { get; set; }
+        public Persona Persona { get; set; }
         public DateTimeOffset? Since { get; set; }
 
-        public static GetAgentProfilesQuery Create(Agent agent, DateTimeOffset? since)
+        public static GetAgentProfilesQuery Create(Persona persona, DateTimeOffset? since)
         {
             return new GetAgentProfilesQuery()
             {
-                Agent = agent,
+                Persona = persona,
                 Since = since
             };
         }

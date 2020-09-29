@@ -1,4 +1,4 @@
-﻿using Doctrina.Domain.Entities;
+﻿using Doctrina.Domain.Models;
 using Doctrina.ExperienceApi.Data;
 using MediatR;
 using System;
@@ -7,13 +7,13 @@ namespace Doctrina.Application.Statements.Notifications
 {
     public class StatementCreated : INotification
     {
-        public StatementEntity Created { get; private set; }
+        public StatementModel Model { get; private set; }
 
-        public static StatementCreated Create(StatementEntity statement)
+        public static StatementCreated Create(StatementModel statement)
         {
             return new StatementCreated()
             {
-                Created = statement
+                Model = statement
             };
         }
     }

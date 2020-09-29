@@ -1,57 +1,20 @@
-﻿using Doctrina.Domain.Entities;
+using Doctrina.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Doctrina.Persistence.Configurations
 {
-    public class StatementConfiguration : IEntityTypeConfiguration<StatementEntity>
+    public class StatementConfiguration : IEntityTypeConfiguration<StatementModel>
     {
-        public void Configure(EntityTypeBuilder<StatementEntity> builder)
+        public void Configure(EntityTypeBuilder<StatementModel> builder)
         {
             builder.ToTable("Statements");
 
-            builder.Property(p => p.StatementId)
-                .IsRequired()
-                .ValueGeneratedOnAdd();
-            builder.HasKey(p => p.StatementId);
-
-            // Actor
-            builder.HasOne(e => e.Actor)
-                .WithMany()
-                .IsRequired()
-                .OnDelete(DeleteBehavior.NoAction);
-
-            // Verb
-            builder.HasOne(e => e.Verb)
-                .WithMany()
-                .IsRequired();
-
-            builder.HasOne(p => p.Object)
-                .WithOne();
-
-            builder.HasOne(e => e.Result)
-                .WithMany()
-                .IsRequired(false);
-
-            builder.HasOne(e => e.Context)
-               .WithMany()
-               .IsRequired(false);
-
-            builder.Property(e => e.Timestamp)
-                .IsRequired(true)
-                .ValueGeneratedOnAdd();
-
-            builder.HasMany(x => x.Attachments)
-                .WithOne()
-                .IsRequired(false);
-
-            builder.Property(e => e.CreatedAt)
-               .IsRequired()
-               .ValueGeneratedOnAdd();
+            builder.HasBaseType<StatementBase>();
 
             builder.Property(e => e.Version)
                 .HasMaxLength(7)
-                .IsRequired(true);
+                .IsRequired();
 
             builder.Property(e => e.Authority)
                 .IsRequired();

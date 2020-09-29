@@ -1,7 +1,7 @@
 using AutoMapper;
 using Doctrina.Application.AgentProfiles.Queries;
-using Doctrina.Domain.Entities;
-using Doctrina.Domain.Entities.Documents;
+using Doctrina.Domain.Models;
+using Doctrina.Domain.Models.Documents;
 using Doctrina.Persistence.Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -28,7 +28,7 @@ namespace Doctrina.Application.AgentProfiles
 
         public async Task<ICollection<AgentProfileEntity>> Handle(GetAgentProfilesQuery request, CancellationToken cancellationToken)
         {
-            var agentEntity = _mapper.Map<AgentEntity>(request.Agent);
+            var agentEntity = _mapper.Map<AgentEntity>(request.Persona);
             var query = _context.AgentProfiles
                 .AsNoTracking()
                 .Include(x => x.Document)

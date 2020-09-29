@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Doctrina.Domain.Entities.Documents;
+using Doctrina.Domain.Models.Documents;
 using Doctrina.ExperienceApi.Data.Documents;
 using Doctrina.Persistence.Infrastructure;
 using MediatR;
@@ -28,7 +28,7 @@ namespace Doctrina.Application.ActivityStates.Commands
             {
                 Key = request.StateId,
                 Activity = request.Activity,
-                PersonaIdentifier = request.PersonaIdentifier,
+                Persona = request.PersonaIdentifier,
                 RegistrationId = request.RegistrationId
             };
 

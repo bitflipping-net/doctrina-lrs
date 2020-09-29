@@ -1,5 +1,6 @@
 using Doctrina.Application.Agents.Commands;
-using Doctrina.Domain.Entities.Documents;
+using Doctrina.Application.Personas.Commands;
+using Doctrina.Domain.Models.Documents;
 using Doctrina.Persistence.Infrastructure;
 using MediatR;
 using System.Threading;
@@ -20,12 +21,10 @@ namespace Doctrina.Application.AgentProfiles.Commands
 
         public async Task<AgentProfileEntity> Handle(CreateAgentProfileCommand request, CancellationToken cancellationToken)
         {
-            var agent = await _mediator.Send(UpsertActorCommand.Create(request.Agent), cancellationToken);
-
             var profile = new AgentProfileEntity(request.Content, request.ContentType)
             {
                 ProfileId = request.ProfileId,
-                AgentId = agent.Id
+                PersonaId = request.Persona.PersonaId
             };
 
             _context.AgentProfiles.Add(profile);

@@ -1,6 +1,6 @@
 using Doctrina.Application.Agents.Queries;
 using Doctrina.Application.Common.Exceptions;
-using Doctrina.Domain.Entities.Documents;
+using Doctrina.Domain.Models.Documents;
 using Doctrina.Persistence.Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -12,22 +12,19 @@ namespace Doctrina.Application.AgentProfiles.Commands
 {
     public class UpdateAgentProfileHandler : IRequestHandler<UpdateAgentProfileCommand, AgentProfileEntity>
     {
-        private readonly IDoctrinaDbContext _context;
-        private readonly IMediator _mediator;
+        private readonly IStoreDbContext _context;
 
-        public UpdateAgentProfileHandler(IDoctrinaDbContext context, IMediator mediator)
+        public UpdateAgentProfileHandler(IStoreDbContext context)
         {
             _context = context;
-            _mediator = mediator;
         }
 
         public async Task<AgentProfileEntity> Handle(UpdateAgentProfileCommand request, CancellationToken cancellationToken)
         {
-            var agent = await _mediator.Send(GetAgentQuery.Create(request.Agent));
-
-            var profile = await _context.AgentProfiles
-                            .Include(x => x.Document)
-                            .Where(x => x.AgentId == agent.Id)
+            var storeId = _context.StoreId;
+            var profile = await _context.Documents
+                            .OfType<AgentProfileEntity>()
+                            .Where(x => x.PersonaId == request.Persona.PersonaId && x.StoreId == storeId)
                             .SingleOrDefaultAsync(x => x.ProfileId == request.ProfileId, cancellationToken);
 
             if (profile == null)
@@ -35,9 +32,10 @@ namespace Doctrina.Application.AgentProfiles.Commands
                 throw new NotFoundException("AgentProfile", request.ProfileId);
             }
 
-            profile.Document.UpdateDocument(request.Content, request.ContentType);
+            profile.UpdateDocument(request.Content, request.ContentType);
 
-            _context.AgentProfiles.Update(profile);
+            _context.Documents.Update(profile);
+
             await _context.SaveChangesAsync(cancellationToken);
 
             return profile;

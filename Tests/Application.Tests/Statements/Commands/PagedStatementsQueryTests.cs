@@ -58,7 +58,7 @@ namespace Doctrina.Application.Tests.Statements.Commands
             // Assert
             result.ShouldNotBeNull();
             result.Statements.ShouldNotBeNull();
-            result.Statements.ShouldAllBe(x => x.Actor.Equals(agent));
+            result.Statements.ShouldAllBe(x => x.Persona.Equals(agent));
         }
     }
 }

@@ -1,40 +1,44 @@
-﻿using Doctrina.Domain.Entities;
+using Doctrina.Domain.Models;
 using Doctrina.ExperienceApi.Data;
 using Doctrina.Persistence.Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using KnownVerbs = Doctrina.ExperienceApi.Data.KnownVerbs;
 
 namespace Doctrina.Application.Statements.Notifications
 {
     public class VoidStatementHandler : INotificationHandler<StatementCreated>
     {
-        private const string VerbVoided = KnownVerbs.Voided;
-        private readonly IDoctrinaDbContext _context;
+        private readonly string VoidedHash = KnownVerbs.Voided.ComputeHash();
+        private readonly IStoreDbContext _context;
 
-        public VoidStatementHandler(IDoctrinaDbContext context)
+        public VoidStatementHandler(IStoreDbContext context)
         {
             _context = context;
         }
 
         public async Task Handle(StatementCreated notification, CancellationToken cancellationToken)
         {
-            var entity = notification.Created;
-            if (entity.Verb.Id == VerbVoided)
+            Guid storeId = _context.StoreId;
+            StatementModel model = notification.Model;
+            if (model.Verb.Hash == VoidedHash)
             {
-                StatementRefEntity statementRef = (StatementRefEntity)entity.Object;
-                if (statementRef.ObjectType == Domain.Entities.ObjectType.StatementRef)
+                if (model.ObjectType == Domain.Models.ObjectType.StatementRef)
                 {
-                    var statementId = statementRef.StatementId;
-                    var statement = await _context.Statements
+                    Guid statementId = model.ObjectId;
+                    StatementModel statement = await _context.Statements
+                        .OfType<StatementModel>()
                         .Include(x => x.Verb)
-                        .FirstOrDefaultAsync(x => x.StatementId == statementId, cancellationToken);
+                        .FirstOrDefaultAsync(x => x.StatementId == statementId && x.StoreId == storeId, cancellationToken);
 
                     if (statement != null
-                        && statement.Verb.Id != VerbVoided)
+                        && statement.Verb.Hash != VoidedHash)
                     {
-                        statement.VoidingStatement = entity;
+                        statement.VoidingStatement = model;
                         await _context.SaveChangesAsync(cancellationToken);
                     }
                 }
@@ -42,15 +46,17 @@ namespace Doctrina.Application.Statements.Notifications
             else
             {
                 // Detect if current statement has already been voided
-                var voidingStatement = await _context.Statements.SingleOrDefaultAsync(x =>
-                    ((StatementRefEntity)x.Object).StatementId == entity.StatementId
-                    && x.Verb.Id == VerbVoided,
+                StatementModel voidingStatement = await _context.Statements.OfType<StatementModel>().SingleOrDefaultAsync(x =>
+                    x.ObjectType == Domain.Models.ObjectType.StatementRef 
+                    && x.ObjectId == model.Id
+                    && x.Verb.Hash == VoidedHash
+                    && x.StoreId == storeId,
                     cancellationToken
                 );
 
                 if (voidingStatement != null)
                 {
-                    entity.VoidingStatement = entity;
+                    model.VoidingStatement = model;
                     await _context.SaveChangesAsync(cancellationToken);
                 }
             }

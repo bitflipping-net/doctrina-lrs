@@ -1,5 +1,5 @@
 using AutoMapper;
-using Doctrina.Domain.Entities;
+using Doctrina.Domain.Models;
 using Doctrina.Persistence.Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Doctrina.Application.Statements.Queries
 {
-    public class StatementQueryHandler : IRequestHandler<StatementQuery, StatementEntity>
+    public class StatementQueryHandler : IRequestHandler<StatementQuery, StatementModel>
     {
         private readonly IDoctrinaDbContext _context;
         private readonly IMapper _mapper;
@@ -20,7 +20,7 @@ namespace Doctrina.Application.Statements.Queries
             _mapper = mapper;
         }
 
-        public async Task<StatementEntity> Handle(StatementQuery request, CancellationToken cancellationToken)
+        public async Task<StatementModel> Handle(StatementQuery request, CancellationToken cancellationToken)
         {
             var query = _context.Statements
                     .AsNoTracking()
@@ -31,7 +31,7 @@ namespace Doctrina.Application.Statements.Queries
             {
                 query = query
                     .Include(x => x.Attachments)
-                    .Select(x => new StatementEntity()
+                    .Select(x => new StatementModel()
                     {
                         StatementId = x.StatementId,
                         FullStatement = x.FullStatement,
@@ -40,14 +40,14 @@ namespace Doctrina.Application.Statements.Queries
             }
             else
             {
-                query = query.Select(x => new StatementEntity()
+                query = query.Select(x => new StatementModel()
                 {
                     StatementId = x.StatementId,
                     FullStatement = x.FullStatement
                 });
             }
 
-            StatementEntity statementEntity = await query.FirstOrDefaultAsync(cancellationToken);
+            StatementModel statementEntity = await query.FirstOrDefaultAsync(cancellationToken);
 
             if (statementEntity == null)
             {

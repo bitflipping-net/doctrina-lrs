@@ -1,70 +1,78 @@
 using AutoMapper;
 using Doctrina.Application.Agents.Notifications;
 using Doctrina.Application.Agents.Queries;
+using Doctrina.Application.Infrastructure.ExperienceApi;
+using Doctrina.Application.Personas.Commands;
+using Doctrina.Domain.Models;
 using Doctrina.ExperienceApi.Data;
 using Doctrina.Persistence.Infrastructure;
 using MediatR;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Entities = Doctrina.Domain.Entities;
 
 namespace Doctrina.Application.Agents.Commands
 {
-    public class UpsertActorCommandHandler : IRequestHandler<UpsertActorCommand, Entities.AgentEntity>
+    public class UpsertActorCommandHandler : IRequestHandler<UpsertActorCommand, Persona>
     {
-        private readonly IDoctrinaDbContext _context;
+        private readonly IStoreDbContext _storeDbContext;
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
 
-        public UpsertActorCommandHandler(IDoctrinaDbContext context, IMediator mediator, IMapper mapper)
+        public UpsertActorCommandHandler(IStoreDbContext storeDbContext, IMediator mediator, IMapper mapper)
         {
-            _context = context;
+            _storeDbContext = storeDbContext;
             _mediator = mediator;
             _mapper = mapper;
         }
 
-        public async Task<Entities.AgentEntity> Handle(UpsertActorCommand request, CancellationToken cancellationToken)
+        public async Task<Persona> Handle(UpsertActorCommand request, CancellationToken cancellationToken)
         {
-            Entities.AgentEntity actor = await _mediator.Send(GetAgentQuery.Create(request.Actor), cancellationToken);
-            bool isNew = false;
-            if (actor == null)
+            Agent actor = request.Actor;
+            Guid storeId = _storeDbContext.StoreId;
+            if (actor is Agent agent)
             {
-                actor = (request.Actor.ObjectType == ObjectType.Agent
-                    ? _mapper.Map<Entities.AgentEntity>(request.Actor)
-                    : _mapper.Map<Entities.GroupPersona>(request.Actor));
-                actor.Id = Guid.NewGuid();
-                _context.Agent.Add(actor);
-                isNew = true;
+                var cmd = UpsertPersonaCommand.CreateAgent(
+                    storeId,
+                    agent.GetIdentifierKey(),
+                    agent.GetIdentifierValue(),
+                    agent.Name
+                );
+
+                return await _mediator.Send(cmd, cancellationToken);
             }
-
-            if (!isNew)
+            else if (actor is Group group)
             {
-                if (request.Actor is Group group && actor is Entities.GroupPersona groupEntity)
+                ICollection<Persona> members = new HashSet<Persona>();
+
+                foreach (Agent member in group.Member)
                 {
-                    // Perform group update logic, add group member etc.
-                    foreach (var member in group.Member)
-                    {
-                        var savedGrpActor = await _mediator.Send(UpsertActorCommand.Create(member), cancellationToken);
+                    members.Add(await Handle(UpsertActorCommand.Create(member), cancellationToken));
+                }
 
-                        if (groupEntity.Personas.Any(x => x.Identifier == savedGrpActor.Id))
-                            continue;
-
-                        groupEntity.Personas.Add(new Entities.GroupMemberIdentifier()
-                        {
-                            PersonaIdentifier = savedGrpActor.Persona,
-                            GroupId = groupEntity.Id,
-                        });
-                    }
-
-                    await _mediator.Publish(AgentUpdated.Create(actor));
+                if (group.IsAnonymous())
+                {
+                    return await _mediator.Send(UpsertPersonaCommand.CreateAnonymousGroup(
+                        storeId,
+                        members,
+                        group.Name
+                    ));
+                }
+                else
+                {
+                    return await _mediator.Send(UpsertPersonaCommand.CreateIdentifiedGroup(
+                        storeId,
+                        group.GetIdentifierKey(),
+                        group.GetIdentifierValue(),
+                        members,
+                        group.Name
+                    ));
                 }
             }
 
-            await _context.SaveChangesAsync(cancellationToken);
-
-            return actor;
+            throw new NotImplementedException();
         }
     }
 } 

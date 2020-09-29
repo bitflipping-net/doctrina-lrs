@@ -43,7 +43,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             var profile = await _mediator.Send(new GetAgentProfileQuery()
             {
                 ProfileId = profileId,
-                Agent = agent
+                Persona = agent
             }, cancellationToken);
 
             if (profile == null)

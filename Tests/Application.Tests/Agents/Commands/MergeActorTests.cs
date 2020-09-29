@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Doctrina.Application.Agents.Commands;
 using Doctrina.Application.Tests.Infrastructure;
-using Doctrina.Domain.Entities;
+using Doctrina.Domain.Models;
 using Doctrina.ExperienceApi.Data;
 using MediatR;
 using Moq;
@@ -49,8 +49,8 @@ namespace Application.Tests.Agents.Commands
             var result = await handler.Handle(cmd, CancellationToken.None);
 
             // Assert
-            result.Id.ShouldNotBe(Guid.Empty);
-            result.ShouldBeOfType<Doctrina.Domain.Entities.GroupPersona>();
+            result.PersonaId.ShouldNotBe(0);
+            result.ShouldBeOfType<Doctrina.Domain.Models.PersonaGroup>();
         }
     }
 }

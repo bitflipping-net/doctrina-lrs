@@ -1,4 +1,4 @@
-﻿using Doctrina.Domain.Entities.Documents;
+﻿using Doctrina.Domain.Models.Documents;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

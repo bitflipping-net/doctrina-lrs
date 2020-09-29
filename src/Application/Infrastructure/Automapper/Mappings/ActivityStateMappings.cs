@@ -1,6 +1,6 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Doctrina.Application.Interfaces.Mapping;
-using Doctrina.Domain.Entities.Documents;
+using Doctrina.Domain.Models.Documents;
 using Doctrina.ExperienceApi.Data.Documents;
 
 namespace Doctrina.Application.Mappings
@@ -11,12 +11,12 @@ namespace Doctrina.Application.Mappings
         {
             configuration.CreateMap<ActivityStateEntity, ActivityStateDocument>()
                 .ForMember(x => x.Activity, opt => opt.MapFrom(p => p.Activity))
-                .ForMember(x => x.Agent, opt => opt.MapFrom(p => p.Agent))
-                .ForMember(x => x.Registration, opt => opt.MapFrom(p => p.Registration))
-                .ForMember(x => x.Content, opt => opt.MapFrom(p => p.Document.Content))
-                .ForMember(x => x.ContentType, opt => opt.MapFrom(p => p.Document.ContentType))
-                .ForMember(x => x.Tag, opt => opt.MapFrom(p => p.Document.Checksum))
-                .ForMember(x => x.LastModified, opt => opt.MapFrom(p => p.Document.LastModified));
+                .ForMember(x => x.Agent, opt => opt.MapFrom(p => p.Persona))
+                .ForMember(x => x.Registration, opt => opt.MapFrom(p => p.RegistrationId))
+                .ForMember(x => x.Content, opt => opt.MapFrom(p => p.Content))
+                .ForMember(x => x.ContentType, opt => opt.MapFrom(p => p.ContentType))
+                .ForMember(x => x.Tag, opt => opt.MapFrom(p => p.Checksum))
+                .ForMember(x => x.LastModified, opt => opt.MapFrom(p => p.UpdatedAt));
         }
     }
 }

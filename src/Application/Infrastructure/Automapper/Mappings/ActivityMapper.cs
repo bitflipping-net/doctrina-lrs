@@ -1,11 +1,11 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Doctrina.Application.Interfaces.Mapping;
-using Doctrina.Domain.Entities;
-using Doctrina.Domain.Entities.InteractionActivities;
+using Doctrina.Domain.Models;
+using Doctrina.Domain.Models.InteractionActivities;
 using Doctrina.ExperienceApi.Data;
 using Doctrina.ExperienceApi.Data.InteractionTypes;
 using DataInteractions = Doctrina.ExperienceApi.Data.InteractionTypes;
-using EntityInteractions = Doctrina.Domain.Entities.InteractionActivities;
+using EntityInteractions = Doctrina.Domain.Models.InteractionActivities;
 
 namespace Application.Infrastructure.Automapper.Mappings
 {
@@ -13,19 +13,18 @@ namespace Application.Infrastructure.Automapper.Mappings
     {
         public void CreateMappings(Profile configuration)
         {
-            configuration.CreateMap<Activity, ActivityEntity>()
+            configuration.CreateMap<Activity, ActivityModel>()
               .ForMember(e => e.ActivityId, opt => opt.Ignore())
-              .ForMember(e => e.Id, opt => opt.MapFrom(x => x.Id.ToString()))
+              .ForMember(e => e.Iri, opt => opt.MapFrom(x => x.Id.ToString()))
               .ForMember(e => e.Hash, opt => opt.MapFrom(x => x.Id.ComputeHash()))
               .ForMember(dest => dest.Definition, opt => opt.MapFrom(src => src.Definition));
 
-            configuration.CreateMap<ActivityEntity, Activity>()
-              .ForMember(e => e.Id, opt => opt.MapFrom(x => x.Id))
+            configuration.CreateMap<ActivityModel, Activity>()
+              .ForMember(e => e.Id, opt => opt.MapFrom(x => x.Iri))
               .ForMember(e => e.Definition, opt => opt.MapFrom(x => x.Definition))
               .ForMember(a => a.ObjectType, opt => opt.Ignore());
 
             configuration.CreateMap<ActivityDefinition, ActivityDefinitionEntity>()
-              .ForMember(x => x.ActivityDefinitionId, opt => opt.Ignore())
               .ForMember(x => x.Descriptions, opt => opt.MapFrom(x => x.Description))
               .ForMember(x => x.Extensions, opt => opt.MapFrom(x => x.Extensions))
               .ForMember(x => x.MoreInfo, opt => opt.MapFrom(a => a.MoreInfo))
@@ -39,8 +38,7 @@ namespace Application.Infrastructure.Automapper.Mappings
               .ForMember(d => d.MoreInfo, opt => opt.MapFrom(e => e.MoreInfo))
               .ForMember(d => d.Type, opt => opt.MapFrom(e => e.Type));
 
-            configuration.CreateMap<ActivityDefinitionEntity, ActivityDefinitionEntity>()
-              .ForMember(m => m.ActivityDefinitionId, cfg => cfg.Ignore());
+            configuration.CreateMap<ActivityDefinitionEntity, ActivityDefinitionEntity>();
 
             configuration.CreateMap<InteractionActivityDefinitionBase, InteractionActivityBase>()
               .ForMember(a => a.CorrectResponsesPattern, opt => opt.MapFrom(a => a.CorrectResponsesPattern))

@@ -1,6 +1,6 @@
 using Doctrina.Application.AgentProfiles.Commands;
 using Doctrina.Application.Agents.Queries;
-using Doctrina.Domain.Entities.Documents;
+using Doctrina.Domain.Models.Documents;
 using Doctrina.Persistence.Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -12,10 +12,10 @@ namespace Doctrina.Application.AgentProfiles
 {
     public class DeleteAgentProfileHandler : IRequestHandler<DeleteAgentProfileCommand>
     {
-        private readonly IDoctrinaDbContext _context;
+        private readonly IStoreDbContext _context;
         private readonly IMediator _mediator;
 
-        public DeleteAgentProfileHandler(IDoctrinaDbContext context, IMediator mediator)
+        public DeleteAgentProfileHandler(IStoreDbContext context, IMediator mediator)
         {
             _context = context;
             _mediator = mediator;
@@ -23,21 +23,16 @@ namespace Doctrina.Application.AgentProfiles
 
         public async Task<Unit> Handle(DeleteAgentProfileCommand request, CancellationToken cancellationToken)
         {
-            var agentEntity = await _mediator.Send(GetAgentQuery.Create(request.Agent));
-
-            if (agentEntity == null)
-            {
-                return await Unit.Task;
-            }
-
-            AgentProfileEntity profile = await _context.AgentProfiles
+            AgentProfileEntity profile = await _context.Documents
+                            .OfType<AgentProfileEntity>()
                             .AsNoTracking()
-                            .Where(x => x.AgentId == agentEntity.Id)
+                            .Where(x=> x.StoreId == _context.StoreId)
+                            .Where(x => x.PersonaId == request.Persona.PersonaId)
                             .SingleOrDefaultAsync(x => x.ProfileId == request.ProfileId, cancellationToken);
 
             if (profile != null)
             {
-                _context.AgentProfiles.Remove(profile);
+                _context.Documents.Remove(profile);
                 await _context.SaveChangesAsync(cancellationToken);
             }
 

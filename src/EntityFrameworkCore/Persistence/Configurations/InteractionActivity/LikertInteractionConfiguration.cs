@@ -1,4 +1,4 @@
-﻿using Doctrina.Domain.Entities.InteractionActivities;
+﻿using Doctrina.Domain.Models.InteractionActivities;
 using Doctrina.Persistence.ValueConverters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;

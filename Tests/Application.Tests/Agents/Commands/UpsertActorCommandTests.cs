@@ -1,7 +1,7 @@
 ﻿using Doctrina.Application.Agents.Commands;
 using Doctrina.Application.Agents.Queries;
 using Doctrina.Application.Tests.Infrastructure;
-using Doctrina.Domain.Entities;
+using Doctrina.Domain.Models;
 using Doctrina.ExperienceApi.Data;
 using MediatR;
 using Moq;
@@ -39,7 +39,7 @@ namespace Application.Tests.Agents.Commands
 
             // Assert
             result.ShouldNotBe(null);
-            result.Id.ShouldBe(entityId);
+            result.PersonaId.ShouldBe(entityId);
         }
     }
 }

@@ -1,12 +1,12 @@
-﻿using Doctrina.Domain.Entities;
+﻿using Doctrina.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Doctrina.Persistence.Configurations
 {
-    public class ActivityConfiguration : IEntityTypeConfiguration<ActivityEntity>
+    public class ActivityConfiguration : IEntityTypeConfiguration<ActivityModel>
     {
-        public void Configure(EntityTypeBuilder<ActivityEntity> builder)
+        public void Configure(EntityTypeBuilder<ActivityModel> builder)
         {
             builder.ToTable("Activities");
 
@@ -19,7 +19,7 @@ namespace Doctrina.Persistence.Configurations
                 .ValueGeneratedOnAdd()
                 .IsRequired();
 
-            builder.Property(e => e.Id)
+            builder.Property(e => e.Iri)
                .HasMaxLength(Constants.MAX_URL_LENGTH)
                .IsRequired();
 

@@ -1,4 +1,4 @@
-﻿using Doctrina.Domain.Entities;
+﻿using Doctrina.Domain.Models;
 using System.Collections.Generic;
 
 namespace Doctrina.Application.Statements.Models
@@ -7,17 +7,17 @@ namespace Doctrina.Application.Statements.Models
     {
         public PagedStatementsResult()
         {
-            Statements = new List<StatementEntity>();
+            Statements = new List<StatementModel>();
             MoreToken = null;
         }
 
-        public PagedStatementsResult(IEnumerable<StatementEntity> statements, string token = null)
+        public PagedStatementsResult(IEnumerable<StatementModel> statements, string token = null)
         {
             Statements = statements;
             MoreToken = token;
         }
 
-        public IEnumerable<StatementEntity> Statements { get; set; }
+        public IEnumerable<StatementModel> Statements { get; set; }
 
         /// <summary>
         /// If token is not null, more statements can be fetched using token

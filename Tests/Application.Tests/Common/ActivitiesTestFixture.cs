@@ -1,12 +1,12 @@
-using Doctrina.Domain.Entities;
+using Doctrina.Domain.Models;
 
 namespace Doctrina.Application.Tests.Common
 {
     public static class ActivitiesTestFixture
     {
-        public static ActivityEntity IdOnly() => new ActivityEntity()
+        public static ActivityModel IdOnly() => new ActivityModel()
         {
-            Id = "http://www.example.com/activityId/hashset"
+            Iri = "http://www.example.com/activityId/hashset"
         };
     }
 }

@@ -1,4 +1,4 @@
-﻿using Doctrina.Domain.Entities.OwnedTypes;
+using Doctrina.Domain.Models.ValueObjects;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Newtonsoft.Json;
 using System;
@@ -6,6 +6,9 @@ using System.Linq.Expressions;
 
 namespace Doctrina.Persistence.ValueConverters
 {
+    /// <summary>
+    /// Special value converter, where null is handled
+    /// </summary>
     public class ExtensionsCollectionValueConverter : ValueConverter<ExtensionsCollection, string>
     {
         public ExtensionsCollectionValueConverter(ConverterMappingHints mappingHints = null)

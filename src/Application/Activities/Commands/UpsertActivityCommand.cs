@@ -1,6 +1,6 @@
 ﻿using Doctrina.ExperienceApi.Data;
 using MediatR;
-using IActivity = Doctrina.Domain.Entities.Interfaces.IActivity;
+using IActivity = Doctrina.Domain.Models.Interfaces.IActivity;
 
 namespace Doctrina.Application.Activities.Commands
 {

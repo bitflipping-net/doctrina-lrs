@@ -1,30 +1,28 @@
-﻿using AutoMapper;
+using System;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoMapper;
 using Doctrina.Application.Common.Exceptions;
 using Doctrina.Application.Common.Interfaces;
-using Doctrina.Domain.Entities.Documents;
+using Doctrina.Domain.Models.Documents;
 using Doctrina.ExperienceApi.Client.Http;
 using Doctrina.ExperienceApi.Data.Documents;
 using Doctrina.ExperienceApi.Data.Json;
 using Doctrina.Persistence.Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Doctrina.Application.ActivityStates.Commands
 {
     public class UpdateStateDocumentHandler : IRequestHandler<UpdateStateDocumentCommand, ActivityStateDocument>
     {
-        private readonly IDoctrinaDbContext _context;
-        private readonly IStoreContext _storeContext;
+        private readonly IStoreDbContext _storeContext;
         private readonly IMapper _mapper;
 
-        public UpdateStateDocumentHandler(IDoctrinaDbContext context, IStoreContext storeContext, IMapper mapper)
+        public UpdateStateDocumentHandler(IStoreDbContext storeContext, IMapper mapper)
         {
-            _context = context;
             _storeContext = storeContext;
             _mapper = mapper;
         }
@@ -32,10 +30,11 @@ namespace Doctrina.Application.ActivityStates.Commands
         public async Task<ActivityStateDocument> Handle(UpdateStateDocumentCommand request, CancellationToken cancellationToken)
         {
             string activityHash = request.ActivityId.ComputeHash();
-            var query = _context.ActivityStates
-                .Where(x => x.Key == request.StateId)
+            IQueryable<ActivityStateEntity> query = _storeContext.Documents
+                .OfType<ActivityStateEntity>()
+                .Where(x => x.StateId == request.StateId)
                 .Where(x => x.Activity.Hash == activityHash)
-                .Where(x => x.PersonaIdentifier.Id == request.PersonaIdentifier.Id);
+                .Where(x => x.Persona.PersonaId == request.Persona.PersonaId);
 
             if (request.Registration.HasValue && request.Registration.Value != Guid.Empty)
             {
@@ -64,10 +63,10 @@ namespace Doctrina.Application.ActivityStates.Commands
             byte[] mergedJsonBytes = Encoding.UTF8.GetBytes(jsonString.ToString());
 
             state.UpdateDocument(mergedJsonBytes, request.ContentType);
-            
-            _context.ActivityStates.Update(state);
 
-            await _context.SaveChangesAsync(cancellationToken);
+            _storeContext.Documents.Update(state);
+
+            await _storeContext.SaveChangesAsync(cancellationToken);
 
             return _mapper.Map<ActivityStateDocument>(state);
         }

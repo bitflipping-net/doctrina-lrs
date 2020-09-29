@@ -1,21 +1,21 @@
-﻿using Doctrina.Domain.Entities.Documents;
-using Doctrina.ExperienceApi.Data;
+using Doctrina.Domain.Models;
+using Doctrina.Domain.Models.Documents;
 using MediatR;
 
 namespace Doctrina.Application.AgentProfiles.Commands
 {
     public class UpdateAgentProfileCommand : IRequest<AgentProfileEntity>
     {
-        public Agent Agent { get; set; }
+        public Persona Persona { get; set; }
         public string ProfileId { get; set; }
         public byte[] Content { get; set; }
         public string ContentType { get; set; }
 
-        public static UpdateAgentProfileCommand Create(Agent agent, string profileId, byte[] content, string contentType)
+        public static UpdateAgentProfileCommand Create(Persona persona, string profileId, byte[] content, string contentType)
         {
             var cmd = new UpdateAgentProfileCommand()
             {
-                Agent = agent,
+                Persona = persona,
                 ProfileId = profileId,
                 Content = content,
                 ContentType = contentType

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Doctrina.Domain.Entities;
+using Doctrina.Domain.Models;
 using Doctrina.Persistence.Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Doctrina.Application.Verbs.Commands
 {
-    public class UpsertVerbCommandHandler : IRequestHandler<UpsertVerbCommand, VerbEntity>
+    public class UpsertVerbCommandHandler : IRequestHandler<UpsertVerbCommand, VerbModel>
     {
         private readonly IDoctrinaDbContext _context;
         private readonly IMediator _mediator;
@@ -22,14 +22,14 @@ namespace Doctrina.Application.Verbs.Commands
             _mapper = mapper;
         }
 
-        public async Task<VerbEntity> Handle(UpsertVerbCommand request, CancellationToken cancellationToken)
+        public async Task<VerbModel> Handle(UpsertVerbCommand request, CancellationToken cancellationToken)
         {
             string hash = request.Verb.Id.ComputeHash();
-            VerbEntity verb = await _context.Verbs.SingleOrDefaultAsync(x => x.Hash == hash, cancellationToken);
+            VerbModel verb = await _context.Verbs.SingleOrDefaultAsync(x => x.Hash == hash, cancellationToken);
 
             if (verb == null)
             {
-                verb = _mapper.Map<VerbEntity>(request.Verb);
+                verb = _mapper.Map<VerbModel>(request.Verb);
                 verb.VerbId = Guid.NewGuid();
                 _context.Verbs.Add(verb);
                 return verb;

@@ -21,6 +21,6 @@
         /// <summary>
         /// Maximum length of a persons full name
         /// </summary>
-        public static int MAX_NAME_LENGTH = 100;
+        public static int MAX_NAME_LENGTH = 250;
     }
 }

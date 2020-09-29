@@ -1,5 +1,5 @@
-﻿using AutoMapper;
-using Doctrina.Domain.Entities.Documents;
+using AutoMapper;
+using Doctrina.Domain.Models.Documents;
 using Doctrina.ExperienceApi.Data.Documents;
 using Doctrina.Persistence.Infrastructure;
 using MediatR;
@@ -12,11 +12,11 @@ namespace Doctrina.Application.ActivityStates.Queries
 {
     public class GetActivityStateQueryHandler : IRequestHandler<GetActivityStateQuery, ActivityStateDocument>
     {
-        private readonly IDoctrinaDbContext _context;
+        private readonly IStoreDbContext _context;
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
 
-        public GetActivityStateQueryHandler(IDoctrinaDbContext context, IMapper mapper, IMediator mediator)
+        public GetActivityStateQueryHandler(IStoreDbContext context, IMapper mapper, IMediator mediator)
         {
             _context = context;
             _mapper = mapper;
@@ -27,15 +27,17 @@ namespace Doctrina.Application.ActivityStates.Queries
         {
             string activityHash = request.ActivityId.ComputeHash();
 
-            var query = _context.ActivityStates
+            var query = _context.Documents
+                .OfType<ActivityStateEntity>()
                 .AsNoTracking()
+                .Where(x=> x.StoreId == _context.StoreId)
                 .Where(x => x.StateId == request.StateId)
                 .Where(x => x.Activity.Hash == activityHash)
-                .Where(x => x.Agent.AgentId == request.IFI);
+                .Where(x => x.PersonaId == request.Persona.PersonaId);
 
             if (request.RegistrationId.HasValue)
             {
-                query.Where(x => x.Registration == request.RegistrationId);
+                query.Where(x => x.RegistrationId == request.RegistrationId);
             }
 
             ActivityStateEntity state = await query.SingleOrDefaultAsync(cancellationToken);

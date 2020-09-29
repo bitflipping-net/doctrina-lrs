@@ -1,4 +1,4 @@
-﻿using Doctrina.Domain.Entities;
+using Doctrina.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -8,6 +8,8 @@ namespace Doctrina.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Store> builder)
         {
+            builder.ToTable("Stores");
+
             builder.HasKey(s => s.StoreId);
             builder.Property(store => store.StoreId)
                 .ValueGeneratedOnAdd();
@@ -31,6 +33,9 @@ namespace Doctrina.Persistence.Configurations
 
             builder.HasMany(store => store.Verbs)
                 .WithOne();
+
+            builder.Property(store => store.OrganisationId)
+                .IsRequired();
         }
     }
 }

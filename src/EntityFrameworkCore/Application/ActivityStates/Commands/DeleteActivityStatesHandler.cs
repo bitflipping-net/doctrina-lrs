@@ -15,9 +15,9 @@ namespace Doctrina.Application.ActivityStates
     {
         private readonly IDoctrinaDbContext _context;
         private readonly IMapper _mapper;
-        private readonly IStoreContext _storeContext;
+        private readonly IStoreHttpContext _storeContext;
 
-        public DeleteActivityStatesHandler(IDoctrinaDbContext context, IMapper mapper, IStoreContext storeContext)
+        public DeleteActivityStatesHandler(IDoctrinaDbContext context, IMapper mapper, IStoreHttpContext storeContext)
         {
             _context = context;
             _mapper = mapper;
@@ -31,7 +31,7 @@ namespace Doctrina.Application.ActivityStates
             var activities = _context.ActivityStates
                 .Where(x=> x.StoreId == storeId)
                 .Where(x => x.Activity.Hash == activityHash)
-                .Where(x => x.PersonaIdentifier.Id == request.IFI.Id);
+                .Where(x => x.Persona.PersonaId == request.Persona.PersonaId);
 
             _context.ActivityStates.RemoveRange(activities);
 

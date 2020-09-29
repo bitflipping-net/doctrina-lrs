@@ -9,16 +9,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Entities\Models\**" />
+    <Compile Remove="Models\Models\**" />
     <Compile Remove="Exceptions\**" />
-    <EmbeddedResource Remove="Entities\Models\**" />
+    <EmbeddedResource Remove="Models\Models\**" />
     <EmbeddedResource Remove="Exceptions\**" />
-    <None Remove="Entities\Models\**" />
+    <None Remove="Models\Models\**" />
     <None Remove="Exceptions\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Entities\StatementBaseEntity.cs" />
+    <Compile Remove="Models\StatementBaseEntity.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,4 +1,4 @@
-﻿using Doctrina.Domain.Entities;
+﻿using Doctrina.Domain.Models;
 using Doctrina.ExperienceApi.Data.Documents;
 using MediatR;
 using System;
@@ -12,6 +12,6 @@ namespace Doctrina.Application.ActivityStates.Commands
         public Guid? RegistrationId { get; set; }
         public byte[] Content { get; set; }
         public string ContentType { get; set; }
-        public ActivityEntity Activity { get; set; }
+        public ActivityModel Activity { get; set; }
     }
 }

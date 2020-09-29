@@ -1,11 +1,11 @@
 using Doctrina.Application.Common.Caching;
-using Doctrina.Domain.Entities;
+using Doctrina.Domain.Models;
 using Microsoft.Extensions.Caching.Memory;
 using System;
 
 namespace Doctrina.Application.Statements.Queries
 {
-    public class StatementQueryCache : MemoryCache<StatementQuery, StatementEntity>
+    public class StatementQueryCache : MemoryCache<StatementQuery, StatementModel>
     {
         /// <summary>
         /// Each time the cached response is retrieved another 30 minutes will be added to the time before the cached

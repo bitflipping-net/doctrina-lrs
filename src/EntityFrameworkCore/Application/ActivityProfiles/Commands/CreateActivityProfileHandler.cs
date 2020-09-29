@@ -1,13 +1,11 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Doctrina.Application.Activities.Commands;
 using Doctrina.Application.Common.Interfaces;
-using Doctrina.Domain.Entities;
-using Doctrina.Domain.Entities.Documents;
+using Doctrina.Domain.Models;
+using Doctrina.Domain.Models.Documents;
 using Doctrina.ExperienceApi.Data.Documents;
 using Doctrina.Persistence.Infrastructure;
 using MediatR;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,15 +13,12 @@ namespace Doctrina.Application.ActivityProfiles.Commands
 {
     public class CreateActivityProfileHandler : IRequestHandler<CreateActivityProfileCommand, ActivityProfileDocument>
     {
-        private readonly IDoctrinaDbContext _context;
-        private readonly IStoreContext _storeContext;
+        private readonly IStoreDbContext _context;
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
 
-        public CreateActivityProfileHandler(IDoctrinaDbContext context, IStoreContext storeContext, IMediator mediator, IMapper mapper)
+        public CreateActivityProfileHandler(IStoreDbContext context, IStoreHttpContext storeContext, IMediator mediator, IMapper mapper)
         {
-            _context = context;
-            _storeContext = storeContext;
             _mediator = mediator;
             _mapper = mapper;
         }
@@ -35,12 +30,13 @@ namespace Doctrina.Application.ActivityProfiles.Commands
             var profile = new ActivityProfileEntity(request.Content, request.ContentType)
             {
                 Key = request.ProfileId,
-                Activity = activity as ActivityEntity,
+                Activity = activity as ActivityModel,
                 RegistrationId = request.Registration,
-                Store = _storeContext.GetStore()
+                StoreId = _context.StoreId,
             };
 
-            _context.ActivityProfiles.Add(profile);
+            await _context.Documents.AddAsync(profile, cancellationToken);
+
             await _context.SaveChangesAsync(cancellationToken);
 
             //return profile;

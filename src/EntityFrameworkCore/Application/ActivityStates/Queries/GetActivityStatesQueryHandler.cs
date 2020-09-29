@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Doctrina.ExperienceApi.Data.Documents;
 using Doctrina.Persistence.Infrastructure;
 using MediatR;
@@ -27,16 +27,16 @@ namespace Doctrina.Application.ActivityStates.Queries
         public async Task<ICollection<ActivityStateDocument>> Handle(GetActivityStatesQuery request, CancellationToken cancellationToken)
         {
             string activityHash = request.ActivityId.ComputeHash();
-            Guid agentId = request.AgentId;
+            Guid personaId = request.Persona.PersonaId;
 
             var query = _context.ActivityStates
                 .AsNoTracking()
                 .Where(x => x.Activity.Hash == activityHash)
-                .Where(x => x.Agent.AgentId == agentId);
+                .Where(x => x.PersonaId == personaId);
 
             if (request.Registration.HasValue)
             {
-                query.Where(x => x.Registration == request.Registration);
+                query.Where(x => x.RegistrationId == request.Registration);
             }
 
             var states = await query.ToListAsync(cancellationToken);

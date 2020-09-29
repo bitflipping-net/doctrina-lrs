@@ -3,7 +3,7 @@ using Doctrina.Application.Statements.Commands;
 using Doctrina.Application.Statements.Notifications;
 using Doctrina.Application.Statements.Queries;
 using Doctrina.Application.Tests.Infrastructure;
-using Doctrina.Domain.Entities;
+using Doctrina.Domain.Models;
 using Doctrina.ExperienceApi.Data;
 using Doctrina.ExperienceApi.Data.Extensions;
 using MediatR;
@@ -53,7 +53,7 @@ namespace Doctrina.Application.Tests.Statements.Commands
             );
 
             // Query voided statement
-            StatementEntity voidedStatement = await voidStatementQueryHandler.Handle(
+            StatementModel voidedStatement = await voidStatementQueryHandler.Handle(
                 VoidedStatemetQuery.Create(voidedStatementId), 
                 CancellationToken.None
             );

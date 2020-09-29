@@ -1,4 +1,4 @@
-﻿using Doctrina.Domain.Entities;
+﻿using Doctrina.Domain.Models;
 using MediatR;
 
 namespace Doctrina.Application.Clients.Commands

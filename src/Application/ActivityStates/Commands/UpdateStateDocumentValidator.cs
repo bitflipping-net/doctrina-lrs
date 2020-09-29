@@ -1,4 +1,4 @@
-﻿using Doctrina.ExperienceApi.Client.Http;
+using Doctrina.ExperienceApi.Client.Http;
 using Doctrina.ExperienceApi.Data.Json;
 using FluentValidation;
 using System.Text;
@@ -11,7 +11,7 @@ namespace Doctrina.Application.ActivityStates.Commands
         {
             RuleFor(x => x.StateId).NotEmpty();
             RuleFor(x => x.ActivityId).NotEmpty();
-            RuleFor(x => x.AgentId).NotEmpty();
+            RuleFor(x => x.Persona).NotEmpty();
             RuleFor(x => x.Content).NotEmpty();
             RuleFor(x => x.ContentType).NotEmpty();
 

@@ -49,7 +49,7 @@ namespace Doctrina.Application.Tests.Statements.Commands
 
             // Assert
             mediatorMock.Verify(m => m.Publish(
-                It.Is<StatementCreated>(cc => cc.Created.StatementId == newStatementId),
+                It.Is<StatementCreated>(cc => cc.Model.StatementId == newStatementId),
                 It.IsAny<CancellationToken>()),
                 Times.Once);
         }

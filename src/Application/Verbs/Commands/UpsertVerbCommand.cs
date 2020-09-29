@@ -1,10 +1,10 @@
-﻿using Doctrina.Domain.Entities;
+﻿using Doctrina.Domain.Models;
 using Doctrina.ExperienceApi.Data;
 using MediatR;
 
 namespace Doctrina.Application.Verbs.Commands
 {
-    public class UpsertVerbCommand : IRequest<VerbEntity>
+    public class UpsertVerbCommand : IRequest<VerbModel>
     {
         public Verb Verb { get; set; }
 

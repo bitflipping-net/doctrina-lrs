@@ -1,5 +1,5 @@
-﻿using Doctrina.Domain.Entities;
-using Doctrina.Domain.Entities.Documents;
+﻿using Doctrina.Domain.Models;
+using Doctrina.Domain.Models.Documents;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -13,10 +13,11 @@ namespace Doctrina.Persistence.Infrastructure
 {
     public interface IDoctrinaDbContext : IInfrastructure<IServiceProvider>, IDbContextDependencies, IDbSetCache, IDbContextPoolable, IResettableService
     {
-        DbSet<VerbEntity> Verbs { get; set; }
-        DbSet<ActivityEntity> Activities { get; set; }
-        DbSet<Person> Personas { get; set; }
-        DbSet<StatementEntity> Statements { get; set; }
+        DbSet<VerbModel> Verbs { get; set; }
+        DbSet<ActivityModel> Activities { get; set; }
+        DbSet<Person> People { get; set; }
+        DbSet<Persona> Personas { get; set; }
+        DbSet<StatementModel> Statements { get; set; }
         DbSet<AgentProfileEntity> AgentProfiles { get; set; }
         DbSet<ActivityProfileEntity> ActivityProfiles { get; set; }
         DbSet<ActivityStateEntity> ActivityStates { get; set; }

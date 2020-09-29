@@ -1,5 +1,5 @@
 using Doctrina.Application.Tests.Infrastructure;
-using Doctrina.Domain.Entities;
+using Doctrina.Domain.Models;
 using Doctrina.ExperienceApi.Data;
 using Shouldly;
 using Xunit;
@@ -15,9 +15,9 @@ namespace Doctrina.Application.Tests.Statements.Commands
             {
                 Id = new Iri("https://google.com")
             };
-            var entity = _mapper.Map<VerbEntity>(verb);
+            var entity = _mapper.Map<VerbModel>(verb);
             entity.ShouldNotBeNull();
-            entity.IRI.ShouldNotBeNull();
+            entity.Id.ShouldNotBeNull();
 
             var backverb = _mapper.Map<Verb>(entity);
             backverb.ShouldNotBeNull();
@@ -35,7 +35,7 @@ namespace Doctrina.Application.Tests.Statements.Commands
                     Id = new Iri("https://google.com")
                 }
             };
-            var entity = _mapper.Map<StatementEntity>(statement);
+            var entity = _mapper.Map<StatementModel>(statement);
             entity.ShouldNotBeNull();
 
             var back = _mapper.Map<Statement>(entity);
@@ -45,14 +45,14 @@ namespace Doctrina.Application.Tests.Statements.Commands
         [Fact]
         public void ShouldReturn_StatementsResult_WithAgent()
         {
-            var entity = new StatementEntity()
+            var entity = new StatementModel()
             {
-                Verb = new VerbEntity()
+                Verb = new VerbModel()
                 {
-                    IRI = "https://google.com"
+                    Id = "https://google.com"
                 }
             };
-            var iri = Iri.Parse(entity.Verb.Id);
+            var iri = Iri.Parse(entity.Verb.VerbId);
             var statement = new Statement();
             _mapper.Map(entity, statement);
             statement.ShouldNotBeNull();

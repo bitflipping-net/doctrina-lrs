@@ -1,11 +1,11 @@
-﻿using Doctrina.Domain.Entities;
+﻿using Doctrina.Domain.Models;
 using Doctrina.ExperienceApi.Data;
 using MediatR;
 using System;
 
 namespace Doctrina.Application.Statements.Queries
 {
-    public class VoidedStatemetQuery : IRequest<StatementEntity>
+    public class VoidedStatemetQuery : IRequest<StatementModel>
     {
         public ResultFormat Format { get; private set; }
         public Guid VoidedStatementId { get; private set; }

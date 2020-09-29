@@ -1,6 +1,6 @@
-﻿using Doctrina.Domain.Entities;
-using Doctrina.Domain.Entities.OwnedTypes;
-using Doctrina.Domain.Entities.ValueObjects;
+using Doctrina.Domain.Models;
+using Doctrina.Domain.Models.InteractionActivities;
+using Doctrina.Domain.Models.ValueObjects;
 using Doctrina.Persistence.ValueConverters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -14,22 +14,33 @@ namespace Doctrina.Persistence.Configurations
         {
             builder.ToTable("ActivityDefinitions");
 
-            builder.HasKey(x => new { x.ActivityId, x.StoreId });
+            //builder.HasKey(x => x.Id);
+            //builder.Property(x => x.Id)
+            //    .ValueGeneratedOnAdd()
+            //    .IsRequired();
 
-            builder.Property(e => e.Type);
+            //builder.HasOne(x => x.Statement)
+            //    .WithMany()
+            //    .HasForeignKey(x => x.StatementId);
 
-            builder.Property(e => e.MoreInfo);
+            builder.Property(e => e.Type)
+                .IsRequired(false);
 
-            //builder.Property(e => e.InteractionActivity);
+            builder.Property(e => e.MoreInfo)
+                .IsRequired(false);
+
+            builder.Property(e => e.InteractionActivity)
+                .HasConversion(new JsonValueConverter<InteractionActivityBase>())
+                .IsRequired(false);
 
             builder.Property(p => p.Names)
-                .HasConversion(new LanguageMapCollectionValueConverter())
+                .HasConversion(new JsonValueConverter<LanguageMapCollection>())
                 .HasColumnType("ntext")
                 .Metadata
                 .SetValueComparer(new ValueComparer<LanguageMapCollection>(false));
 
             builder.Property(p => p.Descriptions)
-                .HasConversion(new LanguageMapCollectionValueConverter())
+                .HasConversion(new JsonValueConverter<LanguageMapCollection>())
                 .HasColumnType("ntext")
                 .Metadata
                 .SetValueComparer(new ValueComparer<LanguageMapCollection>(false));

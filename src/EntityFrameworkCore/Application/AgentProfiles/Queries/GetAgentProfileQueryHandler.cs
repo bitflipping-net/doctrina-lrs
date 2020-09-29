@@ -1,7 +1,7 @@
 using AutoMapper;
 using Doctrina.Application.AgentProfiles.Queries;
 using Doctrina.Application.Agents.Queries;
-using Doctrina.Domain.Entities.Documents;
+using Doctrina.Domain.Models.Documents;
 using Doctrina.Persistence.Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -13,11 +13,11 @@ namespace Doctrina.Application.AgentProfiles
 {
     public class GetAgentProfileQueryHandler : IRequestHandler<GetAgentProfileQuery, AgentProfileEntity>
     {
-        private readonly IDoctrinaDbContext _context;
+        private readonly IStoreDbContext _context;
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
 
-        public GetAgentProfileQueryHandler(IDoctrinaDbContext context, IMediator mediator, IMapper mapper)
+        public GetAgentProfileQueryHandler(IStoreDbContext context, IMediator mediator, IMapper mapper)
         {
             _context = context;
             _mediator = mediator;
@@ -26,17 +26,11 @@ namespace Doctrina.Application.AgentProfiles
 
         public async Task<AgentProfileEntity> Handle(GetAgentProfileQuery request, CancellationToken cancellationToken)
         {
-            var agent = await _mediator.Send(GetAgentQuery.Create(request.Agent));
-
-            if (agent == null)
-            {
-                return null;
-            }
-
-            var profile = await _context.AgentProfiles
-                .Include(x => x.Document)
+            var profile = await _context.Documents
+                .OfType<AgentProfileEntity>()
                 .AsNoTracking()
-                .Where(x => x.AgentId == agent.Id)
+                .Where(x => x.StoreId == _context.StoreId)
+                .Where(x => x.PersonaId == request.Persona.PersonaId)
                 .SingleOrDefaultAsync(x => x.ProfileId == request.ProfileId, cancellationToken);
 
             return profile;

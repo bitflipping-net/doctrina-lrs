@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Doctrina.Application.Statements.Commands;
 using Doctrina.Application.Statements.Models;
-using Doctrina.Domain.Entities;
+using Doctrina.Domain.Models;
 using Doctrina.ExperienceApi.Data;
 using Doctrina.WebUI.ExperienceApi.Mvc.ActionResults;
 using Doctrina.WebUI.ExperienceApi.Mvc.Filters;
@@ -62,7 +62,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
 
             if (parameters.StatementId.HasValue || parameters.VoidedStatementId.HasValue)
             {
-                IRequest<StatementEntity> requestQuery = null;
+                IRequest<StatementModel> requestQuery = null;
                 if (parameters.StatementId.HasValue)
                 {
                     Guid statementId = parameters.StatementId.Value;
@@ -74,7 +74,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                     requestQuery = Queries.VoidedStatemetQuery.Create(voidedStatementId, attachments, format);
                 }
 
-                StatementEntity statementEntity = await _mediator.Send(requestQuery, cancellationToken);
+                StatementModel statementEntity = await _mediator.Send(requestQuery, cancellationToken);
 
                 if (statementEntity == null)
                 {

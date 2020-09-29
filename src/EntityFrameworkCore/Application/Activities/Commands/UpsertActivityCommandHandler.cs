@@ -1,21 +1,22 @@
-﻿using AutoMapper;
-using Doctrina.Domain.Entities;
+using AutoMapper;
+using Doctrina.Domain.Models;
 using Doctrina.Persistence.Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using IActivity = Doctrina.Domain.Entities.Interfaces.IActivity;
+using IActivity = Doctrina.Domain.Models.Interfaces.IActivity;
 
 namespace Doctrina.Application.Activities.Commands
 {
     public class UpsertActivityCommandHandler : IRequestHandler<UpsertActivityCommand, IActivity>
     {
-        private readonly IDoctrinaDbContext _context;
+        private readonly IStoreDbContext _context;
         private readonly IMapper _mapper;
 
-        public UpsertActivityCommandHandler(IDoctrinaDbContext context, IMapper mapper)
+        public UpsertActivityCommandHandler(IStoreDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
@@ -23,31 +24,33 @@ namespace Doctrina.Application.Activities.Commands
 
         public async Task<IActivity> Handle(UpsertActivityCommand request, CancellationToken cancellationToken)
         {
-            var entity = _mapper.Map<ActivityEntity>(request.Activity);
+            ActivityModel model = _mapper.Map<ActivityModel>(request.Activity);
 
-            var current = await _context.Activities
+            ActivityModel currentModel = await _context.Activities
                 .Include(ac => ac.Definition)
-                .FirstOrDefaultAsync(x => x.Hash == entity.Hash, cancellationToken);
+                .FirstOrDefaultAsync(x => x.Hash == model.Hash, cancellationToken);
 
-            if (current != null)
+            if (currentModel != null)
             {
-                if (entity.Definition != null)
+                if (model.Definition != null)
                 {
-                    if (current.Definition == null)
+                    if (currentModel.Definition == null)
                     {
-                        current.Definition = new ActivityDefinitionEntity();
+                        currentModel.Definition = new ActivityDefinitionEntity();
                     }
-                    _mapper.Map(entity.Definition, current.Definition);
+
+                    _mapper.Map(model.Definition, currentModel.Definition);
+
+                    await _context.SaveChangesAsync(cancellationToken);
                 }
-                return current;
+                return currentModel;
             }
 
-            entity.ActivityId = Guid.NewGuid();
-            _context.Activities.Add(entity);
+            await _context.Activities.AddAsync(model, cancellationToken);
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return entity;
+            return model;
         }
     }
 }

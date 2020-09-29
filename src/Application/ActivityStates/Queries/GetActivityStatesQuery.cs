@@ -1,4 +1,5 @@
-﻿using Doctrina.ExperienceApi.Data;
+using Doctrina.Domain.Models;
+using Doctrina.ExperienceApi.Data;
 using Doctrina.ExperienceApi.Data.Documents;
 using MediatR;
 using System;
@@ -9,7 +10,7 @@ namespace Doctrina.Application.ActivityStates.Queries
     public class GetActivityStatesQuery : IRequest<ICollection<ActivityStateDocument>>
     {
         public Iri ActivityId { get; set; }
-        public Guid AgentId { get; set; }
+        public Persona Persona { get; set; }
         public Guid? Registration { get; set; }
         public DateTime? Since { get; set; }
     }

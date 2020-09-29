@@ -1,17 +1,17 @@
-using Doctrina.Domain.Entities;
+using Doctrina.Domain.Models;
 using MediatR;
 
 namespace Doctrina.Application.Agents.Notifications
 {
     public class AgentUpdated : INotification
     {
-        public AgentEntity Agent { get; set; }
+        public Persona Agent { get; set; }
 
         public AgentUpdated()
         {
         }
 
-        public static AgentUpdated Create(AgentEntity agent)
+        public static AgentUpdated Create(Persona agent)
         {
             return new AgentUpdated()
             {

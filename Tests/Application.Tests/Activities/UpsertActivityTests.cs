@@ -65,7 +65,7 @@ namespace Application.Tests.Activities.Commands
             await _context.SaveChangesAsync();
             var entity2 = await upsertHandler.Handle(UpsertActivityCommand.Create(activity2), CancellationToken.None);
 
-            entity2.Id.ShouldBe("http://www.example.com/verify/complete/34534");
+            entity2.Iri.ShouldBe("http://www.example.com/verify/complete/34534");
             entity2.Definition.ShouldNotBeNull();
 
             entity2.Definition.Names.Count.ShouldBe(2);

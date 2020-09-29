@@ -1,8 +1,8 @@
-﻿using AutoMapper;
-using Doctrina.Domain.Entities.OwnedTypes;
+using AutoMapper;
 
 namespace Doctrina.Application.Mappings.ValueResolvers
 {
+    using Doctrina.Domain.Models.ValueObjects;
     using Doctrina.ExperienceApi.Data;
 
     public class ExtensionsValueResolver :
