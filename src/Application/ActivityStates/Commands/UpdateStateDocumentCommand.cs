@@ -10,7 +10,7 @@ namespace Doctrina.Application.ActivityStates.Commands
     {
         public string StateId { get; set; }
         public Iri ActivityId { get; set; }
-        public Persona Persona { get; set; }
+        public PersonaModel Persona { get; set; }
         public Guid? Registration { get; set; }
         public byte[] Content { get; set; }
         public string ContentType { get; set; }

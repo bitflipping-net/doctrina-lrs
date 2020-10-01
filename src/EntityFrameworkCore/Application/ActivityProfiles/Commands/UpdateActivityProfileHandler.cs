@@ -31,7 +31,7 @@ namespace Doctrina.Application.ActivityProfiles.Commands
                 throw new NotFoundException("No activity profiles for activity.");
             }
 
-            ActivityProfileEntity profile = await _context.ActivityProfiles.GetProfileAsync(activity.ActivityId, request.ProfileId, request.Registration, cancellationToken);
+            ActivityProfileModel profile = await _context.ActivityProfiles.GetProfileAsync(activity.ActivityId, request.ProfileId, request.Registration, cancellationToken);
 
             profile.UpdateDocument(request.Content, request.ContentType);
 

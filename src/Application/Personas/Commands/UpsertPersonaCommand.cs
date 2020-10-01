@@ -5,20 +5,20 @@ using System.Collections.Generic;
 
 namespace Doctrina.Application.Personas.Commands
 {
-    public class UpsertPersonaCommand : IRequest<Persona>
+    public class UpsertPersonaCommand : IRequest<PersonaModel>
     {
         public Guid StoreId { get; private set; }
         public ObjectType Type { get; private set; }
         public string Name { get; private set; }
         public InverseFunctionalIdentifier Key { get; private set; }
         public string Value { get; private set; }
-        public IEnumerable<Persona> Personas { get; private set; }
+        public IEnumerable<PersonaModel> Personas { get; private set; }
 
         /// <summary>
         /// Create a group without IFI
         /// </summary>
         /// <returns></returns>
-        public static UpsertPersonaCommand CreateAnonymousGroup(Guid storeId, IEnumerable<Persona> members, string name = null)
+        public static UpsertPersonaCommand CreateAnonymousGroup(Guid storeId, IEnumerable<PersonaModel> members, string name = null)
         {
             return new UpsertPersonaCommand()
             {
@@ -38,7 +38,7 @@ namespace Doctrina.Application.Personas.Commands
         /// <param name="members"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static UpsertPersonaCommand CreateIdentifiedGroup(Guid storeId, InverseFunctionalIdentifier key, string value, IEnumerable<Persona> members, string name = null)
+        public static UpsertPersonaCommand CreateIdentifiedGroup(Guid storeId, InverseFunctionalIdentifier key, string value, IEnumerable<PersonaModel> members, string name = null)
         {
             return new UpsertPersonaCommand()
             {

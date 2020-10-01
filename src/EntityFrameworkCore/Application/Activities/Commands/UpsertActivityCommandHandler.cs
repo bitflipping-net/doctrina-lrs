@@ -1,17 +1,14 @@
+using System.Threading;
+using System.Threading.Tasks;
 using AutoMapper;
 using Doctrina.Domain.Models;
 using Doctrina.Persistence.Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using IActivity = Doctrina.Domain.Models.Interfaces.IActivity;
 
 namespace Doctrina.Application.Activities.Commands
 {
-    public class UpsertActivityCommandHandler : IRequestHandler<UpsertActivityCommand, IActivity>
+    public class UpsertActivityCommandHandler : IRequestHandler<UpsertActivityCommand, ActivityModel>
     {
         private readonly IStoreDbContext _context;
         private readonly IMapper _mapper;
@@ -22,7 +19,7 @@ namespace Doctrina.Application.Activities.Commands
             _mapper = mapper;
         }
 
-        public async Task<IActivity> Handle(UpsertActivityCommand request, CancellationToken cancellationToken)
+        public async Task<ActivityModel> Handle(UpsertActivityCommand request, CancellationToken cancellationToken)
         {
             ActivityModel model = _mapper.Map<ActivityModel>(request.Activity);
 

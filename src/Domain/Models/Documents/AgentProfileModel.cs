@@ -2,13 +2,13 @@ using System;
 
 namespace Doctrina.Domain.Models.Documents
 {
-    public class AgentProfileEntity : DocumentEntity, IAgentProfileEntity
+    public class AgentProfileModel : DocumentModel, IAgentProfileEntity
     {
-        public AgentProfileEntity()
+        public AgentProfileModel()
         {
         }
 
-        public AgentProfileEntity(byte[] content, string contentType) : base(content, contentType)
+        public AgentProfileModel(byte[] content, string contentType) : base(content, contentType)
         {
         }
 

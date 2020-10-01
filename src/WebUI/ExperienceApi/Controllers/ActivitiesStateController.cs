@@ -53,7 +53,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            Persona persona = await _mediator.Send(UpsertActorCommand.Create(agent));
+            PersonaModel persona = await _mediator.Send(UpsertActorCommand.Create(agent));
 
             if (string.IsNullOrEmpty(stateId))
             {
@@ -102,7 +102,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
         /// <returns></returns>
         private async Task<IActionResult> GetMutipleStates(
             Iri activityId,
-            Persona persona,
+            PersonaModel persona,
             Guid? registration = null,
             DateTime? since = null,
             CancellationToken cancellationToken = default)
@@ -145,7 +145,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            Persona persona = await _mediator.Send(UpsertActorCommand.Create(agent));
+            PersonaModel persona = await _mediator.Send(UpsertActorCommand.Create(agent));
             ActivityModel activity = (ActivityModel)await _mediator.Send(UpsertActivityCommand.Create(activityId), cancellationToken);
 
             ActivityStateDocument stateDocument = await _mediator.Send(new GetActivityStateQuery()
@@ -202,7 +202,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            Persona persona = (await _mediator.Send(UpsertActorCommand.Create(agent)));
+            PersonaModel persona = (await _mediator.Send(UpsertActorCommand.Create(agent)));
 
             if (string.IsNullOrEmpty(stateId))
             {

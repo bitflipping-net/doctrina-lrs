@@ -5,13 +5,13 @@ namespace Doctrina.Application.Agents.Notifications
 {
     public class AgentUpdated : INotification
     {
-        public Persona Agent { get; set; }
+        public PersonaModel Agent { get; set; }
 
         public AgentUpdated()
         {
         }
 
-        public static AgentUpdated Create(Persona agent)
+        public static AgentUpdated Create(PersonaModel agent)
         {
             return new AgentUpdated()
             {

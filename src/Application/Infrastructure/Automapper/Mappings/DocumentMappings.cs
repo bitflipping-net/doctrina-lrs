@@ -9,7 +9,7 @@ namespace Doctrina.Application.Mappings
     {
         public void CreateMappings(Profile configuration)
         {
-            configuration.CreateMap<DocumentEntity, Document>()
+            configuration.CreateMap<DocumentModel, Document>()
                 .ForMember(x => x.Content, opt => opt.MapFrom(p => p.Content))
                 .ForMember(x => x.ContentType, opt => opt.MapFrom(p => p.ContentType))
                 .ForMember(x => x.Tag, opt => opt.MapFrom(p => p.Checksum))

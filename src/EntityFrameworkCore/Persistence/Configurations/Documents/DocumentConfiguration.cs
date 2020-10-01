@@ -4,16 +4,16 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Doctrina.Persistence.Configurations.Documents
 {
-    public class DocumentConfiguration : IEntityTypeConfiguration<DocumentEntity>
+    public class DocumentConfiguration : IEntityTypeConfiguration<DocumentModel>
     {
-        public void Configure(EntityTypeBuilder<DocumentEntity> builder)
+        public void Configure(EntityTypeBuilder<DocumentModel> builder)
         {
             builder.HasKey(p => new { p.StoreId, p.Key });
 
             builder.HasDiscriminator<string>("DocumentType")
-                .HasValue<ActivityProfileEntity>("ActivityProfile")
+                .HasValue<ActivityProfileModel>("ActivityProfile")
                 .HasValue<ActivityStateEntity>("ActivityState")
-                .HasValue<AgentProfileEntity>("AgentProfile");
+                .HasValue<AgentProfileModel>("AgentProfile");
 
             builder.Property(document => document.Key)
                 .HasColumnName("Key")

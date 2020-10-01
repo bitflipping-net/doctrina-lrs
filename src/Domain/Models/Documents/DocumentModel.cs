@@ -6,11 +6,11 @@ namespace Doctrina.Domain.Models.Documents
     /// <summary>
     /// Represents a stored document
     /// </summary>
-    public class DocumentEntity : IDocumentEntity
+    public class DocumentModel : IDocumentEntity
     {
-        public DocumentEntity() { }
+        public DocumentModel() { }
 
-        public DocumentEntity(byte[] content, string contentType)
+        public DocumentModel(byte[] content, string contentType)
         {
             Content = content;
             ContentType = contentType;
@@ -42,7 +42,7 @@ namespace Doctrina.Domain.Models.Documents
         /// <summary>
         /// UTC Date when the document was last modified
         /// </summary>
-        public DateTimeOffset UpdatedAt { get; set; }
+        public DateTimeOffset? UpdatedAt { get; set; }
 
         /// <summary>
         /// UTC Date when the document was created
@@ -57,7 +57,7 @@ namespace Doctrina.Domain.Models.Documents
         /// <summary>
         /// Persona identifier this belongs to. (optional)
         /// </summary>
-        public Persona Persona { get; set; }
+        public PersonaModel Persona { get; set; }
 
         /// <summary>
         /// The id of the <see cref="Activity"/>.

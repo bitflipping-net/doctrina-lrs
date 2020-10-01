@@ -99,8 +99,8 @@ namespace Doctrina.Application.Tests.Infrastructure
                 Hash = activityId.ComputeHash()
             });
 
-            storeContext.Personas.AddRange(new Persona[]{
-                new Persona()
+            storeContext.Personas.AddRange(new PersonaModel[]{
+                new PersonaModel()
                 {
                     ObjectType = Domain.Models.ObjectType.Agent,
                     Name = "Facebook persona",
@@ -112,7 +112,7 @@ namespace Doctrina.Application.Tests.Infrastructure
                         Name = "Doctrina .NET"
                     }.ToJson()
                 },
-                new Persona()
+                new PersonaModel()
                 {
                     ObjectType = Domain.Models.ObjectType.Agent,
                     Name = "Hello Doctrina",

@@ -32,7 +32,7 @@ namespace Doctrina.Application.Statements.Queries
                     .Select(x => new StatementModel()
                     {
                         StatementId = x.StatementId,
-                        FullStatement = x.FullStatement,
+                        Encoded = x.Encoded,
                         Attachments = x.Attachments
                     });
             }
@@ -41,7 +41,7 @@ namespace Doctrina.Application.Statements.Queries
                 query = query.Select(x => new StatementModel()
                 {
                     StatementId = x.StatementId,
-                    FullStatement = x.FullStatement
+                    Encoded = x.Encoded
                 });
             }
 

@@ -2,7 +2,10 @@ using System;
 
 namespace Doctrina.Domain.Models
 {
-    public class Persona : IStoreEntity
+    /// <summary>
+    /// A persona is a identify on a platform
+    /// </summary>
+    public class PersonaModel : IStoreEntity
     {
         /// <summary>
         /// The primary Key
@@ -29,7 +32,7 @@ namespace Doctrina.Domain.Models
         /// <summary>
         /// The IFI type (account, mbox, mbox_sha1sum, or openid)
         /// </summary>
-        public InverseFunctionalIdentifier Key { get; set; }
+        public string Key { get; set; }
 
         /// <summary>
         /// The value of the IFI.

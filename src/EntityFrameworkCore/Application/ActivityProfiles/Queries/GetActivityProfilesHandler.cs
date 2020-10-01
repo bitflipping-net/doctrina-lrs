@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Doctrina.Application.Activities.Queries;
 using Doctrina.Domain.Models.Documents;
 using Doctrina.Persistence.Infrastructure;
@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Doctrina.Application.ActivityProfiles.Queries
 {
-    public class GetActivityProfilesHandler : IRequestHandler<GetActivityProfilesQuery, ICollection<ActivityProfileEntity>>
+    public class GetActivityProfilesHandler : IRequestHandler<GetActivityProfilesQuery, ICollection<ActivityProfileModel>>
     {
         private readonly IDoctrinaDbContext _context;
         private readonly IMapper _mapper;
@@ -24,16 +24,16 @@ namespace Doctrina.Application.ActivityProfiles.Queries
             _mediator = mediator;
         }
 
-        public async Task<ICollection<ActivityProfileEntity>> Handle(GetActivityProfilesQuery request, CancellationToken cancellationToken)
+        public async Task<ICollection<ActivityProfileModel>> Handle(GetActivityProfilesQuery request, CancellationToken cancellationToken)
         {
             var activity = await _mediator.Send(GetActivityQuery.Create(request.ActivityId), cancellationToken);
 
             var query = _context.ActivityProfiles.Where(x => x.ActivityId == activity.ActivityId);
             if (request.Since.HasValue)
             {
-                query = query.Where(x => x.Document.LastModified >= request.Since);
+                query = query.Where(x => x.UpdatedAt >= request.Since);
             }
-            query = query.OrderByDescending(x => x.Document.LastModified);
+            query = query.OrderByDescending(x => x.UpdatedAt);
             return await query.ToListAsync(cancellationToken);
         }
     }

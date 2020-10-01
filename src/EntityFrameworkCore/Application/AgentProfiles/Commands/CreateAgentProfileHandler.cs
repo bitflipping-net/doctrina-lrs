@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Doctrina.Application.AgentProfiles.Commands
 {
-    public class CreateAgentProfileHandler : IRequestHandler<CreateAgentProfileCommand, AgentProfileEntity>
+    public class CreateAgentProfileHandler : IRequestHandler<CreateAgentProfileCommand, AgentProfileModel>
     {
         private readonly IDoctrinaDbContext _context;
         private readonly IMediator _mediator;
@@ -19,9 +19,9 @@ namespace Doctrina.Application.AgentProfiles.Commands
             _mediator = mediator;
         }
 
-        public async Task<AgentProfileEntity> Handle(CreateAgentProfileCommand request, CancellationToken cancellationToken)
+        public async Task<AgentProfileModel> Handle(CreateAgentProfileCommand request, CancellationToken cancellationToken)
         {
-            var profile = new AgentProfileEntity(request.Content, request.ContentType)
+            var profile = new AgentProfileModel(request.Content, request.ContentType)
             {
                 ProfileId = request.ProfileId,
                 PersonaId = request.Persona.PersonaId

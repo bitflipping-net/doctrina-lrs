@@ -5,16 +5,16 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Doctrina.Persistence.Configurations
 {
-    public class PersonaConfiguration : IEntityTypeConfiguration<Persona>
+    public class PersonaConfiguration : IEntityTypeConfiguration<PersonaModel>
     {
-        public void Configure(EntityTypeBuilder<Persona> builder)
+        public void Configure(EntityTypeBuilder<PersonaModel> builder)
         {
             builder.HasKey(pi => pi.PersonaId);
             builder.Property(pi => pi.PersonaId)
                 .ValueGeneratedOnAdd();
 
             builder.HasDiscriminator(persona => persona.ObjectType)
-                .HasValue<Persona>(ObjectType.Agent)
+                .HasValue<PersonaModel>(ObjectType.Agent)
                 .HasValue<PersonaGroup>(ObjectType.Group);
 
             builder.Property(persona => persona.ObjectType)

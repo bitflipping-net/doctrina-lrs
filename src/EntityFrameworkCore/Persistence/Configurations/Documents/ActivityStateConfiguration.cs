@@ -8,7 +8,7 @@ namespace Doctrina.Persistence.Configurations.Documents
     {
         public void Configure(EntityTypeBuilder<ActivityStateEntity> builder)
         {
-            builder.HasBaseType<DocumentEntity>();
+            builder.HasBaseType<DocumentModel>();
 
             builder.Property(p => p.Key);
 

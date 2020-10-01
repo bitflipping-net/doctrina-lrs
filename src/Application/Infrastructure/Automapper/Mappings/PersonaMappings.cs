@@ -11,7 +11,7 @@ public class PersonaMappings : IHaveCustomMapping
     {
         configuration.CreateMap<IAgentEntity, IAgentEntity>();
 
-        configuration.CreateMap<Agent, Persona>()
+        configuration.CreateMap<Agent, PersonaModel>()
             .ForMember(ent => ent.PersonaId, opt => opt.Ignore())
             .ForMember(ent => ent.StoreId, opt => opt.Ignore())
             .ForMember(ent => ent.Store, opt => opt.Ignore())
@@ -21,7 +21,7 @@ public class PersonaMappings : IHaveCustomMapping
            .ReverseMap();
 
         configuration.CreateMap<Group, PersonaGroup>()
-           .IncludeBase<Agent, Persona>()
+           .IncludeBase<Agent, PersonaModel>()
            .ForMember(ent => ent.Members, opt => opt.Ignore()) // Members are mapped when created from Agent
            .ReverseMap();
     }

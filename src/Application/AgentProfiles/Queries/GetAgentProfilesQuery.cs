@@ -7,12 +7,12 @@ using System.Collections.Generic;
 
 namespace Doctrina.Application.AgentProfiles.Queries
 {
-    public class GetAgentProfilesQuery : IRequest<ICollection<AgentProfileEntity>>
+    public class GetAgentProfilesQuery : IRequest<ICollection<AgentProfileModel>>
     {
-        public Persona Persona { get; set; }
+        public PersonaModel Persona { get; set; }
         public DateTimeOffset? Since { get; set; }
 
-        public static GetAgentProfilesQuery Create(Persona persona, DateTimeOffset? since)
+        public static GetAgentProfilesQuery Create(PersonaModel persona, DateTimeOffset? since)
         {
             return new GetAgentProfilesQuery()
             {

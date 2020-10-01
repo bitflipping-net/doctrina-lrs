@@ -20,10 +20,19 @@ namespace Doctrina.Persistence.Infrastructure
         Guid StoreId { get; }
         DbSet<VerbModel> Verbs { get; set; }
         DbSet<ActivityModel> Activities { get; set; }
-        DbSet<Persona> Personas { get; set; }
+        DbSet<PersonaModel> Personas { get; set; }
+        DbSet<PersonModel> Persons { get; set; }
         DbSet<StatementBaseModel> Statements { get; set; }
-        DbSet<DocumentEntity> Documents { get; set; }
+        DbSet<DocumentModel> Documents { get; set; }
+
+        /// <summary>
+        /// Store clients authorized to pull/push statements
+        /// </summary>
         DbSet<Client> Clients { get; set; }
+
+        /// <summary>
+        /// Statement ObjectType relations (activities, verbs, substatements, statements)
+        /// </summary>
         DbSet<StatementRelation> Relations { get; set; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);

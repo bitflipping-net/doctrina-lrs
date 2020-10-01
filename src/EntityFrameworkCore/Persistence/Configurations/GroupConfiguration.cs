@@ -8,7 +8,7 @@ namespace Doctrina.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<PersonaGroup> builder)
         {
-            builder.HasBaseType<Persona>();
+            builder.HasBaseType<PersonaModel>();
 
             builder.HasMany(x => x.Members)
                  .WithOne();

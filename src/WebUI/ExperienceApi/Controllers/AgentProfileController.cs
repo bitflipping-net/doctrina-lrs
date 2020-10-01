@@ -1,5 +1,10 @@
-﻿using Doctrina.Application.AgentProfiles.Commands;
+using Doctrina.Application.AgentProfiles.Commands;
 using Doctrina.Application.AgentProfiles.Queries;
+using Doctrina.Application.Agents.Commands;
+using Doctrina.Application.Personas.Commands;
+using Doctrina.Application.Personas.Queries;
+using Doctrina.Domain.Models;
+using Doctrina.Domain.Models.Documents;
 using Doctrina.ExperienceApi.Data;
 using Doctrina.WebUI.ExperienceApi.Mvc.Filters;
 using MediatR;
@@ -40,27 +45,27 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            var profile = await _mediator.Send(new GetAgentProfileQuery()
+            PersonaModel persona = await _mediator.Send(GetPersonaQuery.Create(agent), cancellationToken);
+            if(persona == null)
+                return NotFound();
+
+            AgentProfileModel profile = await _mediator.Send(new GetAgentProfileQuery()
             {
                 ProfileId = profileId,
-                Persona = agent
+                Persona = persona
             }, cancellationToken);
 
             if (profile == null)
-            {
                 return NotFound();
-            }
 
-            if (Request.TryConcurrencyCheck(profile?.Document.Checksum, profile?.Document.LastModified, out int statusCode))
-            {
+            if (Request.TryConcurrencyCheck(profile?.Checksum, profile?.UpdatedAt, out int statusCode))
                 return StatusCode(statusCode);
-            }
 
-            var result = new FileContentResult(profile.Document.Content, profile.Document.ContentType)
+            var result = new FileContentResult(profile.Content, profile.ContentType)
             {
-                LastModified = profile.Document.LastModified
+                LastModified = profile.UpdatedAt
             };
-            Response.Headers.Add(HeaderNames.ETag, $"\"{profile.Document.Checksum}\"");
+            Response.Headers.Add(HeaderNames.ETag, $"\"{profile.Checksum}\"");
             return result;
         }
 
@@ -68,24 +73,24 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
         public async Task<ActionResult> GetAgentProfilesAsync(
             [BindRequired, FromQuery] Agent agent,
             [FromQuery] DateTimeOffset? since = null,
-            CancellationToken cancelToken = default)
+            CancellationToken cancellationToken = default)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
-            var profiles = await _mediator.Send(GetAgentProfilesQuery.Create(agent, since), cancelToken);
+            PersonaModel persona = await _mediator.Send(GetPersonaQuery.Create(agent), cancellationToken);
+            if (persona == null)
+                return Ok(Array.Empty<Guid>());
+
+            ICollection<Domain.Models.Documents.AgentProfileModel> profiles = await _mediator.Send(GetAgentProfilesQuery.Create(persona, since), cancellationToken);
 
             if (profiles == null || profiles.Count == 0)
-            {
                 return Ok(Array.Empty<Guid>());
-            }
 
             IEnumerable<string> ids = profiles.Select(x => x.ProfileId).ToList();
 
-            string lastModified = profiles.OrderByDescending(x => x.Document.LastModified)
-                .FirstOrDefault()?.Document.LastModified?.ToString("o");
+            string lastModified = profiles.OrderByDescending(x => x.UpdatedAt)
+                .FirstOrDefault()?.UpdatedAt?.ToString("o");
             Response.Headers.Add(HeaderNames.LastModified, lastModified);
             return Ok(ids);
         }
@@ -100,32 +105,29 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             CancellationToken cancellationToken = default)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
-            var profile = await _mediator.Send(GetAgentProfileQuery.Create(agent, profileId), cancellationToken);
+            PersonaModel persona = await _mediator.Send(UpsertActorCommand.Create(agent), cancellationToken);
+            AgentProfileModel profile = await _mediator.Send(GetAgentProfileQuery.Create(persona, profileId), cancellationToken);
 
-            if (Request.TryConcurrencyCheck(profile?.Document.Checksum, profile?.Document.LastModified, out int statusCode))
-            {
+            if (Request.TryConcurrencyCheck(profile?.Checksum, profile?.UpdatedAt, out int statusCode))
                 return StatusCode(statusCode);
-            }
 
             if (profile == null)
             {
                 profile = await _mediator.Send(
-                    CreateAgentProfileCommand.Create(agent, profileId, content, contentType),
+                    CreateAgentProfileCommand.Create(persona, profileId, content, contentType),
                     cancellationToken);
             }
             else
             {
                 profile = await _mediator.Send(
-                    UpdateAgentProfileCommand.Create(agent, profileId, content, contentType),
+                    UpdateAgentProfileCommand.Create(persona, profileId, content, contentType),
                     cancellationToken);
             }
 
-            Response.Headers.Add(HeaderNames.ETag, $"\"{profile.Document.Checksum}\"");
-            Response.Headers.Add(HeaderNames.LastModified, profile.Document.LastModified?.ToString("o"));
+            Response.Headers.Add(HeaderNames.ETag, $"\"{profile.Checksum}\"");
+            Response.Headers.Add(HeaderNames.LastModified, profile.UpdatedAt?.ToString("o"));
 
             return NoContent();
         }
@@ -138,23 +140,21 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
             CancellationToken cancelToken = default)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
-            var profile = await _mediator.Send(GetAgentProfileQuery.Create(agent, profileId), cancelToken);
+            PersonaModel persona = await _mediator.Send(GetPersonaQuery.Create(agent), cancelToken);
+            if (persona == null)
+                return NotFound();
 
-            if (Request.TryConcurrencyCheck(profile?.Document.Checksum, profile?.Document.LastModified, out int statusCode))
-            {
+            AgentProfileModel profile = await _mediator.Send(GetAgentProfileQuery.Create(persona, profileId), cancelToken);
+
+            if (Request.TryConcurrencyCheck(profile?.Checksum, profile?.UpdatedAt, out int statusCode))
                 return StatusCode(statusCode);
-            }
 
             if (profile == null)
-            {
                 return NotFound();
-            }
 
-            await _mediator.Send(DeleteAgentProfileCommand.Create(profileId, agent), cancelToken);
+            await _mediator.Send(DeleteAgentProfileCommand.Create(profileId, persona), cancelToken);
 
             return NoContent();
         }

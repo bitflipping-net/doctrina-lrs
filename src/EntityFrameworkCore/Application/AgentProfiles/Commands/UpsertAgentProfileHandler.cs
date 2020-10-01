@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Doctrina.Application.AgentProfiles
 {
-    public class UpsertAgentProfileHandler : IRequestHandler<UpsertAgentProfileCommand, AgentProfileEntity>
+    public class UpsertAgentProfileHandler : IRequestHandler<UpsertAgentProfileCommand, AgentProfileModel>
     {
         private readonly IDoctrinaDbContext _context;
         private readonly IMediator _mediator;
@@ -22,7 +22,7 @@ namespace Doctrina.Application.AgentProfiles
             _mapper = mapper;
         }
 
-        public async Task<AgentProfileEntity> Handle(UpsertAgentProfileCommand request, CancellationToken cancellationToken)
+        public async Task<AgentProfileModel> Handle(UpsertAgentProfileCommand request, CancellationToken cancellationToken)
         {
             var profile = await _mediator.Send(GetAgentProfileQuery.Create(request.Persona, request.ProfileId), cancellationToken);
             if (profile == null)

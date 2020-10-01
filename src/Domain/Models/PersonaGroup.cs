@@ -5,7 +5,7 @@ namespace Doctrina.Domain.Models
     /// <summary>
     /// Group of personas
     /// </summary>
-    public class PersonaGroup : Persona
+    public class PersonaGroup : PersonaModel
     {
         public PersonaGroup()
         {

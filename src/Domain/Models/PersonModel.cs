@@ -1,20 +1,20 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Doctrina.Domain.Models
 {
-    public class Person
+    public class PersonModel
     {
-        public Person()
+        public PersonModel()
         {
             Personas = new HashSet<PersonPersona>();
         }
 
         public Guid PersonId { get; set; }
 
-        public Guid OrganisationId { get; set; }
+        public Guid StoreId { get; set; }
 
-        public Organisation Organisation { get; set; }
+        public Store Store { get; set; }
 
         public string Name { get; set; }
 

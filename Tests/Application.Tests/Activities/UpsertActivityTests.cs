@@ -59,7 +59,7 @@ namespace Application.Tests.Activities.Commands
                 }
             }");
 
-            var upsertHandler = new UpsertActivityCommandHandler(_context, _mapper);
+            var upsertHandler = new UpsertActivityCommandHandler(_storeContext, _mapper);
 
             var entity1 = await upsertHandler.Handle(UpsertActivityCommand.Create(activity1), CancellationToken.None);
             await _context.SaveChangesAsync();

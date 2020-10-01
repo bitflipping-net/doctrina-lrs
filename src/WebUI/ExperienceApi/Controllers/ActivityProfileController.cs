@@ -1,4 +1,4 @@
-﻿using Doctrina.Application.ActivityProfiles.Commands;
+using Doctrina.Application.ActivityProfiles.Commands;
 using Doctrina.Application.ActivityProfiles.Queries;
 using Doctrina.ExperienceApi.Data;
 using Doctrina.WebUI.ExperienceApi.Mvc.Filters;
@@ -96,7 +96,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
 
             IEnumerable<string> ids = profiles.Select(x => x.Key);
             string lastModified = profiles.OrderByDescending(x => x.UpdatedAt)
-                .FirstOrDefault()?.UpdatedAt.ToString("o");
+                .FirstOrDefault()?.UpdatedAt?.ToString("o");
 
             Response.Headers.Add("Last-Modified", lastModified);
             return Ok(ids);
@@ -162,7 +162,7 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
                     ActivityId = activityId,
                     Content = body,
                     ContentType = contentType,
-                    Registration = registration
+                    RegistrationId = registration
                 }, cancellationToken);
             }
 

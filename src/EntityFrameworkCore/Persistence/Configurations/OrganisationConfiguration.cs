@@ -1,4 +1,4 @@
-﻿using Doctrina.Domain.Models;
+using Doctrina.Domain.Models;
 using Doctrina.Domain.Models.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -28,10 +28,10 @@ namespace Doctrina.Persistence.Configurations
                 .HasMaxLength(Constants.MAX_NAME_LENGTH)
                 .IsRequired();
 
-            builder.HasMany(org => org.People)
-                .WithOne(person => person.Organisation)
-                .HasForeignKey(person => person.OrganisationId)
-                .IsRequired();
+            //builder.HasMany(org => org.People)
+            //    .WithOne(person => person.)
+            //    .HasForeignKey(person => person.StoreId)
+            //    .IsRequired();
 
             builder.Property(org => org.Settings)
                 .HasConversion<string>(

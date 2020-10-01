@@ -34,7 +34,7 @@ namespace Doctrina.Domain.Models
         /// <summary>
         /// The Id of the <see cref="VoidingStatement"/>
         /// </summary>
-        public int? VoidingStatementId { get; set; }
+        public Guid? VoidingStatementId { get; set; }
 
         /// <summary>
         /// The voiding statement

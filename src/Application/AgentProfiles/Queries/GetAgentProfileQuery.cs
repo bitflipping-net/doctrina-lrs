@@ -5,12 +5,12 @@ using MediatR;
 
 namespace Doctrina.Application.AgentProfiles.Queries
 {
-    public class GetAgentProfileQuery : IRequest<AgentProfileEntity>
+    public class GetAgentProfileQuery : IRequest<AgentProfileModel>
     {
-        public Persona Persona { get; set; }
+        public PersonaModel Persona { get; set; }
         public string ProfileId { get; set; }
 
-        public static GetAgentProfileQuery Create(Persona persona, string profileId)
+        public static GetAgentProfileQuery Create(PersonaModel persona, string profileId)
         {
             return new GetAgentProfileQuery()
             {

@@ -15,11 +15,11 @@ namespace Doctrina.Persistence.Infrastructure
     {
         DbSet<VerbModel> Verbs { get; set; }
         DbSet<ActivityModel> Activities { get; set; }
-        DbSet<Person> People { get; set; }
-        DbSet<Persona> Personas { get; set; }
+        DbSet<PersonModel> People { get; set; }
+        DbSet<PersonaModel> Personas { get; set; }
         DbSet<StatementModel> Statements { get; set; }
-        DbSet<AgentProfileEntity> AgentProfiles { get; set; }
-        DbSet<ActivityProfileEntity> ActivityProfiles { get; set; }
+        DbSet<AgentProfileModel> AgentProfiles { get; set; }
+        DbSet<ActivityProfileModel> ActivityProfiles { get; set; }
         DbSet<ActivityStateEntity> ActivityStates { get; set; }
         DbSet<Organisation> Organisations { get; set; }
         DbSet<Client> Clients { get; set; }

@@ -11,6 +11,15 @@ namespace Doctrina.Application.Infrastructure.ExperienceApi
             return agent.IsAnonymous();
         }
 
+        public static Domain.Models.ObjectType GetObjectType(this Agent agent)
+        {
+            Domain.Models.ObjectType parsed = (Domain.Models.ObjectType)Enum.Parse(
+                typeof(Domain.Models.ObjectType), 
+                agent.ObjectType.ToString()
+            );
+            return parsed;
+        }
+
         /// <summary>
         /// Gets the <see cref="InverseFunctionalIdentifier"/> for the agent
         /// </summary>

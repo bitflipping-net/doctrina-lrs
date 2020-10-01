@@ -60,7 +60,7 @@ namespace Doctrina.Application.Statements.Queries
 
             if (request.Agent != null)
             {
-                Persona persona = await _context.Personas
+                PersonaModel persona = await _context.Personas
                     .Where(x => x.StoreId == _context.StoreId)
                     .SingleOrDefaultAsync(x =>
                     x.Key == request.Agent.GetIdentifierKey()

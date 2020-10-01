@@ -8,9 +8,9 @@ namespace Doctrina.Application.AgentProfiles.Commands
     {
         public string ProfileId { get; private set; }
 
-        public Persona Persona { get; private set; }
+        public PersonaModel Persona { get; private set; }
 
-        public static DeleteAgentProfileCommand Create(string profileId, Persona persona)
+        public static DeleteAgentProfileCommand Create(string profileId, PersonaModel persona)
         {
             return new DeleteAgentProfileCommand()
             {

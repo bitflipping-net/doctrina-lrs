@@ -49,6 +49,6 @@ namespace Doctrina.Domain.Models
         /// <summary>
         /// People in this organisation
         /// </summary>
-        public virtual ICollection<Person> People { get; set; }
+        public virtual ICollection<PersonModel> People { get; set; }
     }
 }

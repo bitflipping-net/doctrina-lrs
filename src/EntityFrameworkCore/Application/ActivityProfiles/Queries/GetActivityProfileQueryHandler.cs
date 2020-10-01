@@ -1,14 +1,14 @@
-﻿using AutoMapper;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoMapper;
 using Doctrina.Application.Activities.Queries;
 using Doctrina.Domain.Models.Documents;
 using Doctrina.Persistence.Infrastructure;
 using MediatR;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Doctrina.Application.ActivityProfiles.Queries
 {
-    public class GetActivityProfileQueryHandler : IRequestHandler<GetActivityProfileQuery, ActivityProfileEntity>
+    public class GetActivityProfileQueryHandler : IRequestHandler<GetActivityProfileQuery, ActivityProfileModel>
     {
         private readonly IDoctrinaDbContext _context;
         private readonly IMapper _mapper;
@@ -21,7 +21,7 @@ namespace Doctrina.Application.ActivityProfiles.Queries
             _mediator = mediator;
         }
 
-        public async Task<ActivityProfileEntity> Handle(GetActivityProfileQuery request, CancellationToken cancellationToken)
+        public async Task<ActivityProfileModel> Handle(GetActivityProfileQuery request, CancellationToken cancellationToken)
         {
             var activityEntity = await _mediator.Send(GetActivityQuery.Create(request.ActivityId), cancellationToken);
             if (activityEntity == null)
@@ -29,7 +29,9 @@ namespace Doctrina.Application.ActivityProfiles.Queries
                 return null;
             }
 
-            return await _context.ActivityProfiles.GetProfileAsync(activityEntity.ActivityId, request.ProfileId, request.Registration, cancellationToken);
+            var profile = await _context.ActivityProfiles.GetProfileAsync(activityEntity.ActivityId, request.ProfileId, request.Registration, cancellationToken);
+
+            return profile;
         }
     }
 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Doctrina.Application.Personas.Command
 {
-    public class UpsertPersonaCommandHandler : IRequestHandler<UpsertPersonaCommand, Persona>
+    public class UpsertPersonaCommandHandler : IRequestHandler<UpsertPersonaCommand, PersonaModel>
     {
         private readonly IDoctrinaDbContext _dbContext;
 
@@ -17,9 +17,9 @@ namespace Doctrina.Application.Personas.Command
             this._dbContext = dbContext;
         }
 
-        public async Task<Persona> Handle(UpsertPersonaCommand request, CancellationToken cancellationToken)
+        public async Task<PersonaModel> Handle(UpsertPersonaCommand request, CancellationToken cancellationToken)
         {
-            Persona persona = null;
+            PersonaModel persona = null;
             if (request.Key != null)
             {
                 persona = _dbContext.Personas.SingleOrDefault(x =>
@@ -33,7 +33,7 @@ namespace Doctrina.Application.Personas.Command
             if (persona == null)
             {
                 // Create new persona
-                persona = new Persona()
+                persona = new PersonaModel()
                 {
                     ObjectType = request.Type,
                     Key = request.Key,

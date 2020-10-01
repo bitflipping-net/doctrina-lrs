@@ -1,4 +1,5 @@
-﻿using Doctrina.Application.Common.Interfaces;
+﻿using Doctrina.Application.Common;
+using Doctrina.Application.Common.Interfaces;
 using Doctrina.Application.Statements.Commands;
 using Doctrina.Application.Statements.Notifications;
 using Doctrina.Application.Tests.Infrastructure;
@@ -18,9 +19,21 @@ namespace Doctrina.Application.Tests.Statements.Commands
         {
             // Arrange
             var mediatorMock = new Mock<IMediator>();
-            var authorityMock = new Mock<IAuthorityContext>();
+            var storeHttpContextMock = new Mock<IClientHttpContext>();
+            storeHttpContextMock.SetupGet(c => c.GetClient())
+                .Returns(new Domain.Models.Client()
+                {
+                    Authority = new Agent()
+                    {
+                        Account = new Account()
+                        {
+                            HomePage = new Uri("https://doctrina.net"),
+                            Name = "User"
+                        }
+                    }.ToJson()
+                });
 
-            var sut = new CreateStatementCommandHandler(_context, mediatorMock.Object, _mapper, authorityMock.Object);
+            var sut = new CreateStatementCommandHandler(_storeContext, storeHttpContextMock.Object, mediatorMock.Object, _mapper);
             Statement statement = GetStatement(Guid.NewGuid());
 
             // Act
@@ -38,9 +51,23 @@ namespace Doctrina.Application.Tests.Statements.Commands
         {
             // Arrange
             var mediatorMock = new Mock<IMediator>();
-            var authorityMock = new Mock<IAuthorityContext>();
+            var storeHttpContextMock = new Mock<IClientHttpContext>();
+            storeHttpContextMock.SetupGet(c => c.GetClient())
+                .Returns(new Domain.Models.Client()
+                {
+                    Authority = new Agent()
+                    {
+                        Account = new Account()
+                        {
+                            HomePage = new Uri("https://doctrina.net"),
+                            Name = "User"
+                        }
+                    }.ToJson()
+                });
 
-            var createStatement = new CreateStatementCommandHandler(_context, mediatorMock.Object, _mapper, authorityMock.Object);
+            var createStatement = new CreateStatementCommandHandler(
+                _storeContext, storeHttpContextMock.Object, mediatorMock.Object, _mapper
+            );
             Guid newStatementId = Guid.NewGuid();
             Statement statement = GetStatement(newStatementId);
 
@@ -59,7 +86,7 @@ namespace Doctrina.Application.Tests.Statements.Commands
             var statement = new Statement()
             {
                 Id = newStatementId,
-                Actor = new Agent() { Mbox = new Mbox("mailto:testing@example.com")},
+                Actor = new Agent() { Mbox = new Mbox("mailto:testing@example.com") },
                 Object = new Activity() { Id = new Iri("https://bitflipping.net/activity/testing") },
                 Verb = new Verb() { Id = new Iri("https://bitflipping.net/verbs/testings") }
             };

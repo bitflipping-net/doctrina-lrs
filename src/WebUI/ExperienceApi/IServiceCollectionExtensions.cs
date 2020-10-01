@@ -1,4 +1,4 @@
-﻿using Doctrina.Application.Common.Interfaces;
+using Doctrina.Application.Common.Interfaces;
 using Doctrina.WebUI.ExperienceApi.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -9,8 +9,6 @@ namespace Doctrina.WebUI.ExperienceApi
         public static IServiceCollection AddLearningRecordStore(this IServiceCollection services)
         {
             services.AddHttpContextAccessor();
-
-            services.AddScoped<IAuthorityContext, AuthorityContext>();
 
             services.AddAuthentication(options =>
             {

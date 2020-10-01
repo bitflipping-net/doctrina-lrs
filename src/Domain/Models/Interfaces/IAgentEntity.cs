@@ -6,6 +6,6 @@ namespace Doctrina.Domain.Models.Interfaces
     {
         Guid Id { get; set; }
         string Name { get; set; }
-        Persona Persona { get; set; }
+        PersonaModel Persona { get; set; }
     }
 }

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Doctrina.Application.ActivityProfiles.Queries
 {
-    public class GetActivityProfilesQuery : IRequest<ICollection<ActivityProfileEntity>>
+    public class GetActivityProfilesQuery : IRequest<ICollection<ActivityProfileModel>>
     {
         public Iri ActivityId { get; set; }
         public DateTimeOffset? Since { get; set; }

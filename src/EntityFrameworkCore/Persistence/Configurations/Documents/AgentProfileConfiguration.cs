@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Doctrina.Persistence.Configurations.Documents
 {
-    public class AgentProfileConfiguration : IEntityTypeConfiguration<AgentProfileEntity>
+    public class AgentProfileConfiguration : IEntityTypeConfiguration<AgentProfileModel>
     {
-        public void Configure(EntityTypeBuilder<AgentProfileEntity> builder)
+        public void Configure(EntityTypeBuilder<AgentProfileModel> builder)
         {
-            builder.HasBaseType<DocumentEntity>();
+            builder.HasBaseType<DocumentModel>();
 
             builder.Property(p=> p.ProfileId)
                 .HasColumnName("Key")

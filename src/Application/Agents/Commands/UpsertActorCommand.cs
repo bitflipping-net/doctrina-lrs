@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Doctrina.Application.Agents.Commands
 {
-    public class UpsertActorCommand : IRequest<Persona>
+    public class UpsertActorCommand : IRequest<PersonaModel>
     {
         public Agent Actor { get; private set; }
 

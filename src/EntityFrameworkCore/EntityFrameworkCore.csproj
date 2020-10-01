@@ -38,6 +38,7 @@
 
   <ItemGroup>
     <Folder Include="Application\Organisations\" />
+    <Folder Include="Application\Persons\Commands\" />
   </ItemGroup>
 
 </Project>

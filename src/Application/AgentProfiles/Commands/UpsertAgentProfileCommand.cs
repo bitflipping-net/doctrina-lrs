@@ -5,9 +5,9 @@ using MediatR;
 
 namespace Doctrina.Application.AgentProfiles.Commands
 {
-    public class UpsertAgentProfileCommand : IRequest<AgentProfileEntity>
+    public class UpsertAgentProfileCommand : IRequest<AgentProfileModel>
     {
-        public Persona Persona { get; set; }
+        public PersonaModel Persona { get; set; }
         public string ProfileId { get; set; }
         public byte[] Content { get; set; }
         public string ContentType { get; set; }

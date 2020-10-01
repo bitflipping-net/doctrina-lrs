@@ -8,6 +8,6 @@ namespace Doctrina.Domain.Models
         public PersonaGroup Group { get; set; }
 
         public Guid PersonaId { get; set; }
-        public Persona Persona { get; set; }
+        public PersonaModel Persona { get; set; }
     }
 }

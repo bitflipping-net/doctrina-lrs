@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Doctrina.Application.AgentProfiles.Commands
 {
-    public class UpdateAgentProfileHandler : IRequestHandler<UpdateAgentProfileCommand, AgentProfileEntity>
+    public class UpdateAgentProfileHandler : IRequestHandler<UpdateAgentProfileCommand, AgentProfileModel>
     {
         private readonly IStoreDbContext _context;
 
@@ -19,11 +19,11 @@ namespace Doctrina.Application.AgentProfiles.Commands
             _context = context;
         }
 
-        public async Task<AgentProfileEntity> Handle(UpdateAgentProfileCommand request, CancellationToken cancellationToken)
+        public async Task<AgentProfileModel> Handle(UpdateAgentProfileCommand request, CancellationToken cancellationToken)
         {
             var storeId = _context.StoreId;
             var profile = await _context.Documents
-                            .OfType<AgentProfileEntity>()
+                            .OfType<AgentProfileModel>()
                             .Where(x => x.PersonaId == request.Persona.PersonaId && x.StoreId == storeId)
                             .SingleOrDefaultAsync(x => x.ProfileId == request.ProfileId, cancellationToken);
 

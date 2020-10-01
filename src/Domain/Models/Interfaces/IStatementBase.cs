@@ -5,7 +5,7 @@ namespace Doctrina.Domain.Models.Interfaces
 {
     public interface IStatementEntityBase
     {
-        Persona Persona { get; set; }
+        PersonaModel Persona { get; set; }
         VerbModel Verb { get; set; }
         StatementContext Context { get; set; }
         ResultModel Result { get; set; }

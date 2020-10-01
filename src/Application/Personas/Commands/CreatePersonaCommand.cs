@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Doctrina.Application.Personas.Commands
 {
-    public class CreatePersonaCommand : IRequest<Person>
+    public class CreatePersonaCommand : IRequest<PersonModel>
     {
         public string Name { get; private set; }
 

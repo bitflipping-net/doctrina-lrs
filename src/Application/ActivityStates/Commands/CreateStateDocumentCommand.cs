@@ -8,7 +8,7 @@ namespace Doctrina.Application.ActivityStates.Commands
     public class CreateStateDocumentCommand : IRequest<ActivityStateDocument>
     {
         public string StateId { get; set; }
-        public Persona PersonaIdentifier { get; set; }
+        public PersonaModel PersonaIdentifier { get; set; }
         public Guid? RegistrationId { get; set; }
         public byte[] Content { get; set; }
         public string ContentType { get; set; }

@@ -2,7 +2,7 @@ using System;
 
 namespace Doctrina.Domain.Models.Documents
 {
-    public class ActivityStateEntity : DocumentEntity, IActivityStateEntity, IDocumentEntity
+    public class ActivityStateEntity : DocumentModel, IActivityStateEntity, IDocumentEntity
     {
         public ActivityStateEntity()
         {

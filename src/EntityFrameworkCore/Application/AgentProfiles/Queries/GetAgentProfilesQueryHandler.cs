@@ -1,5 +1,7 @@
 using AutoMapper;
 using Doctrina.Application.AgentProfiles.Queries;
+using Doctrina.Application.Agents.Queries;
+using Doctrina.Application.Personas.Queries;
 using Doctrina.Domain.Models;
 using Doctrina.Domain.Models.Documents;
 using Doctrina.Persistence.Infrastructure;
@@ -13,7 +15,7 @@ using System.Threading.Tasks;
 namespace Doctrina.Application.AgentProfiles
 {
     public class GetAgentProfilesQueryHandler :
-        IRequestHandler<GetAgentProfilesQuery, ICollection<AgentProfileEntity>>
+        IRequestHandler<GetAgentProfilesQuery, ICollection<AgentProfileModel>>
     {
         private readonly IDoctrinaDbContext _context;
         private readonly IMediator _mediator;
@@ -26,20 +28,18 @@ namespace Doctrina.Application.AgentProfiles
             _mapper = mapper;
         }
 
-        public async Task<ICollection<AgentProfileEntity>> Handle(GetAgentProfilesQuery request, CancellationToken cancellationToken)
+        public async Task<ICollection<AgentProfileModel>> Handle(GetAgentProfilesQuery request, CancellationToken cancellationToken)
         {
-            var agentEntity = _mapper.Map<AgentEntity>(request.Persona);
             var query = _context.AgentProfiles
                 .AsNoTracking()
-                .Include(x => x.Document)
-                .Where(a => a.Agent.AgentId == agentEntity.Id);
+                .Where(a => a.PersonaId == request.Persona.PersonaId);
 
             if (request.Since.HasValue)
             {
-                query = query.Where(x => x.Document.LastModified >= request.Since.Value);
+                query = query.Where(x => x.UpdatedAt >= request.Since.Value);
             }
 
-            query = query.OrderByDescending(x => x.Document.LastModified);
+            query = query.OrderByDescending(x => x.UpdatedAt);
 
             return await query.ToListAsync(cancellationToken);
         }

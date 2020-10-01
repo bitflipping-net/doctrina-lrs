@@ -5,7 +5,7 @@ using System;
 
 namespace Doctrina.Application.ActivityProfiles.Queries
 {
-    public class GetActivityProfileQuery : IRequest<ActivityProfileEntity>
+    public class GetActivityProfileQuery : IRequest<ActivityProfileModel>
     {
         public string ProfileId { get; set; }
         public Iri ActivityId { get; set; }

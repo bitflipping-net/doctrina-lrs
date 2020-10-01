@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Doctrina.Application.AgentProfiles
 {
-    public class GetAgentProfileQueryHandler : IRequestHandler<GetAgentProfileQuery, AgentProfileEntity>
+    public class GetAgentProfileQueryHandler : IRequestHandler<GetAgentProfileQuery, AgentProfileModel>
     {
         private readonly IStoreDbContext _context;
         private readonly IMediator _mediator;
@@ -24,10 +24,10 @@ namespace Doctrina.Application.AgentProfiles
             _mapper = mapper;
         }
 
-        public async Task<AgentProfileEntity> Handle(GetAgentProfileQuery request, CancellationToken cancellationToken)
+        public async Task<AgentProfileModel> Handle(GetAgentProfileQuery request, CancellationToken cancellationToken)
         {
             var profile = await _context.Documents
-                .OfType<AgentProfileEntity>()
+                .OfType<AgentProfileModel>()
                 .AsNoTracking()
                 .Where(x => x.StoreId == _context.StoreId)
                 .Where(x => x.PersonaId == request.Persona.PersonaId)

@@ -10,18 +10,23 @@ namespace Doctrina.Persistence.Configurations
         {
             builder.ToTable("Statements");
 
-            builder.HasBaseType<StatementBase>();
+            builder.HasBaseType<StatementBaseModel>();
 
-            builder.Property(e => e.Version)
-                .HasMaxLength(7)
-                .IsRequired();
+            //builder.Property(e => e.Version)
+            //    .HasMaxLength(7)
+            //    .IsRequired();
 
-            builder.Property(e => e.Authority)
+            builder.HasOne(stmt => stmt.Client)
+                .WithMany()
+                .HasForeignKey(stmt => stmt.ClientId)
                 .IsRequired();
 
             builder.HasOne(e => e.VoidingStatement)
                 .WithMany()
                 .HasForeignKey(c => c.VoidingStatementId)
+                .IsRequired(false);
+
+            builder.Property(stmt => stmt.VoidedAt)
                 .IsRequired(false);
         }
     }

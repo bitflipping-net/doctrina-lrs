@@ -8,7 +8,7 @@ namespace Doctrina.Application.ActivityStates.Commands
     public class DeleteActivityStatesCommand : IRequest
     {
         public Iri ActivityId { get; set; }
-        public Persona Persona { get; set; }
+        public PersonaModel Persona { get; set; }
         public Guid? Registration { get; set; }
     }
 }

@@ -8,7 +8,7 @@ namespace Doctrina.Application.ActivityProfiles
 {
     public static class DbSetExtensions
     {
-        public static Task<ActivityProfileEntity> GetProfileAsync(this DbSet<ActivityProfileEntity> query, Guid activityId, string profileId, Guid? registration, CancellationToken cancellationToken)
+        public static Task<ActivityProfileModel> GetProfileAsync(this DbSet<ActivityProfileModel> query, Guid activityId, string profileId, Guid? registration, CancellationToken cancellationToken)
         {
             return query
                 .Include(x => x.Activity)

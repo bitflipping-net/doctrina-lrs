@@ -1,13 +1,13 @@
-using Doctrina.ExperienceApi.Data.Validation;
+using Doctrina.Application.Personas;
 using FluentValidation;
 
-namespace Doctrina.Application.Agents.Queries
+namespace Doctrina.Application.Persons.Queries
 {
     public class GetPersonQueryValidator : AbstractValidator<GetPersonQuery>
     {
         public GetPersonQueryValidator()
         {
-            RuleFor(x => x.Agent).SetValidator(new AgentValidator());
+            RuleFor(x => x.Persona).SetValidator(new PersonaModelValidator());
         }
     }
 }

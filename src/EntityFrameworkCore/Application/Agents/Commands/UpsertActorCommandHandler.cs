@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Doctrina.Application.Agents.Commands
 {
-    public class UpsertActorCommandHandler : IRequestHandler<UpsertActorCommand, Persona>
+    public class UpsertActorCommandHandler : IRequestHandler<UpsertActorCommand, PersonaModel>
     {
         private readonly IStoreDbContext _storeDbContext;
         private readonly IMediator _mediator;
@@ -28,7 +28,7 @@ namespace Doctrina.Application.Agents.Commands
             _mapper = mapper;
         }
 
-        public async Task<Persona> Handle(UpsertActorCommand request, CancellationToken cancellationToken)
+        public async Task<PersonaModel> Handle(UpsertActorCommand request, CancellationToken cancellationToken)
         {
             Agent actor = request.Actor;
             Guid storeId = _storeDbContext.StoreId;
@@ -45,7 +45,7 @@ namespace Doctrina.Application.Agents.Commands
             }
             else if (actor is Group group)
             {
-                ICollection<Persona> members = new HashSet<Persona>();
+                ICollection<PersonaModel> members = new HashSet<PersonaModel>();
 
                 foreach (Agent member in group.Member)
                 {

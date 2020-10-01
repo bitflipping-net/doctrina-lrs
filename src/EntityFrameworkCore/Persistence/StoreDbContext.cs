@@ -18,16 +18,20 @@ namespace Doctrina.Persistence
             this._clientHttpContext = clientHttpContext;
         }
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public DbSet<Client> Clients { get; set; }
-        public DbSet<Persona> Personas { get; set; }
-        public DbSet<DocumentEntity> Documents { get; set; }
+        public DbSet<PersonModel> Persons { get; set; }
+        public DbSet<PersonaModel> Personas { get; set; }
+        public DbSet<DocumentModel> Documents { get; set; }
         public DbSet<StatementRelation> Relations { get; set; }
         public DbSet<StatementBaseModel> Statements { get; set; }
+        //public DbSet<SubStatementEntity> SubStatements { get; set; }
         public DbSet<VerbModel> Verbs { get; set; }
         public DbSet<ActivityModel> Activities { get; set; }
 
         public Guid StoreId => _clientHttpContext.GetClient().StoreId;
 
-        
     }
 }

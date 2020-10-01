@@ -4,14 +4,14 @@ using MediatR;
 
 namespace Doctrina.Application.AgentProfiles.Commands
 {
-    public class UpdateAgentProfileCommand : IRequest<AgentProfileEntity>
+    public class UpdateAgentProfileCommand : IRequest<AgentProfileModel>
     {
-        public Persona Persona { get; set; }
+        public PersonaModel Persona { get; set; }
         public string ProfileId { get; set; }
         public byte[] Content { get; set; }
         public string ContentType { get; set; }
 
-        public static UpdateAgentProfileCommand Create(Persona persona, string profileId, byte[] content, string contentType)
+        public static UpdateAgentProfileCommand Create(PersonaModel persona, string profileId, byte[] content, string contentType)
         {
             var cmd = new UpdateAgentProfileCommand()
             {

@@ -1,7 +1,6 @@
 using Doctrina.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
 
 namespace Doctrina.Persistence.Configurations
 {
@@ -11,7 +10,7 @@ namespace Doctrina.Persistence.Configurations
         {
             builder.ToTable("Statements");
 
-            builder.HasBaseType<StatementBase>();
+            builder.HasBaseType<StatementBaseModel>();
         }
     }
 }

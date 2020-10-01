@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Doctrina.Persistence.Configurations.Documents
 {
-    public class ActivityProfileConfiguration : IEntityTypeConfiguration<ActivityProfileEntity>
+    public class ActivityProfileConfiguration : IEntityTypeConfiguration<ActivityProfileModel>
     {
-        public void Configure(EntityTypeBuilder<ActivityProfileEntity> builder)
+        public void Configure(EntityTypeBuilder<ActivityProfileModel> builder)
         {
-            builder.HasBaseType<DocumentEntity>();
+            builder.HasBaseType<DocumentModel>();
 
             builder.Property(e => e.Key)
                 .IsRequired();

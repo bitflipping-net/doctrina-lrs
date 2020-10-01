@@ -1,5 +1,5 @@
 using Doctrina.Application.Tests.Infrastructure;
-using Doctrina.Domain.Models.OwnedTypes;
+using Doctrina.Domain.Models.ValueObjects;
 using Doctrina.ExperienceApi.Data;
 using Shouldly;
 using System.Collections.Generic;

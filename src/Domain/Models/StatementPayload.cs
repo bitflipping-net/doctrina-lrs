@@ -9,6 +9,8 @@ namespace Doctrina.Domain.Models
     {
         public Guid StoreId { get; set; }
 
+        public long EncodedId { get; set; }
+
         /// <summary>
         /// JSON encoded string
         /// </summary>

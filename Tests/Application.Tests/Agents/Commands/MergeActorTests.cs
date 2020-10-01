@@ -38,7 +38,7 @@ namespace Application.Tests.Agents.Commands
                     }
                 }
             };
-            var handler = new UpsertActorCommandHandler(_context, mediatorMock.Object, mapperMock.Object);
+            var handler = new UpsertActorCommandHandler(_storeContext, mediatorMock.Object, mapperMock.Object);
             var validator = new UpsertActorCommandValidator();
             var cmd = UpsertActorCommand.Create(actor);
 
@@ -49,7 +49,7 @@ namespace Application.Tests.Agents.Commands
             var result = await handler.Handle(cmd, CancellationToken.None);
 
             // Assert
-            result.PersonaId.ShouldNotBe(0);
+            result.PersonaId.ShouldNotBe(Guid.Empty);
             result.ShouldBeOfType<Doctrina.Domain.Models.PersonaGroup>();
         }
     }

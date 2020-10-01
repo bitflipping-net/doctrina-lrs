@@ -46,7 +46,7 @@ namespace Doctrina.Domain.Models
 
         public virtual ICollection<ActivityModel> Activities { get; set; }
 
-        public virtual ICollection<DocumentEntity> Documents { get; set; }
+        public virtual ICollection<DocumentModel> Documents { get; set; }
 
         public virtual ICollection<StatementModel> Statements { get; set; }
 

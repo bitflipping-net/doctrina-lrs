@@ -4,7 +4,7 @@ using Doctrina.Domain.Models.Interfaces;
 
 namespace Doctrina.Domain.Models
 {
-    public class StatementBaseModel : IStoreEntity, IStatementEntityBase
+    public abstract class StatementBaseModel : IStoreEntity, IStatementEntityBase
     {
         public StatementBaseModel()
         {
@@ -21,7 +21,7 @@ namespace Doctrina.Domain.Models
         /// <summary>
         /// The actor of the statement (IFI)
         /// </summary>
-        public Persona Persona { get; set; }
+        public PersonaModel Persona { get; set; }
 
         public Guid VerbId { get; set; }
 

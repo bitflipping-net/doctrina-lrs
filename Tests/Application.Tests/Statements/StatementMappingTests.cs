@@ -52,7 +52,7 @@ namespace Doctrina.Application.Tests.Statements.Commands
                     Id = "https://google.com"
                 }
             };
-            var iri = Iri.Parse(entity.Verb.VerbId);
+            var iri = Iri.Parse(entity.Verb.Id);
             var statement = new Statement();
             _mapper.Map(entity, statement);
             statement.ShouldNotBeNull();

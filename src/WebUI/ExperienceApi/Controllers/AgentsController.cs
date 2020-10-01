@@ -1,4 +1,7 @@
-﻿using Doctrina.Application.Agents.Queries;
+using Doctrina.Application.Agents.Queries;
+using Doctrina.Application.Personas.Queries;
+using Doctrina.Application.Persons.Queries;
+using Doctrina.Domain.Models;
 using Doctrina.ExperienceApi.Data;
 using Doctrina.WebUI.ExperienceApi.Mvc.Filters;
 using MediatR;
@@ -27,18 +30,16 @@ namespace Doctrina.WebUI.ExperienceApi.Controllers
         [HttpHead]
         public async Task<IActionResult> GetAgentProfile(
             [BindRequired, FromQuery] Agent agent,
-            CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
-            var person = await _mediator.Send(GetPersonQuery.Create(agent), cancellationToken);
+            PersonaModel persona = await _mediator.Send(GetPersonaQuery.Create(agent), cancellationToken);
+            PersonModel person = await _mediator.Send(GetPersonQuery.Create(persona), cancellationToken);
+
             if (person == null)
-            {
                 return NotFound();
-            }
 
             return Ok(person);
         }

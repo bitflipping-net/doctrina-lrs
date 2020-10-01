@@ -1,10 +1,10 @@
-﻿using Doctrina.ExperienceApi.Data;
+using Doctrina.Domain.Models;
+using Doctrina.ExperienceApi.Data;
 using MediatR;
-using IActivity = Doctrina.Domain.Models.Interfaces.IActivity;
 
 namespace Doctrina.Application.Activities.Commands
 {
-    public class UpsertActivityCommand : IRequest<IActivity>
+    public class UpsertActivityCommand : IRequest<ActivityModel>
     {
         public Activity Activity { get; set; }
 

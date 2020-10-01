@@ -25,15 +25,13 @@ namespace Doctrina.Application.Statements.Commands
         private readonly IClientHttpContext _clientHttpContext;
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
-        private readonly IStoreHttpContext _storeContext;
 
-        public CreateStatementCommandHandler(IStoreDbContext dbContext, IClientHttpContext clientHttpContext, IMediator mediator, IMapper mapper, IStoreHttpContext storeContext)
+        public CreateStatementCommandHandler(IStoreDbContext dbContext, IClientHttpContext clientHttpContext, IMediator mediator, IMapper mapper)
         {
             _dbContext = dbContext;
             _clientHttpContext = clientHttpContext;
             _mediator = mediator;
             _mapper = mapper;
-            _storeContext = storeContext;
         }
 
         /// <summary>
@@ -69,7 +67,7 @@ namespace Doctrina.Application.Statements.Commands
 
             if (request.Statement.Authority == null)
             {
-                request.Statement.Authority = new Agent(_storeContext.GetClientAuthority());
+                request.Statement.Authority = new Agent(_clientHttpContext.GetClient().Authority);
             }
             else
             {
@@ -178,7 +176,7 @@ namespace Doctrina.Application.Statements.Commands
             return newSubStatement;
         }
 
-        private async Task<Persona> HandleActor(Agent actor, CancellationToken cancellationToken)
+        private async Task<PersonaModel> HandleActor(Agent actor, CancellationToken cancellationToken)
         {
             return await _mediator.Send(UpsertActorCommand.Create(actor));
         }
@@ -187,7 +185,7 @@ namespace Doctrina.Application.Statements.Commands
         {
             var relation = new StatementRelation()
             {
-                ObjectType = objectType.ToString(),
+                ObjectType = objectType,
                 ParentId = parentId,
                 ChildId = childId,
                 StoreId = _dbContext.StoreId,

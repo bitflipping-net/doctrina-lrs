@@ -23,8 +23,8 @@ namespace Doctrina.Application.AgentProfiles
 
         public async Task<Unit> Handle(DeleteAgentProfileCommand request, CancellationToken cancellationToken)
         {
-            AgentProfileEntity profile = await _context.Documents
-                            .OfType<AgentProfileEntity>()
+            AgentProfileModel profile = await _context.Documents
+                            .OfType<AgentProfileModel>()
                             .AsNoTracking()
                             .Where(x=> x.StoreId == _context.StoreId)
                             .Where(x => x.PersonaId == request.Persona.PersonaId)
