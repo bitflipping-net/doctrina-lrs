@@ -3,9 +3,9 @@ using System;
 namespace Doctrina.Domain.Models
 {
     /// <summary>
-    /// A persona is a identify on a platform
+    /// A persona is an identify on a platform
     /// </summary>
-    public class PersonaModel : IStoreEntity
+    public class PersonaModel : IStoreOwnedEntity
     {
         /// <summary>
         /// The primary Key

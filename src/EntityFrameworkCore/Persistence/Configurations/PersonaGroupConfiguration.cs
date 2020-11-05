@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Doctrina.Persistence.Configurations
 {
-    public class GroupConfiguration : IEntityTypeConfiguration<PersonaGroup>
+    public class PersonaGroupConfiguration : IEntityTypeConfiguration<PersonaGroup>
     {
         public void Configure(EntityTypeBuilder<PersonaGroup> builder)
         {

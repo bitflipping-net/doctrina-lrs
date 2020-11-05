@@ -1,4 +1,4 @@
-﻿using Doctrina.Domain.Models;
+using Doctrina.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -18,7 +18,8 @@ namespace Doctrina.Persistence.Configurations
             builder.Property(client => client.UpdatedAt)
                 .ValueGeneratedOnAddOrUpdate();
 
-            builder.Property(client => client.Scopes);
+            builder.HasMany(client => client.Scopes)
+                .WithOne();
 
             builder.HasOne(client => client.Store)
                 .WithMany()

@@ -3,7 +3,7 @@ using System;
 
 namespace Doctrina.Domain.Models
 {
-    public class ActivityModel : IStatementObjectModel, IStoreEntity
+    public class ActivityModel : IStatementObjectModel, IStoreOwnedEntity
     {
         public Models.ObjectType ObjectType => Models.ObjectType.Activity;
 

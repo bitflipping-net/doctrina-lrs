@@ -6,13 +6,19 @@ namespace Doctrina.Domain.Models
 {
     public enum ObjectType
     {
-        None = 0,
-        Agent = 1,
-        Group = 2,
-        Activity = 3,
-        SubStatement = 4,
-        StatementRef = 5,
-        Statement = 6,
+        Invalid,
+
+        Agent,
+
+        Group,
+
+        Activity,
+
+        SubStatement,
+
+        StatementRef,
+
+        Statement,
     }
 
     public class ObjectTypeTypeConverter : TypeConverter

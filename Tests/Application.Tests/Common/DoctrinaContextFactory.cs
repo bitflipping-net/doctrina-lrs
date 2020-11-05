@@ -65,9 +65,16 @@ namespace Doctrina.Application.Tests.Infrastructure
                             Name = "TestClient"
                         }
                     }.ToJson(),
-                    Scopes = new string[]
+                    Scopes = new[]
                     {
-                        "all"
+                        new ClientScope(){ 
+                            Scope = new Scope()
+                            {
+                                Key = "",
+                                Description = "",
+                                Name = "",
+                            }
+                        }
                     },
                     StoreId = myStore.StoreId
                 }

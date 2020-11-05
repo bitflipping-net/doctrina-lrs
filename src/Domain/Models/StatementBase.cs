@@ -4,7 +4,7 @@ using Doctrina.Domain.Models.Interfaces;
 
 namespace Doctrina.Domain.Models
 {
-    public abstract class StatementBaseModel : IStoreEntity, IStatementEntityBase
+    public abstract class StatementBaseModel : IStoreOwnedEntity, IStatementEntityBase
     {
         public StatementBaseModel()
         {
@@ -43,7 +43,7 @@ namespace Doctrina.Domain.Models
         /// <summary>
         /// Context
         /// </summary>
-        public StatementContext Context { get; set; }
+        public ContextModel Context { get; set; }
 
         /// <summary>
         /// Result 

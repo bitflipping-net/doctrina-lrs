@@ -9,7 +9,7 @@ namespace Doctrina.Application.Personas.Queries
         {
             RuleFor(x => x.Key).NotEmpty();
             RuleFor(x => x.Value).NotEmpty();
-            RuleFor(x => x.ObjectType).NotEqual(ObjectType.None);
+            RuleFor(x => x.ObjectType).NotEqual(ObjectType.Invalid);
         }
     }
 }

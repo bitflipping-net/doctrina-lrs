@@ -2,7 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Doctrina.Application.Activities.Commands;
-using Doctrina.Application.Common.Interfaces;
+using Doctrina.Domain.Models;
 using Doctrina.Domain.Models.Documents;
 using Doctrina.ExperienceApi.Data.Documents;
 using Doctrina.Persistence.Infrastructure;
@@ -16,7 +16,7 @@ namespace Doctrina.Application.ActivityProfiles.Commands
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
 
-        public CreateActivityProfileHandler(IStoreDbContext context, IStoreHttpContext storeContext, IMediator mediator, IMapper mapper)
+        public CreateActivityProfileHandler(IStoreDbContext context, IMediator mediator, IMapper mapper)
         {
             _context = context;
             _mediator = mediator;
@@ -25,7 +25,7 @@ namespace Doctrina.Application.ActivityProfiles.Commands
 
         public async Task<ActivityProfileDocument> Handle(CreateActivityProfileCommand request, CancellationToken cancellationToken)
         {
-            var activity = await _mediator.Send(UpsertActivityCommand.Create(request.ActivityId));
+            ActivityModel activity = await _mediator.Send(UpsertActivityCommand.Create(request.ActivityId));
 
             var profile = new ActivityProfileModel(request.Content, request.ContentType)
             {

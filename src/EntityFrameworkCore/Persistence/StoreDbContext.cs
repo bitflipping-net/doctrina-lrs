@@ -15,22 +15,57 @@ namespace Doctrina.Persistence
         public StoreDbContext(DbContextOptions<StoreDbContext> options, IClientHttpContext clientHttpContext)
            : base(options)
         {
-            this._clientHttpContext = clientHttpContext;
+            _clientHttpContext = clientHttpContext;
         }
 
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
+        public DbSet<Scope> Scopes { get; set; }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public DbSet<Client> Clients { get; set; }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public DbSet<PersonModel> Persons { get; set; }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public DbSet<PersonaModel> Personas { get; set; }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public DbSet<DocumentModel> Documents { get; set; }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public DbSet<StatementRelation> Relations { get; set; }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public DbSet<StatementBaseModel> Statements { get; set; }
-        //public DbSet<SubStatementEntity> SubStatements { get; set; }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public DbSet<VerbModel> Verbs { get; set; }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public DbSet<ActivityModel> Activities { get; set; }
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public Guid StoreId => _clientHttpContext.GetClient().StoreId;
 
     }

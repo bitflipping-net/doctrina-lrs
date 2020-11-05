@@ -1,4 +1,5 @@
 using System.Reflection;
+using Doctrina.Application.Common;
 using Doctrina.Application.Common.Caching;
 using Doctrina.Infrastructure.Interfaces;
 using Doctrina.Persistence;
@@ -20,12 +21,16 @@ namespace Doctrina.Application
 
             services.AddScoped<IDoctrinaDbContext>(provider => provider.GetService<DoctrinaDbContext>());
 
+            services.AddScoped<IClientHttpContext, ClientHttpContext>();
+
             services.AddScoped<StoreDbContext>().AddDbContext<StoreDbContext>(options =>
             {
-                services.AddScoped<IInterceptor, StoreColumnIntercepter>();
+                //services.AddScoped<IInterceptor, StoreColumnIntercepter>();
                 options.UseInternalServiceProvider(services.BuildServiceProvider());
                 options.UseSqlServer(configuration.GetConnectionString("DoctrinaDatabase"));
             });
+
+            services.AddScoped<IStoreDbContext>(provider => provider.GetService<StoreDbContext>());
 
             services.AddScoped(typeof(IDoctrinaDbProvider), typeof(EntityFrameworkCoreDbProvider));
 

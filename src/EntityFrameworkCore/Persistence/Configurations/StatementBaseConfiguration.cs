@@ -11,13 +11,13 @@ namespace Doctrina.Persistence.Configurations
         {
             builder.ToTable("Statements");
 
-            builder.HasDiscriminator<StatementType>("Type")
-                .HasValue<StatementModel>(StatementType.Root)
-                .HasValue<SubStatementEntity>(StatementType.SubStatement);
+            builder.Property("StatementTypeName")
+                .HasColumnName("StatementTypeName")
+                .HasConversion(new StringToEnumConverter<StatementType>())
+                .IsRequired();
 
             builder.HasKey(p => p.StatementId);
             builder.Property(p => p.StatementId)
-                .IsRequired()
                 .ValueGeneratedOnAdd();
 
             builder.Property(x => x.StoreId)

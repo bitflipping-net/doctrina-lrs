@@ -7,9 +7,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Doctrina.Persistence.Configurations
 {
-    public class ContextConfiguration : IEntityTypeConfiguration<StatementContext>
+    public class ContextConfiguration : IEntityTypeConfiguration<ContextModel>
     {
-        public void Configure(EntityTypeBuilder<StatementContext> builder)
+        public void Configure(EntityTypeBuilder<ContextModel> builder)
         {
             builder.ToTable("Contexts");
 
@@ -24,16 +24,16 @@ namespace Doctrina.Persistence.Configurations
                 .SetValueComparer(new ValueComparer<ExtensionsCollection>(false));
 
             builder.HasOne(e => e.Instructor)
-                .WithMany();
+                .WithMany()
+                .HasForeignKey(e=> e.TeamId);
 
-            builder.HasOne(e => e.Instructor)
-                .WithMany();
+            builder.HasOne(e => e.Team)
+                .WithMany()
+                .HasForeignKey(e => e.InstructorId);
 
-            builder.HasOne(e => e.ContextActivities)
-                .WithMany();
-
-            builder.Property(x => x.StoreId)
-                .IsRequired();
+            builder.HasMany(e => e.ContextActivities)
+                .WithOne()
+                .HasForeignKey(x=> x.ContextId);
         }
     }
 }

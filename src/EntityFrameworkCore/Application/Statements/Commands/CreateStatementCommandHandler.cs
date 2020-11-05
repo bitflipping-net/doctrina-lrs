@@ -118,7 +118,7 @@ namespace Doctrina.Application.Statements.Commands
         {
             if (context != null)
             {
-                stmt.Context = _mapper.Map<StatementContext>(context);
+                stmt.Context = _mapper.Map<ContextModel>(context);
                 if (stmt.Context.Instructor != null)
                 {
                     var instructor = await HandleActor(context.Instructor, cancellationToken);

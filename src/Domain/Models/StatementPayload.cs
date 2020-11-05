@@ -5,7 +5,7 @@ namespace Doctrina.Domain.Models
     /// <summary>
     /// Represents the received payload of the statement
     /// </summary>
-    public class StatementEncoded : IStoreEntity
+    public class StatementEncoded : IStoreOwnedEntity
     {
         public Guid StoreId { get; set; }
 

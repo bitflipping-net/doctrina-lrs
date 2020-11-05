@@ -1,6 +1,8 @@
+using Doctrina.Domain.Models;
 using Doctrina.Domain.Models.Relations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Doctrina.Persistence.Configurations.Relations
 {
@@ -17,6 +19,8 @@ namespace Doctrina.Persistence.Configurations.Relations
                 .IsRequired();
 
             builder.Property(p => p.ObjectType)
+                .HasColumnName("ObjectTypeName")
+                .HasConversion(new StringToEnumConverter<ObjectType>())
                 .IsRequired();
 
             builder.Property(p => p.ChildId)

@@ -1,7 +1,7 @@
 using Doctrina.Domain.Models;
-using Doctrina.Persistence.ValueConverters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Doctrina.Persistence.Configurations
 {
@@ -18,6 +18,8 @@ namespace Doctrina.Persistence.Configurations
                 .HasValue<PersonaGroup>(ObjectType.Group);
 
             builder.Property(persona => persona.ObjectType)
+                .HasConversion(new EnumToStringConverter<ObjectType>())
+                .HasColumnName("ObjectTypeName")
                 .IsRequired();
 
             builder.Property(persona => persona.Name)
@@ -25,7 +27,6 @@ namespace Doctrina.Persistence.Configurations
                 .IsRequired(false);
 
             builder.Property(x => x.Key)
-                .HasConversion<IFITypeValueConverter>()
                 .IsRequired(false);
 
             builder.Property(x => x.Value)

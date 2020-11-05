@@ -1,7 +1,8 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Doctrina.Application.ActivityStates.Commands;
 using Doctrina.Application.Common;
 using Doctrina.Application.Common.Interfaces;
+using Doctrina.Domain.Models.Documents;
 using Doctrina.Persistence.Infrastructure;
 using MediatR;
 using System;
@@ -13,27 +14,28 @@ namespace Doctrina.Application.ActivityStates
 {
     public class DeleteActivityStatesHandler : IRequestHandler<DeleteActivityStatesCommand>
     {
-        private readonly IDoctrinaDbContext _context;
+        private readonly IStoreDbContext _context;
         private readonly IMapper _mapper;
-        private readonly IStoreHttpContext _storeContext;
 
-        public DeleteActivityStatesHandler(IDoctrinaDbContext context, IMapper mapper, IStoreHttpContext storeContext)
+        public DeleteActivityStatesHandler(IStoreDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
-            _storeContext = storeContext;
         }
 
         public async Task<Unit> Handle(DeleteActivityStatesCommand request, CancellationToken cancellationToken)
         {
-            Guid storeId = _storeContext.GetStoreId();
+            Guid storeId = _context.StoreId;
+
             string activityHash = request.ActivityId.ComputeHash();
-            var activities = _context.ActivityStates
+
+            IQueryable<ActivityStateEntity> activities = _context.Documents
+                .OfType<ActivityStateEntity>()
                 .Where(x=> x.StoreId == storeId)
                 .Where(x => x.Activity.Hash == activityHash)
-                .Where(x => x.Persona.PersonaId == request.Persona.PersonaId);
+                .Where(x => x.PersonaId == request.Persona.PersonaId);
 
-            _context.ActivityStates.RemoveRange(activities);
+            _context.Documents.RemoveRange(activities);
 
             await _context.SaveChangesAsync(cancellationToken);
 

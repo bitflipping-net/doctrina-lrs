@@ -2,7 +2,7 @@ using System;
 
 namespace Doctrina.Domain.Models.Relations
 {
-    public class StatementRelation : IRelation, IStoreEntity
+    public class StatementRelation : IRelation, IStoreOwnedEntity
     {
         /// <summary>
         /// The id of the <see cref="Parent"/> entity.

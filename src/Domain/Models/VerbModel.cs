@@ -4,7 +4,7 @@ using System;
 
 namespace Doctrina.Domain.Models
 {
-    public class VerbModel : IVerbModel, IStoreEntity
+    public class VerbModel : IVerbModel, IStoreOwnedEntity
     {
         /// <summary>
         /// The Primary Key

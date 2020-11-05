@@ -7,7 +7,7 @@ namespace Doctrina.Domain.Models.Interfaces
     {
         PersonaModel Persona { get; set; }
         VerbModel Verb { get; set; }
-        StatementContext Context { get; set; }
+        ContextModel Context { get; set; }
         ResultModel Result { get; set; }
         DateTimeOffset? Timestamp { get; set; }
         ICollection<AttachmentEntity> Attachments { get; set; }

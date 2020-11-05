@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+using System.Linq;
+using System.Reflection;
+using AutoMapper;
 using Doctrina.Application.Common.Behaviours;
 using Doctrina.Application.Common.Caching;
 using Doctrina.Application.Common.Interfaces;
@@ -6,8 +8,6 @@ using Doctrina.Application.Infrastructure;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Linq;
-using System.Reflection;
 
 namespace Doctrina.Application
 {
@@ -30,8 +30,9 @@ namespace Doctrina.Application
                 .AddClasses(clases => clases.AssignableTo(typeof(IDataProviderInjector)))
                     .AsImplementedInterfaces()
             );
-            var provider = services.BuildServiceProvider();
-            var injector = provider.GetService<IDataProviderInjector>();
+
+            ServiceProvider provider = services.BuildServiceProvider();
+            IDataProviderInjector injector = provider.GetService<IDataProviderInjector>();
             injector.AddPersistence(services, config);
             injector.AddApplication(services, config);
 

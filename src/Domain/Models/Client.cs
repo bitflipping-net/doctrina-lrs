@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Doctrina.Domain.Models
 {
@@ -42,7 +43,7 @@ namespace Doctrina.Domain.Models
         /// <summary>
         /// An array of permission scopes
         /// </summary>
-        public string[] Scopes { get; set; }
+        public virtual ICollection<ClientScope> Scopes { get; set; }
 
         /// <summary>
         /// The id of the <see cref="Store"/> that statements are stored in.
