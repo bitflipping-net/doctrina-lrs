@@ -50,9 +50,9 @@ namespace Doctrina.Persistence.Configurations
             builder.Property(e => e.Version)
                 .HasMaxLength(7);
 
-            builder.HasOne(e => e.Authority)
+            builder.HasOne(e => e.Client)
                 .WithMany()
-                .HasForeignKey(e => e.AuthorityId)
+                .HasForeignKey(e => e.ClientId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(e => e.VoidingStatement)

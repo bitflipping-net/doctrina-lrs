@@ -4,6 +4,9 @@ using System;
 
 namespace Doctrina.Domain.Entities
 {
+    /// <summary>
+    /// Definition for an activity
+    /// </summary>
     public interface IActivityDefinitionEntity
     {
         Guid ActivityDefinitionId { get; set; }

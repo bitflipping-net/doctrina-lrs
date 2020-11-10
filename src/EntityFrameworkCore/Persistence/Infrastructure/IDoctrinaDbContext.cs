@@ -13,16 +13,18 @@ namespace Doctrina.Persistence.Infrastructure
 {
     public interface IDoctrinaDbContext : IInfrastructure<IServiceProvider>, IDbContextDependencies, IDbSetCache, IDbContextPoolable, IResettableService
     {
-        DbSet<VerbEntity> Verbs { get; set; }
-        DbSet<ActivityEntity> Activities { get; set; }
-        DbSet<AgentEntity> Agents { get; set; }
-        DbSet<StatementEntity> Statements { get; set; }
-        DbSet<SubStatementEntity> SubStatements { get; set; }
-        DbSet<AgentProfileEntity> AgentProfiles { get; set; }
-        DbSet<ActivityProfileEntity> ActivityProfiles { get; set; }
-        DbSet<ActivityStateEntity> ActivityStates { get; set; }
+        DbSet<VerbEntity> Verbs { get; }
+        DbSet<ActivityEntity> Activities { get; }
+        DbSet<AgentEntity> Agents { get; }
+        DbSet<StatementEntity> Statements { get; }
+        DbSet<SubStatementEntity> SubStatements { get; }
+        DbSet<AgentProfileEntity> AgentProfiles { get; }
+        DbSet<ActivityProfileEntity> ActivityProfiles { get; }
+        DbSet<ActivityStateEntity> ActivityStates { get; }
+        DbSet<Client> Clients { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
         ChangeTracker ChangeTracker { get; }
+
         EntityEntry<TEntity> Entry<TEntity>([NotNullAttribute] TEntity entity) where TEntity : class;
     }
 }

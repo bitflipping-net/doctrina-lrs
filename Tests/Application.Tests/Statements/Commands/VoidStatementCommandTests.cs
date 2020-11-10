@@ -1,4 +1,5 @@
 ﻿using Doctrina.Application.Common.Interfaces;
+using Doctrina.Application.Identity;
 using Doctrina.Application.Statements.Commands;
 using Doctrina.Application.Statements.Notifications;
 using Doctrina.Application.Statements.Queries;
@@ -23,7 +24,7 @@ namespace Doctrina.Application.Tests.Statements.Commands
         {
             // Arrange
             var mediatorMock = new Mock<IMediator>();
-            var authorityMock = new Mock<IAuthorityContext>();
+            var authorityMock = new Mock<IClientContext>();
 
             var createStatementHandler = new CreateStatementCommandHandler(_context, mediatorMock.Object, _mapper, authorityMock.Object);
 

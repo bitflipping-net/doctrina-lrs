@@ -1,8 +1,0 @@
-{
-  "devDependencies": {
-    "tailwindcss": "^1.1.4"
-  },
-  "scripts": {
-    "tailwind": "npx tailwind build styles.css -o wwwroot/css/index.css"
-  }
-}

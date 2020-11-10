@@ -25,9 +25,4 @@
     <ProjectReference Include="..\..\src\Domain\Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="StatementRefs\Commands\" />
-    <Folder Include="System\Queries\" />
-  </ItemGroup>
-
 </Project>

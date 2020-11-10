@@ -1,0 +1,11 @@
+{
+    "Summary": {
+        "description": "Code summary",
+        "body": [
+            "/// <summary>",
+            "/// $0",
+            "/// </summary>"
+        ],
+        "prefix": "///"
+    }
+}

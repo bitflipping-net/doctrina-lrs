@@ -2,8 +2,7 @@ using Doctrina.Application;
 using Doctrina.Application.Statements.Commands;
 using Doctrina.Infrastructure;
 using Doctrina.Infrastructure.Interfaces;
-using Doctrina.WebUI.Data;
-using Doctrina.WebUI.ExperienceApi;
+using Doctrina.Server;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -89,10 +88,6 @@ namespace Doctrina.WebUI
                                 .Build();
                 options.Filters.Add(new AuthorizeFilter(policy));
             });
-
-            services.AddRazorPages();
-            services.AddServerSideBlazor();
-            services.AddSingleton<RegistrationService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -132,13 +127,6 @@ namespace Doctrina.WebUI
             }
             app.UseStaticFiles();
 
-            //app.UseOpenApi();
-
-            //app.UseSwaggerUi3(settings =>
-            //{
-            //    settings.Path = "/xapi";
-            //    //settings.DocumentPath = "/api/specification.json";
-            //});
             app.UseExperienceApiEndpoints();
 
             app.UseRouting();

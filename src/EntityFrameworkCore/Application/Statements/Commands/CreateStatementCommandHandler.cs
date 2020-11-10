@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Doctrina.Application.Activities.Commands;
 using Doctrina.Application.Agents.Commands;
+using Doctrina.Application.Clients.Queries;
 using Doctrina.Application.Common.Interfaces;
+using Doctrina.Application.Identity;
 using Doctrina.Application.Statements.Notifications;
 using Doctrina.Application.SubStatements.Commands;
 using Doctrina.Application.Verbs.Commands;
@@ -21,14 +23,14 @@ namespace Doctrina.Application.Statements.Commands
         private readonly IDoctrinaDbContext _context;
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
-        private readonly IAuthorityContext _authorityContext;
+        private readonly IClientContext _clientContext;
 
-        public CreateStatementCommandHandler(IDoctrinaDbContext context, IMediator mediator, IMapper mapper, IAuthorityContext currentAuthority)
+        public CreateStatementCommandHandler(IDoctrinaDbContext context, IMediator mediator, IMapper mapper, IClientContext clientContext)
         {
             _context = context;
             _mediator = mediator;
             _mapper = mapper;
-            _authorityContext = currentAuthority;
+            _clientContext = clientContext;
         }
 
         /// <summary>
@@ -59,12 +61,13 @@ namespace Doctrina.Application.Statements.Commands
 
             if (request.Statement.Authority == null)
             {
-                // TODO: Map group?
-                request.Statement.Authority = _mapper.Map<Agent>(_authorityContext.Authority);
+                // Set authority before saving JSON encoded statement
+                request.Statement.Authority = _clientContext.GetClientAuthority();
             }
             else
             {
                 // TODO: Validate authority
+                var client = await _mediator.Send(ClientByAgentQuery.Create(request.Statement.Authority));
             }
 
             // Start mapping statement
@@ -72,7 +75,7 @@ namespace Doctrina.Application.Statements.Commands
             newStatement.StatementId = request.Statement.Id.GetValueOrDefault();
             newStatement.Verb = (VerbEntity)await _mediator.Send(UpsertVerbCommand.Create(request.Statement.Verb), cancellationToken);
             newStatement.Actor = (AgentEntity)await _mediator.Send(UpsertActorCommand.Create(request.Statement.Actor), cancellationToken);
-            newStatement.Authority = (AgentEntity)await _mediator.Send(UpsertActorCommand.Create(request.Statement.Authority), cancellationToken);
+            newStatement.ClientId = _clientContext.GetClientId();
 
             if (request.Statement.Context != null)
             {

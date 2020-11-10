@@ -1,7 +1,21 @@
-﻿[*.cs]
+﻿root = true
+
+indent_size = 4
+
+[*.xml,*.csproj]
+indent_size = 2
+
+[*.json]
+indent_size = 2
+
+[*.cs]
+indent_size = 4
 
 # IDE0063: Use simple 'using' statement
 csharp_prefer_simple_using_statement = false:error
 
 # IDE0049: Simplify Names
 dotnet_style_predefined_type_for_locals_parameters_members = true:silent
+
+# IDE0065: Misplaced using directive
+csharp_using_directive_placement = outside_namespace:warning

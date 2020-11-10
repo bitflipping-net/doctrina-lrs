@@ -14,14 +14,50 @@ namespace Doctrina.Persistence
         {
         }
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public DbSet<VerbEntity> Verbs { get; set; }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public DbSet<ActivityEntity> Activities { get; set; }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public DbSet<AgentEntity> Agents { get; set; }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public DbSet<StatementEntity> Statements { get; set; }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public DbSet<SubStatementEntity> SubStatements { get; set; }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public DbSet<AgentProfileEntity> AgentProfiles { get; set; }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public DbSet<ActivityProfileEntity> ActivityProfiles { get; set; }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public DbSet<ActivityStateEntity> ActivityStates { get; set; }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        public DbSet<Client> Clients { get; set; }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
