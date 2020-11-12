@@ -2,7 +2,7 @@ using Doctrina.Application;
 using Doctrina.Application.Statements.Commands;
 using Doctrina.Infrastructure;
 using Doctrina.Infrastructure.Interfaces;
-using Doctrina.Server;
+using Doctrina.ExperienceApi.Server;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;

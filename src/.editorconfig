@@ -1,8 +1,13 @@
 ﻿root = true
 
+[*]
 indent_size = 4
+indent_style = space
 
-[*.xml,*.csproj]
+[*.xml]
+indent_size = 2
+
+[*.csproj]
 indent_size = 2
 
 [*.json]

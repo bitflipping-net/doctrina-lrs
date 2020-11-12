@@ -1,16 +1,14 @@
 ﻿using FluentValidation.Results;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Doctrina.Application.Common.Exceptions
 {
-    public class ValidationException : Exception
+    public class ValidationException : Doctrina.ExperienceApi.Data.Exceptions.ValidationException
     {
         public ValidationException()
-            : base("One or more validation failures have occurred.")
+            : base()
         {
-            Failures = new Dictionary<string, string[]>();
         }
 
         public ValidationException(List<ValidationFailure> failures)
@@ -30,7 +28,5 @@ namespace Doctrina.Application.Common.Exceptions
                 Failures.Add(propertyName, propertyFailures);
             }
         }
-
-        public IDictionary<string, string[]> Failures { get; }
     }
 }

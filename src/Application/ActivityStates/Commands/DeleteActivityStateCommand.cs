@@ -8,7 +8,7 @@ namespace Doctrina.Application.ActivityStates.Commands
     {
         public string StateId { get; set; }
         public Iri ActivityId { get; set; }
-        public Guid AgentId { get; set; }
+        public Agent Agent { get; set; }
         public Guid? Registration { get; set; }
     }
 }

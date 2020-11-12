@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using Doctrina.Application.Agents.Queries;
 using Doctrina.Persistence.Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -23,11 +25,13 @@ namespace Doctrina.Application.ActivityStates.Commands
 
         public async Task<Unit> Handle(DeleteActivityStateCommand request, CancellationToken cancellationToken)
         {
+            var agent = await _mediator.Send(GetAgentQuery.Create(request.Agent));
+
             string activityHash = request.ActivityId.ComputeHash();
             var activity = await _context.ActivityStates
                 .Where(x => x.StateId == request.StateId && x.Activity.Hash == activityHash &&
                 (!request.Registration.HasValue || x.Registration == request.Registration))
-                .Where(x => x.Agent.AgentId == request.AgentId)
+                .Where(x => x.Agent.AgentId == agent.AgentId)
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (activity != null)

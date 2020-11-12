@@ -9,20 +9,18 @@ using System.Threading.Tasks;
 
 namespace Doctrina.Application.ActivityProfiles.Commands
 {
-    public class CreateActivityProfileHandler : IRequestHandler<CreateActivityProfileCommand, ActivityProfileDocument>
+    public class CreateActivityProfileHandler : IRequestHandler<CreateActivityProfileCommand, ActivityProfileEntity>
     {
         private readonly IDoctrinaDbContext _context;
         private readonly IMediator _mediator;
-        private readonly IMapper _mapper;
 
-        public CreateActivityProfileHandler(IDoctrinaDbContext context, IMediator mediator, IMapper mapper)
+        public CreateActivityProfileHandler(IDoctrinaDbContext context, IMediator mediator)
         {
             _context = context;
             _mediator = mediator;
-            _mapper = mapper;
         }
 
-        public async Task<ActivityProfileDocument> Handle(CreateActivityProfileCommand request, CancellationToken cancellationToken)
+        public async Task<ActivityProfileEntity> Handle(CreateActivityProfileCommand request, CancellationToken cancellationToken)
         {
             var activity = await _mediator.Send(UpsertActivityCommand.Create(request.ActivityId));
 
@@ -37,7 +35,7 @@ namespace Doctrina.Application.ActivityProfiles.Commands
             await _context.SaveChangesAsync(cancellationToken);
 
             //return profile;
-            return _mapper.Map<ActivityProfileDocument>(profile);
+            return profile;
         }
     }
 }

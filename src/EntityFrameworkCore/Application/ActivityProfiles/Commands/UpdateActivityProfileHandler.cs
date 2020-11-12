@@ -2,6 +2,7 @@
 using Doctrina.Application.Activities.Queries;
 using Doctrina.Application.Common.Exceptions;
 using Doctrina.Domain.Entities.Documents;
+using Doctrina.ExperienceApi.Server.Exceptions;
 using Doctrina.Persistence.Infrastructure;
 using MediatR;
 using System.Threading;

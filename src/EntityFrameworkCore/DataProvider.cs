@@ -1,5 +1,8 @@
 ﻿using System.Reflection;
 using Doctrina.Application.Common.Caching;
+using Doctrina.ExperienceApi;
+using Doctrina.ExperienceApi.Server.Services;
+using Doctrina.ExperienceApi.Services;
 using Doctrina.Infrastructure.Interfaces;
 using Doctrina.Persistence;
 using Doctrina.Persistence.Infrastructure;
@@ -27,6 +30,14 @@ namespace Doctrina.Application
         public IServiceCollection AddApplication(IServiceCollection services, IConfiguration configuration)
         {
             services.AddMediatR(Assembly.GetExecutingAssembly());
+
+            services.AddScoped<IAboutService, AboutService>();
+            services.AddScoped<IActivityProfileService, ActivityProfileService>();
+            services.AddScoped<IActivityService, ActivityService>();
+            services.AddScoped<IActivityStateService, ActivityStateService>();
+            services.AddScoped<IAgentService, AgentService>();
+            services.AddScoped<IDocumentService, DocumentService>();
+            services.AddScoped<IStatementService, StatementService>();
 
             // IoC on application injector
             services.Scan(scan => scan.FromAssembliesOf(typeof(DataProvider))

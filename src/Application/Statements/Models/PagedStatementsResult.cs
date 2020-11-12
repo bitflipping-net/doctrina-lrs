@@ -8,20 +8,17 @@ namespace Doctrina.Application.Statements.Models
         public PagedStatementsResult()
         {
             Statements = new List<StatementEntity>();
-            MoreToken = null;
+            Cursor = null;
         }
 
-        public PagedStatementsResult(IEnumerable<StatementEntity> statements, string token = null)
+        public PagedStatementsResult(IEnumerable<StatementEntity> statements, string cursor = null)
         {
             Statements = statements;
-            MoreToken = token;
+            Cursor = cursor;
         }
 
         public IEnumerable<StatementEntity> Statements { get; set; }
 
-        /// <summary>
-        /// If token is not null, more statements can be fetched using token
-        /// </summary>
-        public string MoreToken { get; set; }
+        public string Cursor { get; set; }
     }
 }

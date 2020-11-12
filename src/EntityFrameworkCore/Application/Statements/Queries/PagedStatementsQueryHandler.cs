@@ -28,12 +28,12 @@ namespace Doctrina.Application.Statements.Queries
 
         public async Task<PagedStatementsResult> Handle(PagedStatementsQuery request, CancellationToken cancellationToken)
         {
-            if (!string.IsNullOrWhiteSpace(request.MoreToken))
+            if (!string.IsNullOrWhiteSpace(request.Cursor))
             {
-                string token = request.MoreToken;
+                string token = request.Cursor;
                 string jsonString = await _distributedCache.GetStringAsync(token, cancellationToken);
                 request = PagedStatementsQuery.FromJson(jsonString);
-                request.MoreToken = null;
+                request.Cursor = null;
             }
 
             var query = _context.Statements.AsNoTracking();
@@ -185,7 +185,7 @@ namespace Doctrina.Application.Statements.Queries
 
             if (result.Count > pageSize)
             {
-                request.MoreToken = Guid.NewGuid().ToString();
+                request.Cursor = Guid.NewGuid().ToString();
                 request.PageIndex += 1;
                 if (!request.Until.HasValue)
                 {
@@ -193,9 +193,9 @@ namespace Doctrina.Application.Statements.Queries
                 }
                 var options = new DistributedCacheEntryOptions()
                     .SetSlidingExpiration(TimeSpan.FromSeconds(60 * 10));
-                await _distributedCache.SetStringAsync(request.MoreToken, request.ToJson(), options, cancellationToken);
+                await _distributedCache.SetStringAsync(request.Cursor, request.ToJson(), options, cancellationToken);
 
-                return new PagedStatementsResult(statements, request.MoreToken);
+                return new PagedStatementsResult(statements, request.Cursor);
             }
 
             return new PagedStatementsResult(statements);

@@ -7,10 +7,15 @@ namespace Doctrina.Application.Infrastructure
 {
     public static class HttpResponseExtensions
     {
-        public static Task WriteJsonAsync(this HttpResponse httpResponse, object json, CancellationToken cancellationToken = default)
+        public static Task WriteJsonAsync(this HttpResponse response, object json, string contentType = null, CancellationToken cancellationToken = default)
         {
             string jsonString = JsonConvert.SerializeObject(json);
-            return httpResponse.WriteAsync(jsonString, cancellationToken);
+            return response.WriteAsync(jsonString, cancellationToken);
+        }
+
+        public static Task WriteJsonAsync(this HttpResponse response, string json, string contentType = null, CancellationToken cancellationToken = default)
+        {
+            return response.WriteAsync(json, cancellationToken);
         }
     }
 }

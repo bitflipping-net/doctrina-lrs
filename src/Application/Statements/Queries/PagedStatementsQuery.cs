@@ -1,8 +1,6 @@
 ﻿using Doctrina.Application.Statements.Models;
-using Doctrina.ExperienceApi.Client.Http;
 using Doctrina.ExperienceApi.Data;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
@@ -12,13 +10,10 @@ namespace Doctrina.Application.Statements.Queries
 {
     public class PagedStatementsQuery : StatementsQuery, IRequest<PagedStatementsResult>
     {
-        [FromQuery(Name = "more")]
-        public string MoreToken { get; set; }
+        public string Cursor { get; set; }
 
-        [FromHeader(Name = ApiHeaders.XExperienceApiVersion)]
         public string Version { get; set; }
 
-        [FromHeader(Name = "Accept-Languge")]
         public string AcceptLanguage { get; set; }
 
         public int PageIndex { get; set; }
@@ -31,9 +26,9 @@ namespace Doctrina.Application.Statements.Queries
             }
 
             var values = base.ToParameterMap(version);
-            if (!string.IsNullOrEmpty(MoreToken))
+            if (!string.IsNullOrEmpty(Cursor))
             {
-                values.Add("more", MoreToken);
+                values.Add("more", Cursor);
             }
             return values;
         }

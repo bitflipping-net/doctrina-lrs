@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Doctrina.Application.About.Queries;
 using Doctrina.Application.ActivityStates.Commands;
+using Doctrina.Application.Agents.Queries;
 using Doctrina.Persistence.Infrastructure;
 using MediatR;
 using System.Linq;
@@ -11,19 +13,23 @@ namespace Doctrina.Application.ActivityStates
     public class DeleteActivityStatesHandler : IRequestHandler<DeleteActivityStatesCommand>
     {
         private readonly IDoctrinaDbContext _context;
+        private readonly IMediator mediator;
         private readonly IMapper _mapper;
 
-        public DeleteActivityStatesHandler(IDoctrinaDbContext context, IMapper mapper)
+        public DeleteActivityStatesHandler(IDoctrinaDbContext context, IMediator mediator, IMapper mapper)
         {
             _context = context;
+            this.mediator = mediator;
             _mapper = mapper;
         }
 
         public async Task<Unit> Handle(DeleteActivityStatesCommand request, CancellationToken cancellationToken)
         {
+            var agent = await mediator.Send(GetAgentQuery.Create(request.Agent));
+
             string activityHash = request.ActivityId.ComputeHash();
             var activities = _context.ActivityStates.Where(x => x.Activity.Hash == activityHash)
-                .Where(x => x.Agent.AgentId == request.AgentId);
+                .Where(x => x.Agent.AgentId == agent.AgentId);
 
             _context.ActivityStates.RemoveRange(activities);
 

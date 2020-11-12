@@ -1,4 +1,4 @@
-﻿using Doctrina.ExperienceApi.Client.Http;
+﻿using Doctrina.ExperienceApi.Data.Http;
 using Doctrina.ExperienceApi.Data.Json;
 using FluentValidation;
 using System.Text;

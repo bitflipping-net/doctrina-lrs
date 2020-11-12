@@ -1,6 +1,7 @@
 using Doctrina.Application.Agents.Queries;
 using Doctrina.Application.Common.Exceptions;
 using Doctrina.Domain.Entities.Documents;
+using Doctrina.ExperienceApi.Server.Exceptions;
 using Doctrina.Persistence.Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -38,6 +39,7 @@ namespace Doctrina.Application.AgentProfiles.Commands
             profile.Document.UpdateDocument(request.Content, request.ContentType);
 
             _context.AgentProfiles.Update(profile);
+
             await _context.SaveChangesAsync(cancellationToken);
 
             return profile;

@@ -1,4 +1,6 @@
+# Doctrina
 [![Build Status](https://dev.azure.com/bitflipping/Doctrina/_apis/build/status/bitflipping-net.doctrina-lrs?branchName=develop)](https://dev.azure.com/bitflipping/Doctrina/_build/latest?definitionId=10&branchName=develop)
+
 
 ## Getting Started
 Use these instructions to get the project up and running.
@@ -65,3 +67,14 @@ After following the steps for setup, do the following to run the `lrs-conformanc
 
 ## License
 This project is licensed under the AGPLv3 License - see the [LICENSE](https://github.com/bitflipping-solutions/doctrina-lrs/blob/develop/LICENSE) file for details.
+
+## Structure
+ * [WebUI](https://github.com/bitflipping-net/doctrina-lrs/tree/develop/src/WebUI)
+ * [xAPI](https://github.com/bitflipping-net/experience-api/tree/develop)
+   * Data
+   * Client
+   * Server
+ * [Application](https://github.com/bitflipping-net/doctrina-lrs/tree/develop/src/WebUI)
+ * [Common](https://github.com/bitflipping-net/doctrina-lrs/tree/develop/src/Common)
+ * [Domain](https://github.com/bitflipping-net/doctrina-lrs/tree/develop/src/Domain)
+ * [Infrastucture](https://github.com/bitflipping-net/doctrina-lrs/tree/develop/src/Instrastucture)
