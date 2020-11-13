@@ -7,6 +7,7 @@ namespace Doctrina.Application.Infrastructure
 {
     public static class HttpResponseExtensions
     {
+
         public static Task WriteJsonAsync(this HttpResponse response, object json, string contentType = null, CancellationToken cancellationToken = default)
         {
             string jsonString = JsonConvert.SerializeObject(json);
