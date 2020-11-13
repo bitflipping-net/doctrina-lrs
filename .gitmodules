@@ -1,6 +1,6 @@
 [submodule "experience-api"]
 	path = src/experience-api
-	url = https://github.com/bitflipping-solutions/experience-api.git
+	url = https://github.com/bitflipping-net/experience-api.git
 [submodule "lrs-conformance-test-suite"]
 	path = lrs-conformance-test-suite
 	url = https://github.com/adlnet/lrs-conformance-test-suite.git
