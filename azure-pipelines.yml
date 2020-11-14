@@ -33,11 +33,13 @@ stages:
       inputs:
         command: 'restore'
         projects: '$(solution)'
-      displayName: "Restore .sln"
+        feedsToUse: 'select'
+        vstsFeed: 'da83dbac-97ca-4698-b2c1-fdeba0531acd'
+      displayName: "Restore NuGet packages"
 
     - task: DotNetCoreCLI@2
       inputs:
         command: 'build'
         projects: '$(solution)'
         arguments: '--configuration $(buildConfiguration) --no-restore'
-      displayName: "Build .sln"
+      displayName: "Build projects"
