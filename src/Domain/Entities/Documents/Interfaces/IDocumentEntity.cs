@@ -7,7 +7,7 @@ namespace Doctrina.Domain.Entities.Documents
         byte[] Content { get; set; }
         string ContentType { get; set; }
         string Checksum { get; set; }
-        DateTimeOffset? LastModified { get; set; }
-        DateTimeOffset CreateDate { get; set; }
+        DateTimeOffset? UpdatedAt { get; set; }
+        DateTimeOffset CreatedAt { get; set; }
     }
 }

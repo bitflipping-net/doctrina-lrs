@@ -6,45 +6,19 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Doctrina.Application.Infrastructure.ExperienceApi;
 
 namespace Doctrina.Application.Agents
 {
     public static class AgentExtensions
     {
-        public static async Task<AgentEntity> SingleOrDefaultAsync(this IQueryable<AgentEntity> query, AgentEntity agent, CancellationToken cancellationToken)
+        public static Task<AgentEntity> SingleOrDefaultAsync(this IQueryable<AgentEntity> query, AgentEntity agent, CancellationToken cancellationToken)
         {
-            query = query.Where(x => x.ObjectType == agent.ObjectType);
-
-            if (agent.Mbox != null)
-            {
-                string mbox = agent.Mbox;
-                return await query.SingleOrDefaultAsync(x => x.Mbox == mbox, cancellationToken);
-            }
-            else if (agent.Mbox_SHA1SUM != null)
-            {
-                string mbox_sha1sum = agent.Mbox_SHA1SUM;
-                return await query.SingleOrDefaultAsync(x => x.Mbox_SHA1SUM == mbox_sha1sum, cancellationToken);
-            }
-            else if (agent.OpenId != null)
-            {
-                var openId = agent.OpenId;
-                return await query.SingleOrDefaultAsync(x => x.OpenId == openId, cancellationToken);
-            }
-            else if (agent.Account != null)
-            {
-                var ac = agent.Account;
-                string accountHomepage = ac.HomePage;
-                string accountName = ac.Name;
-                return await query.SingleOrDefaultAsync(x => x.Account.HomePage == accountHomepage && x.Account.Name == accountName, cancellationToken);
-            }
-            else if (agent.ObjectType == EntityObjectType.Agent)
-            {
-                throw new ArgumentException("Agent must have an identifier");
-            }
-            else
-            {
-                return null;
-            }
+            return query.SingleOrDefaultAsync(x =>
+                x.ObjectType == agent.ObjectType &&
+                x.IFI_Key == agent.IFI_Key &&
+                x.IFI_Value == agent.IFI_Value
+            , cancellationToken);
         }
 
         public static string GetAgentCacheKeyIdentifier(this Agent agent)

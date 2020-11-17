@@ -17,7 +17,6 @@ namespace Doctrina.Domain.Entities
         public virtual AgentEntity Actor { get; set; }
         public Guid VerbId { get; set; }
         public virtual VerbEntity Verb { get; set; }
-        public virtual StatementObjectEntity Object { get; set; }
         public DateTimeOffset? Timestamp { get; set; }
         public virtual ResultEntity Result { get; set; }
         public virtual ContextEntity Context { get; set; }
@@ -29,5 +28,8 @@ namespace Doctrina.Domain.Entities
         public string FullStatement { get; set; }
         public Guid? VoidingStatementId { get; set; }
         public StatementEntity VoidingStatement { get; set; }
+        public EntityObjectType ObjectType { get; set; }
+        public Guid ObjectId { get; set; }
+        public object Object { get; set; }
     }
 }

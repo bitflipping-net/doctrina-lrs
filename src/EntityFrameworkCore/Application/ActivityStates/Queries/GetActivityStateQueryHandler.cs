@@ -30,15 +30,16 @@ namespace Doctrina.Application.ActivityStates.Queries
 
             string activityHash = request.ActivityId.ComputeHash();
 
-            var query = _context.ActivityStates
+            var query = _context.Documents
                 .AsNoTracking()
-                .Where(x => x.StateId == request.StateId)
+                .OfType<ActivityStateEntity>()
+                .Where(x => x.Key == request.StateId)
                 .Where(x => x.Activity.Hash == activityHash)
                 .Where(x => x.Agent.AgentId == agent.AgentId);
 
             if (request.Registration.HasValue)
             {
-                query.Where(x => x.Registration == request.Registration);
+                query.Where(x => x.RegistrationId == request.Registration);
             }
 
             ActivityStateEntity state = await query.SingleOrDefaultAsync(cancellationToken);

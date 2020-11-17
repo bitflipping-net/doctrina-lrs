@@ -26,15 +26,12 @@ namespace Doctrina.Persistence.Configurations
                 .HasMaxLength(Constants.MAX_URL_LENGTH);
 
             builder.Property(p => p.Display)
-                .HasConversion(new LanguageMapCollectionValueConverter())
+                .HasConversion(new JsonValueConverter<LanguageMapCollection>())
                 .HasColumnType("ntext")
                 .Metadata
                 .SetValueComparer(new ValueComparer<LanguageMapCollection>(false));
 
             builder.HasIndex(x => x.Hash)
-               .IsUnique();
-
-            builder.HasIndex(x => x.Id)
                .IsUnique();
         }
     }

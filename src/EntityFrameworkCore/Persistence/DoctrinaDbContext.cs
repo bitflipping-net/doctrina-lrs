@@ -1,5 +1,6 @@
 ﻿using Doctrina.Domain.Entities;
 using Doctrina.Domain.Entities.Documents;
+using Doctrina.Persistence.Configurations.Relations;
 using Doctrina.Persistence.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
@@ -42,22 +43,14 @@ namespace Doctrina.Persistence
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        public DbSet<AgentProfileEntity> AgentProfiles { get; set; }
-
-        /// <summary>
-        /// <inheritdoc/>
-        /// </summary>
-        public DbSet<ActivityProfileEntity> ActivityProfiles { get; set; }
-
-        /// <summary>
-        /// <inheritdoc/>
-        /// </summary>
-        public DbSet<ActivityStateEntity> ActivityStates { get; set; }
+        public DbSet<DocumentEntity> Documents { get; set; }
 
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
         public DbSet<Client> Clients { get; set; }
+        public DbSet<ObjectRelation> ObjectRelations { get; set; }
+        public DbSet<PersonEntity> Persons { get; set; }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {

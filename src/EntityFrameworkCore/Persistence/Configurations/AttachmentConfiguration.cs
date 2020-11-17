@@ -26,13 +26,13 @@ namespace Doctrina.Persistence.Configurations
 
             builder.Property(e => e.Display)
                 .IsRequired()
-                .HasConversion(new LanguageMapCollectionValueConverter())
+                .HasConversion(new JsonValueConverter<LanguageMapCollection>())
                 .HasColumnType("ntext")
                 .Metadata
                 .SetValueComparer(new ValueComparer<LanguageMapCollection>(false));
 
             builder.Property(e => e.Description)
-                .HasConversion(new LanguageMapCollectionValueConverter())
+                .HasConversion(new JsonValueConverter<LanguageMapCollection>())
                 .HasColumnType("ntext")
                 .Metadata
                 .SetValueComparer(new ValueComparer<LanguageMapCollection>(false));

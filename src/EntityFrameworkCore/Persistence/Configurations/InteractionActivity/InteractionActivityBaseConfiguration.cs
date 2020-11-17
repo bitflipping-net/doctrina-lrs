@@ -29,7 +29,7 @@ namespace Doctrina.Persistence.Configurations
                 .HasValue<OtherInteractionActivity>("other");
 
             builder.Property(e => e.CorrectResponsesPattern)
-                .HasConversion(new StringArrayValueConverter())
+                .HasConversion(new JsonValueConverter<ICollection<string>>())
                 .Metadata
                 .SetValueComparer(new ValueComparer<ICollection<string>>(false));
         }

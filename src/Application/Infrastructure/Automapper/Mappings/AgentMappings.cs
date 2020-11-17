@@ -1,4 +1,5 @@
 using AutoMapper;
+using Doctrina.Application.Infrastructure.ExperienceApi;
 using Doctrina.Application.Interfaces.Mapping;
 using Doctrina.Domain.Entities;
 using Doctrina.Domain.Entities.Interfaces;
@@ -14,10 +15,8 @@ public class AgentMppings : IHaveCustomMapping
             .ForMember(ent => ent.AgentId, opt => opt.Ignore())
             .ForMember(ent => ent.ObjectType, opt => opt.Ignore())
            .ForMember(ent => ent.Name, opt => opt.MapFrom(x => x.Name))
-           .ForMember(ent => ent.Mbox, opt => opt.MapFrom(x => x.Mbox.ToString()))
-           .ForMember(ent => ent.Mbox_SHA1SUM, opt => opt.MapFrom(x => x.Mbox_SHA1SUM))
-           .ForMember(ent => ent.OpenId, opt => opt.MapFrom(x => x.OpenId.ToString()))
-           .ForMember(ent => ent.Account, opt => opt.MapFrom(x => x.Account))
+           .ForMember(ent => ent.IFI_Key, opt => opt.MapFrom(x => x.GetIdentifierKey()))
+           .ForMember(ent => ent.IFI_Value, opt => opt.MapFrom(x => x.GetIdentifierValue()))
            .ReverseMap();
 
         configuration.CreateMap<Group, GroupEntity>()

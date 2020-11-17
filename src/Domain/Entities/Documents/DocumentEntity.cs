@@ -10,14 +10,24 @@ namespace Doctrina.Domain.Entities.Documents
     {
         public DocumentEntity() { }
 
-        public DocumentEntity(byte[] body, string contentType)
+        public DocumentEntity(byte[] content, string contentType)
         {
-            Content = body;
+            Content = content;
             ContentType = contentType;
-            LastModified = DateTimeOffset.UtcNow;
-            CreateDate = DateTimeOffset.UtcNow;
+            UpdatedAt = DateTimeOffset.UtcNow;
+            CreatedAt = DateTimeOffset.UtcNow;
             Checksum = GenerateChecksum();
         }
+
+        public long DocumentId { get; set; }
+
+        public string Key { get; set; }
+
+        public Guid? AgentId { get; set; }
+
+        public Guid? RegistrationId { get; set; }
+
+        public Guid? ActivityId { get; set; }
 
         /// <summary>
         /// Representation of the Content-Type header received
@@ -37,12 +47,12 @@ namespace Doctrina.Domain.Entities.Documents
         /// <summary>
         /// UTC Date when the document was last modified
         /// </summary>
-        public DateTimeOffset? LastModified { get; set; }
+        public DateTimeOffset? UpdatedAt { get; set; }
 
         /// <summary>
         /// UTC Date when the document was created
         /// </summary>
-        public DateTimeOffset CreateDate { get; set; }
+        public DateTimeOffset CreatedAt { get; set; }
 
         // Methods:
         private string GenerateChecksum()
@@ -59,12 +69,11 @@ namespace Doctrina.Domain.Entities.Documents
             }
         }
 
-        // Factories:
         public void UpdateDocument(byte[] content, string contentType)
         {
             this.Content = content;
             this.ContentType = contentType;
-            this.LastModified = DateTimeOffset.UtcNow;
+            this.UpdatedAt = DateTimeOffset.UtcNow;
             Checksum = this.GenerateChecksum();
         }
     }

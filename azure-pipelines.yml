@@ -1,5 +1,5 @@
 trigger:
-  batch: true
+  batch: 'true'
   branches:
     include:
     - master
@@ -15,7 +15,7 @@ stages:
 - stage: 'Build'
   jobs:
   - job: 'Windows_job'
-    timeoutInMinutes: 10
+    timeoutInMinutes: '10'
     pool:
       vmImage: 'windows-latest'
 
@@ -26,8 +26,8 @@ stages:
 
     steps:
     - checkout: self
-      lfs: true
-      submodules: true
+      lfs: 'true'
+      submodules: 'true'
 
     - task: DotNetCoreCLI@2
       inputs:

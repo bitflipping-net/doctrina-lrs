@@ -13,13 +13,13 @@ namespace Doctrina.Persistence.Configurations.Interactions
             builder.HasBaseType<InteractionActivityBase>();
 
             builder.Property(x => x.Target)
-                .HasConversion(new InteractionComponentCollectionValueConverter())
+                .HasConversion(new JsonValueConverter<InteractionComponentCollection>())
                 .HasColumnType("ntext")
                 .Metadata
                 .SetValueComparer(new ValueComparer<InteractionComponentCollection>(false));
 
             builder.Property(x => x.Source)
-                .HasConversion(new InteractionComponentCollectionValueConverter())
+                .HasConversion(new JsonValueConverter<InteractionComponentCollection>())
                 .HasColumnType("ntext")
                 .Metadata
                 .SetValueComparer(new ValueComparer<InteractionComponentCollection>(false));

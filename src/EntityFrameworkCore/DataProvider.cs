@@ -1,8 +1,6 @@
-﻿using System.Reflection;
-using Doctrina.Application.Common.Caching;
-using Doctrina.ExperienceApi;
-using Doctrina.ExperienceApi.Server.Services;
-using Doctrina.ExperienceApi.Services;
+﻿using Doctrina.Application.Common.Caching;
+using Doctrina.ExperienceApi.Resources;
+using Doctrina.ExperienceApi.Server.Resources;
 using Doctrina.Infrastructure.Interfaces;
 using Doctrina.Persistence;
 using Doctrina.Persistence.Infrastructure;
@@ -10,6 +8,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 namespace Doctrina.Application
 {
@@ -31,13 +30,13 @@ namespace Doctrina.Application
         {
             services.AddMediatR(Assembly.GetExecutingAssembly());
 
-            services.AddScoped<IAboutService, AboutService>();
-            services.AddScoped<IActivityProfileService, ActivityProfileService>();
-            services.AddScoped<IActivityService, ActivityService>();
-            services.AddScoped<IActivityStateService, ActivityStateService>();
-            services.AddScoped<IAgentService, AgentService>();
-            services.AddScoped<IDocumentService, DocumentService>();
-            services.AddScoped<IStatementService, StatementService>();
+            services.AddTransient<IAboutResource, AboutResource>();
+            services.AddTransient<IActivityProfileResource, ActivityProfileResource>();
+            services.AddTransient<IAgentProfileResource, AgentProfileResource>();
+            services.AddTransient<IActivityResource, ActivityResource>();
+            services.AddTransient<IStateResource, ActivityStateResource>();
+            services.AddTransient<IAgentResource, AgentResource>();
+            services.AddTransient<IStatementResource, StatementResource>();
 
             // IoC on application injector
             services.Scan(scan => scan.FromAssembliesOf(typeof(DataProvider))

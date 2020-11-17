@@ -5,6 +5,7 @@ using Doctrina.Domain.Entities.Documents;
 using Doctrina.ExperienceApi.Server.Exceptions;
 using Doctrina.Persistence.Infrastructure;
 using MediatR;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -32,11 +33,13 @@ namespace Doctrina.Application.ActivityProfiles.Commands
                 throw new NotFoundException("No activity profiles for activity.");
             }
 
-            ActivityProfileEntity profile = await _context.ActivityProfiles.GetProfileAsync(activity.ActivityId, request.ProfileId, request.Registration, cancellationToken);
+            ActivityProfileEntity profile = await _context.Documents
+                .OfType<ActivityProfileEntity>()
+                .GetProfileAsync(activity.ActivityId, request.ProfileId, request.Registration, cancellationToken);
 
-            profile.Document.UpdateDocument(request.Content, request.ContentType);
+            profile.UpdateDocument(request.Content, request.ContentType);
 
-            _context.ActivityProfiles.Update(profile);
+            _context.Documents.Update(profile);
             await _context.SaveChangesAsync(cancellationToken);
 
             return await Unit.Task;

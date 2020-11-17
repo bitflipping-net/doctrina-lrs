@@ -7,7 +7,8 @@ namespace Doctrina.Domain.Entities.Interfaces
     {
         AgentEntity Actor { get; set; }
         VerbEntity Verb { get; set; }
-        StatementObjectEntity Object { get; set; }
+        EntityObjectType ObjectType { get; set; }
+        Guid ObjectId { get; set; }
         ContextEntity Context { get; set; }
         ResultEntity Result { get; set; }
         DateTimeOffset? Timestamp { get; set; }

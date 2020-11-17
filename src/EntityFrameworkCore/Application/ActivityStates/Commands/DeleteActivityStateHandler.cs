@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Doctrina.Application.Agents.Queries;
+using Doctrina.Domain.Entities.Documents;
 using Doctrina.Persistence.Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -28,15 +29,16 @@ namespace Doctrina.Application.ActivityStates.Commands
             var agent = await _mediator.Send(GetAgentQuery.Create(request.Agent));
 
             string activityHash = request.ActivityId.ComputeHash();
-            var activity = await _context.ActivityStates
-                .Where(x => x.StateId == request.StateId && x.Activity.Hash == activityHash &&
-                (!request.Registration.HasValue || x.Registration == request.Registration))
+            var activity = await _context.Documents
+                .OfType<ActivityStateEntity>()
+                .Where(x => x.Key == request.StateId && x.Activity.Hash == activityHash &&
+                (!request.Registration.HasValue || x.RegistrationId == request.Registration))
                 .Where(x => x.Agent.AgentId == agent.AgentId)
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (activity != null)
             {
-                _context.ActivityStates.Remove(activity);
+                _context.Documents.Remove(activity);
                 await _context.SaveChangesAsync(cancellationToken);
             }
 

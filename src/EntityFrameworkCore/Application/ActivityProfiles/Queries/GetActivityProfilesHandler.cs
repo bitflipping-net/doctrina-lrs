@@ -29,12 +29,14 @@ namespace Doctrina.Application.ActivityProfiles.Queries
         {
             var activity = await _mediator.Send(GetActivityQuery.Create(request.ActivityId), cancellationToken);
 
-            var query = _context.ActivityProfiles.Where(x => x.ActivityId == activity.ActivityId);
+            var query = _context.Documents
+                .OfType<ActivityProfileEntity>()
+                .Where(x => x.ActivityId == activity.ActivityId);
             if (request.Since.HasValue)
             {
-                query = query.Where(x => x.Document.LastModified >= request.Since);
+                query = query.Where(x => x.UpdatedAt >= request.Since);
             }
-            query = query.OrderByDescending(x => x.Document.LastModified);
+            query = query.OrderByDescending(x => x.UpdatedAt);
             return await query.ToListAsync(cancellationToken);
         }
     }

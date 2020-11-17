@@ -3,6 +3,7 @@ using Doctrina.Application.Activities.Queries;
 using Doctrina.Domain.Entities.Documents;
 using Doctrina.Persistence.Infrastructure;
 using MediatR;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -29,7 +30,9 @@ namespace Doctrina.Application.ActivityProfiles.Queries
                 return null;
             }
 
-            return await _context.ActivityProfiles.GetProfileAsync(activityEntity.ActivityId, request.ProfileId, request.Registration, cancellationToken);
+            return await _context.Documents
+                .OfType<ActivityProfileEntity>()
+                .GetProfileAsync(activityEntity.ActivityId, request.ProfileId, request.Registration, cancellationToken);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Doctrina.Domain.Entities;
 using Doctrina.Domain.Entities.Documents;
+using Doctrina.Persistence.Configurations.Relations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -18,10 +19,10 @@ namespace Doctrina.Persistence.Infrastructure
         DbSet<AgentEntity> Agents { get; }
         DbSet<StatementEntity> Statements { get; }
         DbSet<SubStatementEntity> SubStatements { get; }
-        DbSet<AgentProfileEntity> AgentProfiles { get; }
-        DbSet<ActivityProfileEntity> ActivityProfiles { get; }
-        DbSet<ActivityStateEntity> ActivityStates { get; }
+        DbSet<DocumentEntity> Documents { get; }
         DbSet<Client> Clients { get; }
+        DbSet<ObjectRelation> ObjectRelations { get; set; }
+        DbSet<PersonEntity> Persons { get; set; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
         ChangeTracker ChangeTracker { get; }
 

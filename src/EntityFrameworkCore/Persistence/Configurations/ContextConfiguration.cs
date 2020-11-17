@@ -18,19 +18,22 @@ namespace Doctrina.Persistence.Configurations
                 .ValueGeneratedOnAdd();
 
             builder.Property(e => e.Extensions)
-                .HasConversion(new ExtensionsCollectionValueConverter())
+                .HasConversion(new JsonValueConverter<ExtensionsCollection>())
                 .HasColumnType("ntext")
                 .Metadata
                 .SetValueComparer(new ValueComparer<ExtensionsCollection>(false));
 
             builder.HasOne(e => e.Instructor)
-                .WithMany();
+                .WithMany()
+                .HasForeignKey(x=> x.InstructorId);
 
-            builder.HasOne(e => e.Instructor)
-                .WithMany();
+            builder.HasOne(e => e.Team)
+                .WithMany()
+                .HasForeignKey(e=> e.TeamId);
 
-            builder.HasOne(e => e.ContextActivities)
-                .WithMany();
+            builder.HasMany(e => e.ContextActivities)
+                .WithOne()
+                .HasForeignKey(x => x.ContextId);
         }
     }
 }

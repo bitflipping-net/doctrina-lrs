@@ -8,14 +8,14 @@ namespace Doctrina.Application.AgentProfiles.Queries
 {
     public class GetAgentProfilesQuery : IRequest<ICollection<AgentProfileEntity>>
     {
-        public Agent Agent { get; set; }
+        public Guid AgentId { get; set; }
         public DateTimeOffset? Since { get; set; }
 
-        public static GetAgentProfilesQuery Create(Agent agent, DateTimeOffset? since)
+        public static GetAgentProfilesQuery Create(Guid agentId, DateTimeOffset? since)
         {
             return new GetAgentProfilesQuery()
             {
-                Agent = agent,
+                AgentId = agentId,
                 Since = since
             };
         }

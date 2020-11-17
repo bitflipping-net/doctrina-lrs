@@ -23,21 +23,15 @@ namespace Doctrina.Application.AgentProfiles
 
         public async Task<Unit> Handle(DeleteAgentProfileCommand request, CancellationToken cancellationToken)
         {
-            var agentEntity = await _mediator.Send(GetAgentQuery.Create(request.Agent));
-
-            if (agentEntity == null)
-            {
-                return await Unit.Task;
-            }
-
-            AgentProfileEntity profile = await _context.AgentProfiles
-                            .AsNoTracking()
-                            .Where(x => x.AgentId == agentEntity.AgentId)
-                            .SingleOrDefaultAsync(x => x.ProfileId == request.ProfileId, cancellationToken);
+            AgentProfileEntity profile = await _context.Documents
+                .OfType<AgentProfileEntity>()
+                .AsNoTracking()
+                .Where(x => x.AgentId == request.AgentId)
+                .SingleOrDefaultAsync(x => x.Key == request.ProfileId, cancellationToken);
 
             if (profile != null)
             {
-                _context.AgentProfiles.Remove(profile);
+                _context.Documents.Remove(profile);
                 await _context.SaveChangesAsync(cancellationToken);
             }
 

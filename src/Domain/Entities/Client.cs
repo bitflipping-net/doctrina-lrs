@@ -8,7 +8,7 @@ namespace Doctrina.Domain.Entities
         /// <summary>
         /// The primary key of the client
         /// </summary>
-        public long ClientId { get; set; }
+        public Guid ClientId { get; set; }
 
         /// <summary>
         /// Was created at

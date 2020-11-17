@@ -1,4 +1,6 @@
-﻿using System;
+﻿
+
+using System;
 using System.ComponentModel;
 using System.Globalization;
 
@@ -6,11 +8,21 @@ namespace Doctrina.Domain.Entities
 {
     public enum EntityObjectType
     {
-        Agent = 1,
-        Group = 2,
-        Activity = 3,
-        SubStatement = 4,
-        StatementRef = 5
+        Invalid,
+
+        Agent,
+
+        Group,
+
+        Activity,
+
+        SubStatement,
+
+        StatementRef,
+
+        Person,
+
+        Statement
     }
 
     public class ObjectTypeTypeConverter : TypeConverter

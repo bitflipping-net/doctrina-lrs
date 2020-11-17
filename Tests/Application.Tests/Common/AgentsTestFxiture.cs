@@ -8,22 +8,16 @@ namespace Doctrina.Application.Tests.Common
         {
             var agent = new AgentEntity()
             {
-                Account = new Domain.Entities.Account
-                {
-                    HomePage = "http://www.example.com/agentId/1",
-                    Name = "James Campbell"
-                }
+                IFI_Key = Ifi.Account,
+                IFI_Value = "{ \"homePage\":\"http://www.bitflipping.net/agentId/1\", \"name\":\"Josephina\" }"
             };
             return agent;
         }
 
         public static AgentEntity JosephinaCampbell() => new AgentEntity()
         {
-            Account = new Domain.Entities.Account
-            {
-                HomePage = "http://www.example.com/agentId/2",
-                Name = "Josephina Campbell"
-            }
+            IFI_Key = Ifi.Mbox,
+            IFI_Value = "mailto:james@bitflipping.net"
         };
 
     }

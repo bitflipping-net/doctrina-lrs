@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using Doctrina.Application.About.Queries;
 using Doctrina.Application.ActivityStates.Commands;
 using Doctrina.Application.Agents.Queries;
+using Doctrina.Domain.Entities.Documents;
 using Doctrina.Persistence.Infrastructure;
 using MediatR;
 using System.Linq;
@@ -28,10 +28,12 @@ namespace Doctrina.Application.ActivityStates
             var agent = await mediator.Send(GetAgentQuery.Create(request.Agent));
 
             string activityHash = request.ActivityId.ComputeHash();
-            var activities = _context.ActivityStates.Where(x => x.Activity.Hash == activityHash)
+            var activities = _context.Documents
+                .OfType<ActivityStateEntity>()
+                .Where(x => x.Activity.Hash == activityHash)
                 .Where(x => x.Agent.AgentId == agent.AgentId);
 
-            _context.ActivityStates.RemoveRange(activities);
+            _context.Documents.RemoveRange(activities);
 
             await _context.SaveChangesAsync(cancellationToken);
 

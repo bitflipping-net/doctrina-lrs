@@ -92,26 +92,34 @@ namespace Doctrina.Application.Statements.Commands
             }
 
             var objType = request.Statement.Object.ObjectType;
-            newStatement.Object = new StatementObjectEntity();
             if (objType == ObjectType.Activity)
             {
-                newStatement.Object.ObjectType = EntityObjectType.Activity;
-                newStatement.Object.Activity = (ActivityEntity)await _mediator.Send(UpsertActivityCommand.Create((Activity)request.Statement.Object), cancellationToken);
+                var activity = (ActivityEntity)await _mediator.Send(UpsertActivityCommand.Create((Activity)request.Statement.Object), cancellationToken);
+                newStatement.ObjectType = EntityObjectType.Activity;
+                newStatement.ObjectId = activity.ActivityId;
             }
             else if (objType == ObjectType.Agent || objType == ObjectType.Group)
             {
-                newStatement.Object.ObjectType = EntityObjectType.Agent;
-                newStatement.Object.Agent = (AgentEntity)await _mediator.Send(UpsertActorCommand.Create((Agent)request.Statement.Object), cancellationToken);
+                var agent = (AgentEntity)await _mediator.Send(UpsertActorCommand.Create((Agent)request.Statement.Object), cancellationToken); ;
+                newStatement.ObjectType = EntityObjectType.Agent;
+                newStatement.ObjectId = agent.AgentId;
             }
             else if (objType == ObjectType.SubStatement)
             {
-                newStatement.Object.ObjectType = EntityObjectType.SubStatement;
-                newStatement.Object.SubStatement = (SubStatementEntity)await _mediator.Send(CreateSubStatementCommand.Create((SubStatement)request.Statement.Object), cancellationToken);
+                var subStatement = (SubStatementEntity)await _mediator.Send(CreateSubStatementCommand.Create((SubStatement)request.Statement.Object), cancellationToken);
+                newStatement.ObjectType = EntityObjectType.SubStatement;
+                newStatement.ObjectId = subStatement.SubStatementId;
             }
             else if (objType == ObjectType.StatementRef)
             {
-                newStatement.Object.ObjectType = EntityObjectType.StatementRef;
-                newStatement.Object.StatementRef = _mapper.Map<StatementRefEntity>((StatementRef)request.Statement.Object);
+                var statementRef = (StatementRef)request.Statement.Object;
+                newStatement.ObjectType = EntityObjectType.StatementRef;
+                newStatement.ObjectId = statementRef.Id;
+            }
+
+            if (request.Statement.Context != null)
+            {
+                newStatement.Context = _mapper.Map<ContextEntity>(request.Statement.Context);
             }
 
             if (request.Statement.Result != null)

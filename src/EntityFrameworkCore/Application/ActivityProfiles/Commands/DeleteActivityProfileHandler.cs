@@ -1,6 +1,8 @@
 ﻿using Doctrina.Application.Activities.Queries;
+using Doctrina.Domain.Entities.Documents;
 using Doctrina.Persistence.Infrastructure;
 using MediatR;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,9 +23,11 @@ namespace Doctrina.Application.ActivityProfiles.Commands
         {
             var activity = await _mediator.Send(GetActivityQuery.Create(request.ActivityId), cancellationToken);
 
-            var profile = await _context.ActivityProfiles.GetProfileAsync(activity.ActivityId, request.ProfileId, request.Registration, cancellationToken);
+            var profile = await _context.Documents
+                .OfType<ActivityProfileEntity>()
+                .GetProfileAsync(activity.ActivityId, request.ProfileId, request.Registration, cancellationToken);
 
-            _context.ActivityProfiles.Remove(profile);
+            _context.Documents.Remove(profile);
             await _context.SaveChangesAsync(cancellationToken);
 
             return await Unit.Task;

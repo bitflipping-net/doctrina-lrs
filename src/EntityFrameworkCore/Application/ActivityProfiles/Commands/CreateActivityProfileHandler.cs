@@ -26,12 +26,12 @@ namespace Doctrina.Application.ActivityProfiles.Commands
 
             var profile = new ActivityProfileEntity(request.Content, request.ContentType)
             {
-                ProfileId = request.ProfileId,
+                Key = request.ProfileId,
                 ActivityId = activity.ActivityId,
                 RegistrationId = request.Registration
             };
 
-            _context.ActivityProfiles.Add(profile);
+            _context.Documents.Add(profile);
             await _context.SaveChangesAsync(cancellationToken);
 
             //return profile;

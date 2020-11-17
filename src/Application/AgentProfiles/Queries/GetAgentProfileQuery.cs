@@ -1,19 +1,19 @@
 ﻿using Doctrina.Domain.Entities.Documents;
-using Doctrina.ExperienceApi.Data;
 using MediatR;
+using System;
 
 namespace Doctrina.Application.AgentProfiles.Queries
 {
     public class GetAgentProfileQuery : IRequest<AgentProfileEntity>
     {
-        public Agent Agent { get; set; }
+        public Guid AgentId { get; set; }
         public string ProfileId { get; set; }
 
-        public static GetAgentProfileQuery Create(Agent agent, string profileId)
+        public static GetAgentProfileQuery Create(Guid agentId, string profileId)
         {
             return new GetAgentProfileQuery()
             {
-                Agent = agent,
+                AgentId = agentId,
                 ProfileId = profileId
             };
         }

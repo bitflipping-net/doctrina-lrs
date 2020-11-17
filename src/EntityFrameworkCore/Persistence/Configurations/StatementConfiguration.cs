@@ -1,6 +1,7 @@
 ﻿using Doctrina.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Doctrina.Persistence.Configurations
 {
@@ -28,7 +29,14 @@ namespace Doctrina.Persistence.Configurations
                 .HasForeignKey(st => st.VerbId)
                 .IsRequired();
 
-            builder.OwnsOne(p => p.Object);
+            builder.Property(x => x.ObjectType)
+                .HasConversion(new EnumToStringConverter<EntityObjectType>())
+                .IsRequired();
+
+            builder.Property(x => x.ObjectId)
+                .IsRequired();
+
+            builder.Ignore(x=> x.Object);
 
             builder.HasOne(e => e.Result)
                 .WithMany();

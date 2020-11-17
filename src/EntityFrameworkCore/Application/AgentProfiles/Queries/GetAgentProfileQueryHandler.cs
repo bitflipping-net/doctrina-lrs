@@ -26,18 +26,11 @@ namespace Doctrina.Application.AgentProfiles
 
         public async Task<AgentProfileEntity> Handle(GetAgentProfileQuery request, CancellationToken cancellationToken)
         {
-            var agent = await _mediator.Send(GetAgentQuery.Create(request.Agent));
-
-            if (agent == null)
-            {
-                return null;
-            }
-
-            var profile = await _context.AgentProfiles
-                .Include(x => x.Document)
+            var profile = await _context.Documents
+                .OfType<AgentProfileEntity>()
                 .AsNoTracking()
-                .Where(x => x.AgentId == agent.AgentId)
-                .SingleOrDefaultAsync(x => x.ProfileId == request.ProfileId, cancellationToken);
+                .Where(x => x.AgentId == request.AgentId)
+                .SingleOrDefaultAsync(x => x.Key == request.ProfileId, cancellationToken);
 
             return profile;
         }

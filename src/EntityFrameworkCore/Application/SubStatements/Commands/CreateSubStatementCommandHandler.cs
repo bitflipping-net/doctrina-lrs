@@ -48,19 +48,21 @@ namespace Doctrina.Application.SubStatements
                 }
             }
 
-            var objType = subStatement.Object.ObjectType;
+            var objType = subStatement.ObjectType;
             if (objType == EntityObjectType.Activity)
             {
-                subStatement.Object.Activity = (ActivityEntity)await _mediator.Send(UpsertActivityCommand.Create((Activity)request.SubStatement.Object));
+                var activity = (ActivityEntity)await _mediator.Send(UpsertActivityCommand.Create((Activity)request.SubStatement.Object));
+                subStatement.ObjectId = activity.ActivityId;
             }
             else if (objType == EntityObjectType.Agent || objType == EntityObjectType.Group)
             {
-                subStatement.Object.Agent = await _mediator.Send(UpsertActorCommand.Create((Agent)request.SubStatement.Object));
+                var agent = await _mediator.Send(UpsertActorCommand.Create((Agent)request.SubStatement.Object));
+                subStatement.ObjectId = agent.AgentId;
             }
             else if (objType == EntityObjectType.StatementRef)
             {
-                // It's already mapped from automapper
-                // TODO: Additional logic should be performed here
+                var statementRef = (StatementRef)request.SubStatement.Object;
+                subStatement.ObjectId = statementRef.Id;
             }
             _context.SubStatements.Add(subStatement);
 

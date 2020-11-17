@@ -24,19 +24,19 @@ namespace Doctrina.Persistence.Configurations
             //builder.Property(e => e.InteractionActivity);
 
             builder.Property(p => p.Names)
-                .HasConversion(new LanguageMapCollectionValueConverter())
+                .HasConversion(new JsonValueConverter<LanguageMapCollection>())
                 .HasColumnType("ntext")
                 .Metadata
                 .SetValueComparer(new ValueComparer<LanguageMapCollection>(false));
 
             builder.Property(p => p.Descriptions)
-                .HasConversion(new LanguageMapCollectionValueConverter())
+                .HasConversion(new JsonValueConverter<LanguageMapCollection>())
                 .HasColumnType("ntext")
                 .Metadata
                 .SetValueComparer(new ValueComparer<LanguageMapCollection>(false));
 
             builder.Property(p => p.Extensions)
-                .HasConversion(new ExtensionsCollectionValueConverter())
+                .HasConversion(new JsonValueConverter<ExtensionsCollection>())
                 .HasColumnType("ntext")
                 .Metadata
                 .SetValueComparer(new ValueComparer<ExtensionsCollection>(false));

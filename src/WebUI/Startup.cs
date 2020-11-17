@@ -137,15 +137,6 @@ namespace Doctrina.WebUI
                     pattern: "{controller}/{action=index}/{id?}");
                 endpoints.MapControllers();
             });
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapBlazorHub().RequireAuthorization(new AuthorizeAttribute
-                {
-                    AuthenticationSchemes = "Cookies"
-                });
-                endpoints.MapFallbackToPage("/_Host");
-            });
         }
     }
 }

@@ -28,18 +28,17 @@ namespace Doctrina.Application.AgentProfiles
 
         public async Task<ICollection<AgentProfileEntity>> Handle(GetAgentProfilesQuery request, CancellationToken cancellationToken)
         {
-            var agentEntity = _mapper.Map<AgentEntity>(request.Agent);
-            var query = _context.AgentProfiles
+            var query = _context.Documents
                 .AsNoTracking()
-                .Include(x => x.Document)
-                .Where(a => a.Agent.AgentId == agentEntity.AgentId);
+                .OfType<AgentProfileEntity>()
+                .Where(a => a.Agent.AgentId == request.AgentId);
 
             if (request.Since.HasValue)
             {
-                query = query.Where(x => x.Document.LastModified >= request.Since.Value);
+                query = query.Where(x => x.UpdatedAt >= request.Since.Value);
             }
 
-            query = query.OrderByDescending(x => x.Document.LastModified);
+            query = query.OrderByDescending(x => x.UpdatedAt);
 
             return await query.ToListAsync(cancellationToken);
         }

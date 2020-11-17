@@ -1,16 +1,16 @@
-﻿using Doctrina.ExperienceApi.Data;
-using Doctrina.ExperienceApi.Data.Documents;
+﻿using Doctrina.Domain.Entities.Documents;
+using Doctrina.ExperienceApi.Data;
 using MediatR;
 using System;
 using System.Collections.Generic;
 
 namespace Doctrina.Application.ActivityStates.Queries
 {
-    public class GetActivityStatesQuery : IRequest<ICollection<ActivityStateDocument>>
+    public class GetActivityStatesQuery : IRequest<ICollection<ActivityStateEntity>>
     {
         public Iri ActivityId { get; set; }
         public Guid AgentId { get; set; }
         public Guid? Registration { get; set; }
-        public DateTime? Since { get; set; }
+        public DateTimeOffset? Since { get; set; }
     }
 }

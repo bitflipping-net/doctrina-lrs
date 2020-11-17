@@ -1,6 +1,7 @@
 ﻿using Doctrina.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Doctrina.Persistence.Configurations
 {
@@ -8,6 +9,8 @@ namespace Doctrina.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<AgentEntity> builder)
         {
+            builder.ToTable("Agents");
+
             builder.Property(x => x.AgentId)
                 .ValueGeneratedOnAdd();
             builder.HasKey(x => x.AgentId);
@@ -16,23 +19,19 @@ namespace Doctrina.Persistence.Configurations
                 .HasValue<AgentEntity>(EntityObjectType.Agent)
                 .HasValue<GroupEntity>(EntityObjectType.Group);
 
+            builder.Property(x => x.ObjectType)
+                .HasConversion(new EnumToStringConverter<EntityObjectType>())
+                .IsRequired();
+
             builder.Property(e => e.Name)
                 .HasMaxLength(100);
 
-            builder.Property(e => e.Mbox)
-                .HasMaxLength(128)
-                .HasColumnName("Mbox");
+            builder.Property(e => e.IFI_Key)
+                .HasMaxLength("mbox_sha1sum".Length);
 
-            builder.Property(e => e.Mbox_SHA1SUM)
+            builder.Property(e => e.IFI_Value)
                 .HasMaxLength(40)
                 .HasColumnName("Mbox_SHA1SUM");
-
-            builder.Property(e => e.OpenId)
-               .HasColumnName("OpenId");
-
-            builder.HasOne(x => x.Account)
-                .WithMany()
-                .HasForeignKey("AccountId");
 
             //builder
             //    .HasIndex(x => new { x.ObjectType, x.Mbox })

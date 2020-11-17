@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Doctrina.Application.ActivityStates.Commands
 {
-    public class CreateStateDocumentHandler : IRequestHandler<CreateStateDocumentCommand, ActivityStateDocument>
+    public class CreateStateDocumentHandler : IRequestHandler<CreateStateDocumentCommand, ActivityStateEntity>
     {
         private readonly IDoctrinaDbContext _context;
         private readonly IMapper _mapper;
@@ -21,21 +21,20 @@ namespace Doctrina.Application.ActivityStates.Commands
             _mediator = mediator;
         }
 
-        public async Task<ActivityStateDocument> Handle(CreateStateDocumentCommand request, CancellationToken cancellationToken)
+        public async Task<ActivityStateEntity> Handle(CreateStateDocumentCommand request, CancellationToken cancellationToken)
         {
-
             var state = new ActivityStateEntity(request.Content, request.ContentType)
             {
-                StateId = request.StateId,
-                Activity = request.Activity,
-                Agent = request.Agent,
-                Registration = request.Registration
+                Key = request.StateId,
+                ActivityId = request.ActivityId,
+                AgentId = request.AgentId,
+                RegistrationId = request.Registration
             };
 
-            _context.ActivityStates.Add(state);
+            _context.Documents.Add(state);
             await _context.SaveChangesAsync(cancellationToken);
 
-            return _mapper.Map<ActivityStateDocument>(state);
+            return state;
         }
     }
 

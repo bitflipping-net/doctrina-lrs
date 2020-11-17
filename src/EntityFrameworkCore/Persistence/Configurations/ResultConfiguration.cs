@@ -13,14 +13,15 @@ namespace Doctrina.Persistence.Configurations
         {
             builder.ToTable("Results");
 
+            builder.HasKey(e => e.ResultId);
+
             builder.Property(e => e.ResultId)
                 .ValueGeneratedOnAdd();
-            builder.HasKey(e => e.ResultId);
 
             builder.OwnsOne(e => e.Score);
 
             builder.Property(e => e.Extensions)
-                .HasConversion(new ExtensionsCollectionValueConverter())
+                .HasConversion(new JsonValueConverter<ExtensionsCollection>())
                 .HasColumnType("ntext")
                 .Metadata
                 .SetValueComparer(new ValueComparer<ExtensionsCollection>(false));

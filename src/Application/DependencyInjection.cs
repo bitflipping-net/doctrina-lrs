@@ -2,6 +2,7 @@
 using Doctrina.Application.Common.Behaviours;
 using Doctrina.Application.Common.Caching;
 using Doctrina.Application.Common.Interfaces;
+using Doctrina.Application.Identity;
 using Doctrina.Application.Infrastructure;
 using MediatR;
 using Microsoft.Extensions.Configuration;
@@ -25,6 +26,8 @@ namespace Doctrina.Application
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehavior<,>));
 
             services.AddSingleton(typeof(IDoctrinaAppContext), typeof(DoctrinaAppContext));
+
+            services.AddScoped<IClientContext, ClientContext>();
 
             services.Scan(scan => scan.FromApplicationDependencies()
                 .AddClasses(clases => clases.AssignableTo(typeof(IDataProviderInjector)))

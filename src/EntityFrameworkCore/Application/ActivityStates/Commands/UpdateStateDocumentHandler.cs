@@ -31,14 +31,15 @@ namespace Doctrina.Application.ActivityStates.Commands
         public async Task<ActivityStateDocument> Handle(UpdateStateDocumentCommand request, CancellationToken cancellationToken)
         {
             string activityHash = request.ActivityId.ComputeHash();
-            var query = _context.ActivityStates
-                .Where(x => x.StateId == request.StateId)
+            var query = _context.Documents
+                .OfType<ActivityStateEntity>()
+                .Where(x => x.Key == request.StateId)
                 .Where(x => x.Activity.Hash == activityHash)
                 .Where(x => x.Agent.AgentId == request.AgentId);
 
             if (request.Registration.HasValue && request.Registration.Value != Guid.Empty)
             {
-                query.Where(x => x.Registration == request.Registration);
+                query.Where(x => x.RegistrationId == request.Registration);
             }
 
             ActivityStateEntity state = await query.SingleOrDefaultAsync(cancellationToken);
@@ -48,7 +49,7 @@ namespace Doctrina.Application.ActivityStates.Commands
                 throw new NotFoundException("State", request.StateId);
             }
 
-            var stateDocument = state.Document;
+            var stateDocument = state;
             if (stateDocument.ContentType != MediaTypes.Application.Json
             || request.ContentType != MediaTypes.Application.Json)
             {
@@ -62,8 +63,8 @@ namespace Doctrina.Application.ActivityStates.Commands
 
             byte[] mergedJsonBytes = Encoding.UTF8.GetBytes(jsonString.ToString());
 
-            state.Document.UpdateDocument(mergedJsonBytes, request.ContentType);
-            _context.ActivityStates.Update(state);
+            state.UpdateDocument(mergedJsonBytes, request.ContentType);
+            _context.Documents.Update(state);
             await _context.SaveChangesAsync(cancellationToken);
             return _mapper.Map<ActivityStateDocument>(state);
         }

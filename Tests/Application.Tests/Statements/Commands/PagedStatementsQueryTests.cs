@@ -1,6 +1,7 @@
 ﻿using Doctrina.Application.Statements.Queries;
 using Doctrina.Application.Tests.Infrastructure;
 using Doctrina.ExperienceApi.Data;
+using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
 using Moq;
 using Shouldly;
@@ -17,8 +18,10 @@ namespace Doctrina.Application.Tests.Statements.Commands
         {
             // Arrange
             var distributedCacheMock = new Mock<IDistributedCache>();
+            var mediatorMock = new Mock<IMediator>();
 
-            var handler = new PagedStatementsQueryHandler(_context, _mapper, distributedCacheMock.Object);
+            var handler = new PagedStatementsQueryHandler(_context, mediatorMock.Object, _mapper, distributedCacheMock.Object);
+
             var verb = new Iri("http://adlnet.gov/expapi/verbs/attended");
             var query = new PagedStatementsQuery()
             {
@@ -40,12 +43,13 @@ namespace Doctrina.Application.Tests.Statements.Commands
         {
             // Arrange
             var distributedCacheMock = new Mock<IDistributedCache>();
+            var mediatorMock = new Mock<IMediator>();
             var agent = new Agent()
             {
                 Mbox = new Mbox("mailto:1202f754-77e1-4e77-baa2-955b0c4ed7f6@adlnet.gov"),
                 Name = "xAPI account"
             };
-            var handler = new PagedStatementsQueryHandler(_context, _mapper, distributedCacheMock.Object);
+            var handler = new PagedStatementsQueryHandler(_context, mediatorMock.Object, _mapper, distributedCacheMock.Object);
             var query = new PagedStatementsQuery()
             {
                 Agent = agent

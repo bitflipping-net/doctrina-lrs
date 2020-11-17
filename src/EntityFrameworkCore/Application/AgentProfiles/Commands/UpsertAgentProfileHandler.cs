@@ -24,15 +24,15 @@ namespace Doctrina.Application.AgentProfiles
 
         public async Task<AgentProfileEntity> Handle(UpsertAgentProfileCommand request, CancellationToken cancellationToken)
         {
-            var profile = await _mediator.Send(GetAgentProfileQuery.Create(request.Agent, request.ProfileId), cancellationToken);
+            var profile = await _mediator.Send(GetAgentProfileQuery.Create(request.AgentId, request.ProfileId), cancellationToken);
             if (profile == null)
             {
                 return await _mediator.Send(
-                    CreateAgentProfileCommand.Create(request.Agent, request.ProfileId, request.Content, request.ContentType),
+                    CreateAgentProfileCommand.Create(request.AgentId, request.ProfileId, request.Content, request.ContentType),
                 cancellationToken);
             }
 
-            return await _mediator.Send(UpdateAgentProfileCommand.Create(request.Agent, request.ProfileId, request.Content, request.ContentType), cancellationToken);
+            return await _mediator.Send(UpdateAgentProfileCommand.Create(request.AgentId, request.ProfileId, request.Content, request.ContentType), cancellationToken);
         }
     }
 }

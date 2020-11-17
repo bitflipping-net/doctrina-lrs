@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Doctrina.Application.Activities.Queries;
+using Doctrina.Application.Agents.Queries;
 using Doctrina.Application.Statements.Models;
 using Doctrina.Domain.Entities;
 using Doctrina.Persistence.Infrastructure;
@@ -17,12 +19,14 @@ namespace Doctrina.Application.Statements.Queries
     {
         private readonly IDoctrinaDbContext _context;
         private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
         private readonly IDistributedCache _distributedCache;
 
-        public PagedStatementsQueryHandler(IDoctrinaDbContext context, IMapper mapper, IDistributedCache distributedCache)
+        public PagedStatementsQueryHandler(IDoctrinaDbContext context, IMediator meditor, IMapper mapper, IDistributedCache distributedCache)
         {
             _context = context;
             _mapper = mapper;
+            _mediator = meditor;
             _distributedCache = distributedCache;
         }
 
@@ -46,34 +50,28 @@ namespace Doctrina.Application.Statements.Queries
 
             if (request.Agent != null)
             {
-                var actor = _mapper.Map<AgentEntity>(request.Agent);
-                var currentAgent = await _context.Agents.AsNoTracking()
-                    .FirstOrDefaultAsync(x => x.ObjectType == actor.ObjectType
-                    && x.AgentId == actor.AgentId, cancellationToken);
+                var currentAgent = await _mediator.Send(GetAgentQuery.Create(request.Agent));
+
                 if (currentAgent != null)
                 {
                     Guid agentId = currentAgent.AgentId;
                     if (request.RelatedAgents.GetValueOrDefault())
                     {
                         query = (
-                            from statement in query
-                            where statement.Actor.AgentId == agentId
+                            from sta in query
+                            join rel in _context.ObjectRelations
+                                on sta.StatementId equals rel.ParentId
+                            where sta.Actor.AgentId == agentId
                             || (
-                                statement.Object.ObjectType == EntityObjectType.Agent &&
-                                statement.Object.Agent.AgentId == agentId
-                            ) || (
-                                statement.Object.ObjectType == EntityObjectType.SubStatement &&
-                                (
-                                    statement.Object.SubStatement.Actor.AgentId == agentId ||
-                                    statement.Object.SubStatement.Object.ObjectType == EntityObjectType.Agent &&
-                                    statement.Object.SubStatement.Object.Agent.AgentId == agentId
-                                )
+                                rel.ChildObjectType == EntityObjectType.Agent &&
+                                rel.ChildId == agentId
                             )
-                            select statement);
+                            select sta
+                        );
                     }
                     else
                     {
-                        query = query.Where(x => x.Actor.AgentId == actor.AgentId);
+                        query = query.Where(x => x.ActorId == currentAgent.AgentId);
                     }
                 }
                 else
@@ -84,37 +82,36 @@ namespace Doctrina.Application.Statements.Queries
 
             if (request.ActivityId != null)
             {
-                string activityHash = request.ActivityId.ComputeHash();
+                var activity = await _mediator.Send(GetActivityQuery.Create(request.ActivityId), cancellationToken);
+                if (activity == null)
+                    return new PagedStatementsResult();
 
                 if (request.RelatedActivities.GetValueOrDefault())
                 {
                     query = (
                         from statement in query
-                        where (
-                            statement.Object.ObjectType == EntityObjectType.SubStatement && (
-                                statement.Object.SubStatement.Object.ObjectType == EntityObjectType.Activity &&
-                                statement.Object.SubStatement.Object.Activity.Hash == activityHash
-                            ) ||
+                        join subStatement in _context.SubStatements 
+                            on new { ObjectId = statement.ObjectId, ObjectType = statement.ObjectType }
+                            equals new { ObjectId = subStatement.ObjectId, ObjectType = EntityObjectType.SubStatement }
+                        where
                             (
+                                statement.ObjectType == EntityObjectType.Activity &&
+                                statement.ObjectId == activity.ActivityId
+                            ) || (
+                                subStatement.ObjectType == EntityObjectType.Activity &&
+                                subStatement.ObjectId == activity.ActivityId
+                            ) || (
                                 statement.Context != null && statement.Context.ContextActivities != null &&
                                 (
-                                    statement.Context.ContextActivities.Category.Any(x => x.Hash == activityHash) ||
-                                    statement.Context.ContextActivities.Parent.Any(x => x.Hash == activityHash) ||
-                                    statement.Context.ContextActivities.Grouping.Any(x => x.Hash == activityHash) ||
-                                    statement.Context.ContextActivities.Other.Any(x => x.Hash == activityHash)
+                                    statement.Context.ContextActivities.Any(x => x.ActivityId == activity.ActivityId)
                                 )
-                            ) ||
-                            (
-                                statement.Object.ObjectType == EntityObjectType.Activity &&
-                                statement.Object.Activity.Hash == activityHash
                             )
-                        )
                         select statement
                     );
                 }
                 else
                 {
-                    query = query.Where(x => x.Object.ObjectType == EntityObjectType.Activity && x.Object.Activity.Hash == activityHash);
+                    query = query.Where(x => x.ObjectType == EntityObjectType.Activity && x.ObjectId == activity.ActivityId);
                 }
             }
 

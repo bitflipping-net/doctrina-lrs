@@ -50,9 +50,9 @@ namespace Application.Tests.ActivityStates.Commands
             // stateDocument1.ContentType.ShouldBe(honda.ContentType);
             // stateDocument1.Content.ShouldBe(honda.Content);
 
-            _context.ActivityStates.Add(new ActivityStateEntity(Encoding.UTF8.GetBytes(strBody1), contentType)
+            _context.Documents.Add(new ActivityStateEntity(Encoding.UTF8.GetBytes(strBody1), contentType)
             {
-                StateId = stateId,
+                Key = stateId,
                 Activity = activityEntity,
                 Agent = agentEntity
             });

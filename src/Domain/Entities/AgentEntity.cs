@@ -16,12 +16,8 @@ namespace Doctrina.Domain.Entities
 
         public string Name { get; set; }
 
-        public string Mbox { get; set; }
+        public Ifi IFI_Key { get; set; }
 
-        public string Mbox_SHA1SUM { get; set; }
-
-        public string OpenId { get; set; }
-
-        public Account Account { get; set; }
+        public string IFI_Value { get; set; }
     }
 }

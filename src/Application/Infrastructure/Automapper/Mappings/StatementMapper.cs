@@ -26,40 +26,13 @@ namespace Doctrina.Application.Mappings
                 .ForMember(x => x.Id, opt => opt.MapFrom(x => x.Id))
                 .ForMember(x => x.Display, opt => opt.MapFrom(x => x.Display));
 
-            configuration.CreateMap<Data.Account, Domain.Entities.Account>()
-                .ForMember(ent => ent.Name, opt => opt.MapFrom(x => x.Name))
-                .ForMember(ent => ent.HomePage, opt => opt.MapFrom(x => x.HomePage.ToString()))
-                .ReverseMap()
-                .ForMember(ent => ent.Name, opt => opt.MapFrom(x => x.Name))
-                .ForMember(ent => ent.HomePage, opt => opt.MapFrom(x => x.HomePage));
-
-            configuration.CreateMap<IStatementObject, StatementObjectEntity>()
-                .ConvertUsing<StatementObjectConverter>();
-
-            configuration.CreateMap<Activity, StatementObjectEntity>()
-                .ConvertUsing<StatementObjectConverter>();
-
-            configuration.CreateMap<SubStatement, StatementObjectEntity>()
-            .ConvertUsing<StatementObjectConverter>();
-
-            configuration.CreateMap<StatementRef, StatementObjectEntity>()
-            .ConvertUsing<StatementObjectConverter>();
-
-            configuration.CreateMap<Agent, StatementObjectEntity>()
-            .ConvertUsing<StatementObjectConverter>();
-
-            configuration.CreateMap<Group, StatementObjectEntity>()
-            .ConvertUsing<StatementObjectConverter>();
-
-            configuration.CreateMap<StatementObjectEntity, IStatementObject>()
-                .ConvertUsing<StatementObjectConverter>();
-
             configuration.CreateMap<Statement, StatementEntity>()
                 // Statement base
                 .ForMember(x => x.StatementId, opt => opt.MapFrom(x => x.Id.GetValueOrDefault()))
                 .ForMember(x => x.Actor, opt => opt.MapFrom(x => x.Actor))
                 .ForMember(x => x.Verb, opt => opt.MapFrom(x => x.Verb))
-                .ForMember(x => x.Object, opt => opt.MapFrom(x => x.Object))
+                .ForMember(x => x.ObjectId, opt => opt.Ignore())
+                .ForMember(x => x.ObjectType, opt => opt.Ignore())
                 .ForMember(x => x.Timestamp, opt => opt.MapFrom(x => x.Timestamp))
                 .ForMember(x => x.Attachments, opt => opt.MapFrom(x => x.Attachments))
                 // Statement only
@@ -81,7 +54,8 @@ namespace Doctrina.Application.Mappings
             configuration.CreateMap<SubStatement, SubStatementEntity>()
                 .ForMember(x => x.Actor, opt => opt.MapFrom(x => x.Actor))
                 .ForMember(x => x.Verb, opt => opt.MapFrom(x => x.Verb))
-                .ForMember(x => x.Object, opt => opt.MapFrom(x => x.Object))
+                .ForMember(x => x.ObjectId, opt => opt.Ignore())
+                .ForMember(x => x.ObjectType, opt => opt.Ignore())
                 .ForMember(x => x.Result, opt => opt.MapFrom(x => x.Result))
                 .ForMember(x => x.Context, opt => opt.MapFrom(x => x.Context))
                 .ForMember(x => x.Timestamp, opt => opt.MapFrom(x => x.Timestamp))
@@ -166,28 +140,8 @@ namespace Doctrina.Application.Mappings
                 .ForMember(x => x.Display, opt => opt.MapFrom(p => p.Display))
                 .ForMember(x => x.Description, opt => opt.MapFrom(x => x.Description));
 
-            configuration.CreateMap<ContextActivities, ContextActivitiesEntity>()
-                .ForMember(x => x.Category, opt => opt.MapFrom(c => c.Category))
-                .ForMember(x => x.Grouping, opt => opt.MapFrom(c => c.Grouping))
-                .ForMember(x => x.Other, opt => opt.MapFrom(c => c.Other))
-                .ForMember(x => x.Parent, opt => opt.MapFrom(c => c.Parent))
-                .ForMember(x => x.ContextActivitiesId, opt => opt.Ignore())
-                .ReverseMap()
-                .ForMember(x => x.Category, opt => opt.MapFrom(c => c.Category))
-                .ForMember(x => x.Grouping, opt => opt.MapFrom(c => c.Grouping))
-                .ForMember(x => x.Other, opt => opt.MapFrom(c => c.Other))
-                .ForMember(x => x.Parent, opt => opt.MapFrom(c => c.Parent));
-
-            configuration.CreateMap<ActivityCollection, HashSet<ContextActivityEntity>>();
-
-            configuration.CreateMap<Activity, ContextActivityEntity>()
-                .ForMember(x => x.Id, opt => opt.Ignore())
-                .ForMember(x => x.Hash, opt => opt.MapFrom(x => x.Id.ComputeHash()))
-                .ForMember(x => x.ActivityId, opt => opt.MapFrom(x => x.Id))
-                .ReverseMap()
-                .ForMember(x => x.Definition, opt => opt.Ignore())
-                .ForMember(x => x.Id, opt => opt.MapFrom(c => c.ActivityId))
-                .ForMember(x => x.ObjectType, opt => opt.Ignore());
+            configuration.CreateMap<ContextActivities, ICollection<ContextActivityEntity>>()
+                .ConvertUsing<ContextActivityConverter>();
 
             configuration.CreateMap<LanguageMap, LanguageMapCollection>()
                 .ConvertUsing<LanuageMapTypeConverter>();
