@@ -10,14 +10,13 @@ namespace Doctrina.Domain.Entities
             ObjectType = EntityObjectType.Agent;
         }
 
-        public virtual EntityObjectType ObjectType { get; set; }
+        public EntityObjectType ObjectType { get; set; }
 
         public Guid AgentId { get; set; }
-
-        public string Name { get; set; }
-
         public Ifi IFI_Key { get; set; }
-
         public string IFI_Value { get; set; }
+
+        public Guid? PersonId { get; set; }
+        public virtual PersonEntity Person { get; set; }
     }
 }

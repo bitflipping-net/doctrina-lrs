@@ -8,6 +8,7 @@
         private const int MAX_SCHEME_LENGTH = 32;
         public const int MAX_URL_LENGTH = MAX_PATH_LENGTH + MAX_SCHEME_LENGTH + 3;
 
+
         /// <summary>
         /// The length of a MD5 hash, if 4 bits per char
         /// </summary>
@@ -17,5 +18,15 @@
         /// The length of a SHA1 hash, if 4 bits per char (160/4)
         /// </summary>
         public static int SHA1_HASH_LENGTH = 40;
+
+        /// <summary>
+        /// The estimated max length of the ifi value.
+        /// </summary>
+        public static int IFI_VALUE_LENGTH = 200;
+
+        /// <summary>
+        /// Max length of any ifi key.
+        /// </summary>
+        public static int IFI_KEY_LENGTH = "mbox_sha1sum".Length;
     }
 }

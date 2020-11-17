@@ -12,8 +12,6 @@ namespace Doctrina.Domain.Entities
             ObjectType = EntityObjectType.Group;
         }
 
-        public override EntityObjectType ObjectType { get; set; }
-
         public virtual ICollection<GroupMemberEntity> Members { get; set; }
     }
 }

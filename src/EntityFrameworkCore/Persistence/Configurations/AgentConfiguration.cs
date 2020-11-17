@@ -1,4 +1,5 @@
 ﻿using Doctrina.Domain.Entities;
+using Doctrina.Persistence.ValueConverters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
@@ -23,36 +24,18 @@ namespace Doctrina.Persistence.Configurations
                 .HasConversion(new EnumToStringConverter<EntityObjectType>())
                 .IsRequired();
 
-            builder.Property(e => e.Name)
-                .HasMaxLength(100);
+            builder.HasOne(e => e.Person)
+                .WithMany()
+                .HasForeignKey(x=> x.PersonId);
 
             builder.Property(e => e.IFI_Key)
-                .HasMaxLength("mbox_sha1sum".Length);
+            .HasConversion(new IfiToStringConverter())
+                .HasMaxLength(Constants.IFI_KEY_LENGTH);
 
             builder.Property(e => e.IFI_Value)
-                .HasMaxLength(40)
-                .HasColumnName("Mbox_SHA1SUM");
+                .HasMaxLength(Constants.IFI_VALUE_LENGTH);
 
-            //builder
-            //    .HasIndex(x => new { x.ObjectType, x.Mbox })
-            //    .HasFilter("[Mbox] IS NOT NULL")
-            //    .IsUnique();
-
-            //builder
-            //    .HasIndex(x => new { x.ObjectType, x.Mbox_SHA1SUM })
-            //    .HasFilter("[Mbox_SHA1SUM] IS NOT NULL")Accou
-            //    .IsUnique();
-
-            //builder
-            //    .HasIndex(x => new { x.ObjectType, x.OpenId })
-            //    .HasFilter("[OpenId] IS NOT NULL")
-            //    .IsUnique();
-
-            //// TODO: We need to make sure accounts are Agents or Groups unique when identified with an account
-            //builder
-            //    .HasIndex("ObjectType", "AccountId")
-            //    .HasFilter("[AccountId] IS NOT NULL")
-            //    .IsUnique();
+            builder.HasIndex(x=> new { x.ObjectType, x.IFI_Key, x.IFI_Value});
         }
     }
 }

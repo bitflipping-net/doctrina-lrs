@@ -5,9 +5,9 @@ using System.Linq.Expressions;
 
 namespace Doctrina.Persistence.ValueConverters
 {
-    public class IFITypeValueConverter : ValueConverter<Ifi, string>
+    public class IfiToStringConverter : ValueConverter<Ifi, string>
     {
-        public IFITypeValueConverter(ConverterMappingHints mappingHints = null)
+        public IfiToStringConverter(ConverterMappingHints mappingHints = null)
             : base(covertToProviderExpression, convertFromProviderExpression, mappingHints)
         {
         }

@@ -35,6 +35,15 @@ namespace Doctrina.Application.Agents.Commands
                     ? _mapper.Map<AgentEntity>(request.Actor)
                     : _mapper.Map<GroupEntity>(request.Actor));
                 actor.AgentId = Guid.NewGuid();
+
+                if (!string.IsNullOrEmpty(request.Actor.Name))
+                {
+                    actor.Person = new PersonEntity()
+                    {
+                        Name = request.Actor.Name
+                    };
+                }
+
                 _context.Agents.Add(actor);
                 isNew = true;
             }

@@ -28,6 +28,7 @@ namespace Doctrina.Persistence.Configurations
 
             builder.Property(x => x.API)
                 .IsRequired();
+
             builder.Property(x => x.Authority)
                 .IsRequired();
 

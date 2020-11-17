@@ -1,4 +1,5 @@
 ﻿using Doctrina.Application.Common.Caching;
+using Doctrina.Application.Identity;
 using Doctrina.ExperienceApi.Resources;
 using Doctrina.ExperienceApi.Server.Resources;
 using Doctrina.Infrastructure.Interfaces;
@@ -37,6 +38,8 @@ namespace Doctrina.Application
             services.AddTransient<IStateResource, ActivityStateResource>();
             services.AddTransient<IAgentResource, AgentResource>();
             services.AddTransient<IStatementResource, StatementResource>();
+
+            services.AddScoped<IClientContext, ClientContext>();
 
             // IoC on application injector
             services.Scan(scan => scan.FromAssembliesOf(typeof(DataProvider))
