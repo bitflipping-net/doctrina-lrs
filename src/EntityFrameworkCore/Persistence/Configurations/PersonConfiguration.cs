@@ -17,6 +17,10 @@ namespace Doctrina.Persistence.Configurations
 
             builder.Property(p => p.Name)
                 .IsRequired();
+
+            builder.HasMany(p => p.Agents)
+                .WithOne(x=> x.Person)
+                .HasForeignKey(x => x.PersonId);
         }
     }
 }

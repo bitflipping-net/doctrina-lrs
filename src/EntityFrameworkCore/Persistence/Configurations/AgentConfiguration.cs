@@ -22,11 +22,12 @@ namespace Doctrina.Persistence.Configurations
 
             builder.Property(x => x.ObjectType)
                 .HasConversion(new EnumToStringConverter<EntityObjectType>())
-                .IsRequired();
+                .IsRequired()
+                .HasMaxLength(Constants.OBJECT_TYPE_LENGTH);
 
             builder.HasOne(e => e.Person)
                 .WithMany()
-                .HasForeignKey(x=> x.PersonId);
+                .HasForeignKey(x => x.PersonId);
 
             builder.Property(e => e.IFI_Key)
             .HasConversion(new IfiToStringConverter())
@@ -35,7 +36,9 @@ namespace Doctrina.Persistence.Configurations
             builder.Property(e => e.IFI_Value)
                 .HasMaxLength(Constants.IFI_VALUE_LENGTH);
 
-            builder.HasIndex(x=> new { x.ObjectType, x.IFI_Key, x.IFI_Value});
+            builder.HasIndex(x => new { x.ObjectType, x.IFI_Key, x.IFI_Value })
+            .IsUnique()
+            .HasFilter("[IFI_Value] IS NOT NULL AND [IFI_Key] IS NOT NULL");
         }
     }
 }

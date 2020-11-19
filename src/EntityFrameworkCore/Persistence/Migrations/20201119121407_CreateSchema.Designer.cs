@@ -8,10 +8,10 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Doctrina.Migrations
+namespace Doctrina.Persistence.Migrations
 {
     [DbContext(typeof(DoctrinaDbContext))]
-    [Migration("20201117214908_CreateSchema")]
+    [Migration("20201119121407_CreateSchema")]
     partial class CreateSchema
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -101,21 +101,19 @@ namespace Doctrina.Migrations
 
                     b.Property<string>("ObjectType")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(12)")
+                        .HasMaxLength(12);
 
-                    b.Property<Guid?>("PersonEntityPersonId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("PersonId")
+                    b.Property<Guid?>("PersonId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("AgentId");
 
-                    b.HasIndex("PersonEntityPersonId");
-
                     b.HasIndex("PersonId");
 
-                    b.HasIndex("ObjectType", "IFI_Key", "IFI_Value");
+                    b.HasIndex("ObjectType", "IFI_Key", "IFI_Value")
+                        .IsUnique()
+                        .HasFilter("[IFI_Value] IS NOT NULL AND [IFI_Key] IS NOT NULL");
 
                     b.ToTable("Agents");
 
@@ -181,14 +179,15 @@ namespace Doctrina.Migrations
 
                     b.Property<string>("API")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(200)")
+                        .HasMaxLength(200);
 
                     b.Property<string>("Authority")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(200)")
+                        .HasMaxLength(200);
 
                     b.Property<DateTimeOffset>("CreatedAt")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetimeoffset");
 
                     b.Property<bool>("Enabled")
@@ -196,13 +195,13 @@ namespace Doctrina.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(200)")
+                        .HasMaxLength(200);
 
                     b.Property<string>("Scopes")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTimeOffset>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetimeoffset");
 
                     b.HasKey("ClientId");
@@ -290,7 +289,6 @@ namespace Doctrina.Migrations
                         .HasMaxLength(255);
 
                     b.Property<DateTimeOffset>("CreatedAt")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("DocumentType")
@@ -305,7 +303,7 @@ namespace Doctrina.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTimeOffset?>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
+                        .IsRequired()
                         .HasColumnType("datetimeoffset");
 
                     b.HasKey("DocumentId");
@@ -317,21 +315,20 @@ namespace Doctrina.Migrations
 
             modelBuilder.Entity("Doctrina.Domain.Entities.GroupMemberEntity", b =>
                 {
-                    b.Property<Guid>("GroupMemberId")
-                        .ValueGeneratedOnAdd()
+                    b.Property<Guid>("GroupId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("AgentId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("GroupId")
+                    b.Property<Guid?>("GroupEntityAgentId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("GroupMemberId");
+                    b.HasKey("GroupId", "AgentId");
 
                     b.HasIndex("AgentId");
 
-                    b.HasIndex("GroupId");
+                    b.HasIndex("GroupEntityAgentId");
 
                     b.ToTable("GroupMembers");
                 });
@@ -430,12 +427,10 @@ namespace Doctrina.Migrations
 
                     b.Property<DateTimeOffset?>("Stored")
                         .IsRequired()
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetimeoffset");
 
                     b.Property<DateTimeOffset?>("Timestamp")
                         .IsRequired()
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetimeoffset");
 
                     b.Property<Guid>("VerbId")
@@ -471,7 +466,7 @@ namespace Doctrina.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ActorAgentId")
+                    b.Property<Guid>("ActorId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("ContextId")
@@ -496,7 +491,7 @@ namespace Doctrina.Migrations
 
                     b.HasKey("SubStatementId");
 
-                    b.HasIndex("ActorAgentId");
+                    b.HasIndex("ActorId");
 
                     b.HasIndex("ContextId");
 
@@ -697,15 +692,9 @@ namespace Doctrina.Migrations
 
             modelBuilder.Entity("Doctrina.Domain.Entities.AgentEntity", b =>
                 {
-                    b.HasOne("Doctrina.Domain.Entities.PersonEntity", null)
-                        .WithMany("Agents")
-                        .HasForeignKey("PersonEntityPersonId");
-
                     b.HasOne("Doctrina.Domain.Entities.PersonEntity", "Person")
-                        .WithMany()
-                        .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("Agents")
+                        .HasForeignKey("PersonId");
                 });
 
             modelBuilder.Entity("Doctrina.Domain.Entities.AttachmentEntity", b =>
@@ -753,16 +742,14 @@ namespace Doctrina.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("Doctrina.Domain.Entities.GroupEntity", null)
+                        .WithMany("Members")
+                        .HasForeignKey("GroupEntityAgentId");
+
                     b.HasOne("Doctrina.Domain.Entities.GroupEntity", "Group")
                         .WithMany()
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Doctrina.Domain.Entities.GroupEntity", null)
-                        .WithMany("Members")
-                        .HasForeignKey("GroupMemberId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
@@ -831,7 +818,7 @@ namespace Doctrina.Migrations
                 {
                     b.HasOne("Doctrina.Domain.Entities.AgentEntity", "Actor")
                         .WithMany()
-                        .HasForeignKey("ActorAgentId")
+                        .HasForeignKey("ActorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

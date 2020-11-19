@@ -20,11 +20,13 @@ namespace Doctrina.Persistence.Configurations
             // Actor
             builder.HasOne(e => e.Actor)
                 .WithMany()
+                .HasForeignKey(x=> x.ActorId)
                 .IsRequired();
 
             // Verb
             builder.HasOne(e => e.Verb)
                 .WithMany()
+                .HasForeignKey(x=> x.VerbId)
                 .IsRequired();
 
             builder.Property(x => x.ObjectType)
@@ -37,10 +39,12 @@ namespace Doctrina.Persistence.Configurations
             builder.Ignore(x => x.Object);
 
             builder.HasOne(e => e.Result)
-                .WithMany();
+                .WithMany()
+                .HasForeignKey(x=> x.ResultId);
 
             builder.HasOne(e => e.Context)
-                .WithMany();
+                .WithMany()
+                .HasForeignKey(e=> e.ContextId);
 
             builder.Property(e => e.Timestamp)
                 .IsRequired();

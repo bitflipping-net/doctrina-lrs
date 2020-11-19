@@ -58,7 +58,23 @@ namespace Doctrina.ExperienceApi.Resources
             HttpRequest request = httpContextAccessor.HttpContext.Request;
             IQueryCollection requestQuery = request.Query;
 
-            var cmd = mapper.Map<PagedStatementsQuery>(parameters);
+            var cmd = new PagedStatementsQuery()
+            {
+                ActivityId = parameters.ActivityId,
+                Agent = parameters.Agent,
+                Ascending = parameters.Ascending,
+                Attachments = parameters.Attachments,
+                Format = parameters.Format,
+                Registration = parameters.Registration,
+                RelatedActivities = parameters.RelatedActivities,
+                RelatedAgents = parameters.RelatedAgents,
+                Limit = parameters.Limit,
+                Since = parameters.Since,
+                Until = parameters.Until,
+                StatementId = parameters.StatementId,
+                VerbId = parameters.VerbId,
+                VoidedStatementId = parameters.VoidedStatementId
+            };
 
             if (requestQuery.TryGetValue("cursor", out StringValues value))
             {
@@ -76,7 +92,7 @@ namespace Doctrina.ExperienceApi.Resources
             {
                 string cursor = pagedResult.Cursor;
                 string relativePath = $"{request.Path}?cursor={cursor}";
-                result.More = new Uri(relativePath);
+                result.More = new Uri(relativePath, UriKind.Relative);
             }
 
             return result;

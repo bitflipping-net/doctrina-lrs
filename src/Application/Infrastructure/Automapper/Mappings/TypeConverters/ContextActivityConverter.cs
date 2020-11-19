@@ -13,40 +13,58 @@ namespace Doctrina.Application.Infrastructure.Automapper.Mappings.TypeConverters
         public ICollection<ContextActivityEntity> Convert(ContextActivities source, ICollection<ContextActivityEntity> destination, ResolutionContext resolutionContext)
         {
             var result = new HashSet<ContextActivityEntity>();
-            foreach (var item in source.Category)
+
+            if (source == null)
             {
-                result.Add(new ContextActivityEntity()
-                {
-                    ContextType = ContextType.Category,
-                    Activity = resolutionContext.Mapper.Map<ActivityEntity>(item)
-                });
+                return null;
             }
 
-            foreach (var item in source.Parent)
+            if (source.Category != null)
             {
-                result.Add(new ContextActivityEntity()
+                foreach (var item in source.Category)
                 {
-                    ContextType = ContextType.Parent,
-                    Activity = resolutionContext.Mapper.Map<ActivityEntity>(item)
-                });
+                    result.Add(new ContextActivityEntity()
+                    {
+                        ContextType = ContextType.Category,
+                        Activity = resolutionContext.Mapper.Map<ActivityEntity>(item)
+                    });
+                }
             }
 
-            foreach (var item in source.Other)
+            if (source.Parent != null)
             {
-                result.Add(new ContextActivityEntity()
+                foreach (var item in source.Parent)
                 {
-                    ContextType = ContextType.Other,
-                    Activity = resolutionContext.Mapper.Map<ActivityEntity>(item)
-                });
+                    result.Add(new ContextActivityEntity()
+                    {
+                        ContextType = ContextType.Parent,
+                        Activity = resolutionContext.Mapper.Map<ActivityEntity>(item)
+                    });
+                }
             }
 
-            foreach (var item in source.Grouping)
+            if (source.Other != null)
             {
-                result.Add(new ContextActivityEntity()
+                foreach (var item in source.Other)
                 {
-                    ContextType = ContextType.Grouping,
-                    Activity = resolutionContext.Mapper.Map<ActivityEntity>(item)
-                });
+                    result.Add(new ContextActivityEntity()
+                    {
+                        ContextType = ContextType.Other,
+                        Activity = resolutionContext.Mapper.Map<ActivityEntity>(item)
+                    });
+                }
+            }
+
+            if (source.Grouping != null)
+            {
+                foreach (var item in source.Grouping)
+                {
+                    result.Add(new ContextActivityEntity()
+                    {
+                        ContextType = ContextType.Grouping,
+                        Activity = resolutionContext.Mapper.Map<ActivityEntity>(item)
+                    });
+                }
             }
 
             return result;

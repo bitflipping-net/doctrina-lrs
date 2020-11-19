@@ -17,15 +17,6 @@ namespace Doctrina.Application.Mappings
             configuration.CreateMap<string, Iri>()
                .ConvertUsing<Infrastructure.Automapper.Mappings.TypeConverters.IriTypeConverter>();
 
-            configuration.CreateMap<Verb, VerbEntity>()
-                .ForMember(x => x.VerbId, opt => opt.Ignore())
-                .ForMember(x => x.Id, opt => opt.MapFrom(x => x.Id.ToString()))
-                .ForMember(x => x.Hash, opt => opt.MapFrom(x => x.Id.ComputeHash()))
-                .ForMember(x => x.Display, opt => opt.MapFrom(x => x.Display))
-                .ReverseMap()
-                .ForMember(x => x.Id, opt => opt.MapFrom(x => x.Id))
-                .ForMember(x => x.Display, opt => opt.MapFrom(x => x.Display));
-
             configuration.CreateMap<Statement, StatementEntity>()
                 // Statement base
                 .ForMember(x => x.StatementId, opt => opt.MapFrom(x => x.Id.GetValueOrDefault()))

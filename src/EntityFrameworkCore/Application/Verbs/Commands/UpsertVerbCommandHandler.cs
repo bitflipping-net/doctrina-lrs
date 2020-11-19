@@ -27,15 +27,16 @@ namespace Doctrina.Application.Verbs.Commands
             string hash = request.Verb.Id.ComputeHash();
             VerbEntity verb = await _context.Verbs.SingleOrDefaultAsync(x => x.Hash == hash, cancellationToken);
 
+            bool isNew = true;
             if (verb == null)
             {
                 verb = _mapper.Map<VerbEntity>(request.Verb);
                 verb.VerbId = Guid.NewGuid();
                 _context.Verbs.Add(verb);
-                return verb;
+                isNew = true;
             }
 
-            if (request.Verb.Display != null)
+            if (!isNew && request.Verb.Display != null)
             {
                 foreach (var dis in request.Verb.Display)
                 {

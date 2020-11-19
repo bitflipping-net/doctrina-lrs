@@ -39,21 +39,21 @@ namespace Doctrina.Persistence.Configurations
             builder.Ignore(x=> x.Object);
 
             builder.HasOne(e => e.Result)
-                .WithMany();
+                .WithMany()
+                .HasForeignKey(x=> x.ResultId);
 
             builder.HasOne(e => e.Context)
-               .WithMany();
+               .WithMany()
+               .HasForeignKey(x=> x.ContextId);
 
             builder.Property(e => e.Timestamp)
-                .IsRequired()
-                .ValueGeneratedOnAdd();
+                .IsRequired();
 
             builder.HasMany(x => x.Attachments)
                 .WithOne();
 
             builder.Property(e => e.Stored)
-               .IsRequired()
-               .ValueGeneratedOnAdd();
+               .IsRequired();
 
             builder.Property(e => e.Version)
                 .HasMaxLength(7);

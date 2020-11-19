@@ -30,10 +30,10 @@ namespace Doctrina.Persistence.Configurations.Documents
                 .HasMaxLength(Constants.HASH_LENGTH);
 
             builder.Property(e => e.UpdatedAt)
-                .ValueGeneratedOnAddOrUpdate();
+                .IsRequired();
 
             builder.Property(e => e.CreatedAt)
-                .ValueGeneratedOnAdd();
+                .IsRequired();
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Doctrina.Persistence.Configurations
 
             builder.HasMany(e => e.Members)
                 .WithOne()
-                .HasForeignKey(x => x.GroupMemberId);
+                .HasForeignKey(x => x.GroupId);
         }
     }
 }

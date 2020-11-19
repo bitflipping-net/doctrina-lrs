@@ -27,7 +27,7 @@ namespace Doctrina.Application.Activities.Commands
 
             var current = await _context.Activities
                 .Include(ac => ac.Definition)
-                .FirstOrDefaultAsync(x => x.Hash == entity.Hash, cancellationToken);
+                .SingleOrDefaultAsync(x => x.Hash == entity.Hash, cancellationToken);
 
             if (current != null)
             {
@@ -44,6 +44,7 @@ namespace Doctrina.Application.Activities.Commands
 
             entity.ActivityId = Guid.NewGuid();
             _context.Activities.Add(entity);
+            await _context.SaveChangesAsync(cancellationToken);
 
             return entity;
         }

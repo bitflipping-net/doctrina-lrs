@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Doctrina.Migrations
+namespace Doctrina.Persistence.Migrations
 {
     public partial class CreateSchema : Migration
     {
@@ -14,10 +14,10 @@ namespace Doctrina.Migrations
                     ClientId = table.Column<Guid>(nullable: false),
                     CreatedAt = table.Column<DateTimeOffset>(nullable: false),
                     UpdatedAt = table.Column<DateTimeOffset>(nullable: false),
-                    Name = table.Column<string>(nullable: false),
-                    API = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(maxLength: 200, nullable: false),
+                    API = table.Column<string>(maxLength: 200, nullable: false),
                     Enabled = table.Column<bool>(nullable: false),
-                    Authority = table.Column<string>(nullable: false),
+                    Authority = table.Column<string>(maxLength: 200, nullable: false),
                     Scopes = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -133,27 +133,20 @@ namespace Doctrina.Migrations
                 columns: table => new
                 {
                     AgentId = table.Column<Guid>(nullable: false),
-                    ObjectType = table.Column<string>(nullable: false),
-                    PersonId = table.Column<Guid>(nullable: false),
+                    ObjectType = table.Column<string>(maxLength: 12, nullable: false),
                     IFI_Key = table.Column<string>(maxLength: 12, nullable: true),
                     IFI_Value = table.Column<string>(maxLength: 200, nullable: true),
-                    PersonEntityPersonId = table.Column<Guid>(nullable: true)
+                    PersonId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Agents", x => x.AgentId);
                     table.ForeignKey(
-                        name: "FK_Agents_Persons_PersonEntityPersonId",
-                        column: x => x.PersonEntityPersonId,
-                        principalTable: "Persons",
-                        principalColumn: "PersonId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
                         name: "FK_Agents_Persons_PersonId",
                         column: x => x.PersonId,
                         principalTable: "Persons",
                         principalColumn: "PersonId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -210,29 +203,29 @@ namespace Doctrina.Migrations
                 name: "GroupMembers",
                 columns: table => new
                 {
-                    GroupMemberId = table.Column<Guid>(nullable: false),
                     GroupId = table.Column<Guid>(nullable: false),
-                    AgentId = table.Column<Guid>(nullable: false)
+                    AgentId = table.Column<Guid>(nullable: false),
+                    GroupEntityAgentId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GroupMembers", x => x.GroupMemberId);
+                    table.PrimaryKey("PK_GroupMembers", x => new { x.GroupId, x.AgentId });
                     table.ForeignKey(
                         name: "FK_GroupMembers_Agents_AgentId",
                         column: x => x.AgentId,
                         principalTable: "Agents",
                         principalColumn: "AgentId");
                     table.ForeignKey(
+                        name: "FK_GroupMembers_Agents_GroupEntityAgentId",
+                        column: x => x.GroupEntityAgentId,
+                        principalTable: "Agents",
+                        principalColumn: "AgentId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_GroupMembers_Agents_GroupId",
                         column: x => x.GroupId,
                         principalTable: "Agents",
                         principalColumn: "AgentId");
-                    table.ForeignKey(
-                        name: "FK_GroupMembers_Agents_GroupMemberId",
-                        column: x => x.GroupMemberId,
-                        principalTable: "Agents",
-                        principalColumn: "AgentId",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -248,7 +241,7 @@ namespace Doctrina.Migrations
                     ContentType = table.Column<string>(maxLength: 255, nullable: true),
                     Content = table.Column<byte[]>(nullable: true),
                     Checksum = table.Column<string>(maxLength: 32, nullable: false),
-                    UpdatedAt = table.Column<DateTimeOffset>(nullable: true),
+                    UpdatedAt = table.Column<DateTimeOffset>(nullable: false),
                     CreatedAt = table.Column<DateTimeOffset>(nullable: false),
                     DocumentType = table.Column<string>(nullable: false)
                 },
@@ -369,7 +362,7 @@ namespace Doctrina.Migrations
                 {
                     SubStatementId = table.Column<Guid>(nullable: false),
                     VerbId = table.Column<Guid>(nullable: false),
-                    ActorAgentId = table.Column<Guid>(nullable: false),
+                    ActorId = table.Column<Guid>(nullable: false),
                     ObjectType = table.Column<string>(nullable: false),
                     ObjectId = table.Column<Guid>(nullable: false),
                     ContextId = table.Column<Guid>(nullable: true),
@@ -380,8 +373,8 @@ namespace Doctrina.Migrations
                 {
                     table.PrimaryKey("PK_SubStatements", x => x.SubStatementId);
                     table.ForeignKey(
-                        name: "FK_SubStatements_Agents_ActorAgentId",
-                        column: x => x.ActorAgentId,
+                        name: "FK_SubStatements_Agents_ActorId",
+                        column: x => x.ActorId,
                         principalTable: "Agents",
                         principalColumn: "AgentId",
                         onDelete: ReferentialAction.Cascade);
@@ -461,11 +454,6 @@ namespace Doctrina.Migrations
                 column: "InteractionActivityInteractionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Agents_PersonEntityPersonId",
-                table: "Agents",
-                column: "PersonEntityPersonId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Agents_PersonId",
                 table: "Agents",
                 column: "PersonId");
@@ -473,7 +461,9 @@ namespace Doctrina.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Agents_ObjectType_IFI_Key_IFI_Value",
                 table: "Agents",
-                columns: new[] { "ObjectType", "IFI_Key", "IFI_Value" });
+                columns: new[] { "ObjectType", "IFI_Key", "IFI_Value" },
+                unique: true,
+                filter: "[IFI_Value] IS NOT NULL AND [IFI_Key] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Attachments_StatementEntityStatementId",
@@ -526,9 +516,9 @@ namespace Doctrina.Migrations
                 column: "AgentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GroupMembers_GroupId",
+                name: "IX_GroupMembers_GroupEntityAgentId",
                 table: "GroupMembers",
-                column: "GroupId");
+                column: "GroupEntityAgentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Statements_ActorId",
@@ -561,9 +551,9 @@ namespace Doctrina.Migrations
                 column: "VoidingStatementId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SubStatements_ActorAgentId",
+                name: "IX_SubStatements_ActorId",
                 table: "SubStatements",
-                column: "ActorAgentId");
+                column: "ActorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SubStatements_ContextId",

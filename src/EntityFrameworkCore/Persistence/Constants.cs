@@ -22,7 +22,7 @@
         /// <summary>
         /// The estimated max length of the ifi value.
         /// </summary>
-        public static int IFI_VALUE_LENGTH = 200;
+        public const int IFI_VALUE_LENGTH = 200;
 
         /// <summary>
         /// Max length of any ifi key.

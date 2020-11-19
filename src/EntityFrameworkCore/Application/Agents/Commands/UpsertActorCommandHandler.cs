@@ -5,6 +5,7 @@ using Doctrina.Domain.Entities;
 using Doctrina.ExperienceApi.Data;
 using Doctrina.Persistence.Infrastructure;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading;
@@ -27,53 +28,68 @@ namespace Doctrina.Application.Agents.Commands
 
         public async Task<AgentEntity> Handle(UpsertActorCommand request, CancellationToken cancellationToken)
         {
-            AgentEntity actor = await _mediator.Send(GetAgentQuery.Create(request.Actor), cancellationToken);
+            AgentEntity persona = await _mediator.Send(GetAgentQuery.Create(request.Actor), cancellationToken);
             bool isNew = false;
-            if (actor == null)
+            if (persona == null)
             {
-                actor = (request.Actor.ObjectType == ObjectType.Agent
+                persona = (request.Actor.ObjectType == ObjectType.Agent
                     ? _mapper.Map<AgentEntity>(request.Actor)
                     : _mapper.Map<GroupEntity>(request.Actor));
-                actor.AgentId = Guid.NewGuid();
+                persona.AgentId = Guid.NewGuid();
 
-                if (!string.IsNullOrEmpty(request.Actor.Name))
+                if (persona.ObjectType == EntityObjectType.Agent
+                    && !string.IsNullOrEmpty(request.Actor.Name))
                 {
-                    actor.Person = new PersonEntity()
+                    persona.Person = new PersonEntity()
                     {
+                        PersonId = Guid.NewGuid(),
                         Name = request.Actor.Name
                     };
                 }
 
-                _context.Agents.Add(actor);
+                _context.Agents.Add(persona);
+                await _context.SaveChangesAsync(cancellationToken);
                 isNew = true;
             }
 
             if (!isNew)
             {
-                if (request.Actor is Group group && actor is GroupEntity groupEntity)
+                if (request.Actor is Group group
+                && !group.IsAnonymous()
+                && persona is GroupEntity groupEntity)
                 {
-                    // Perform group update logic, add group member etc.
-                    foreach (var member in group.Member)
+                    var upserts = group.Member.Select(member => _mediator.Send(UpsertActorCommand.Create(member), cancellationToken));
+                    var members = await Task.WhenAll(upserts);
+
+                    // Remove any members that does not exist in the request group
+                    foreach (var member in groupEntity.Members)
                     {
-                        var savedGrpActor = await _mediator.Send(UpsertActorCommand.Create(member), cancellationToken);
-
-                        if (groupEntity.Members.Any(x => x.AgentId == savedGrpActor.AgentId))
-                            continue;
-
-                        groupEntity.Members.Add(new GroupMemberEntity()
+                        if (!members.Any(x => x.AgentId == member.AgentId))
                         {
-                            AgentId = savedGrpActor.AgentId,
-                            GroupId = groupEntity.AgentId,
-                        });
+                            groupEntity.Members.Remove(member);
+                        }
                     }
 
-                    await _mediator.Publish(AgentUpdated.Create(actor));
+                    // Add any member that does not exist in the stored group from the request group
+                    foreach (var member in members)
+                    {
+                        if (!groupEntity.Members.Any(x => x.AgentId == member.AgentId))
+                        {
+                            groupEntity.Members.Add(new GroupMemberEntity()
+                            {
+                                GroupId = groupEntity.AgentId,
+                                AgentId = member.AgentId
+                            });
+                        }
+                    }
+
+                    await _mediator.Publish(AgentUpdated.Create(persona));
                 }
             }
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return actor;
+            return persona;
         }
     }
 }

@@ -7,5 +7,12 @@
             "/// </summary>"
         ],
         "prefix": "///"
+    },
+    "inheritdoc": {
+        "description": "Inherit summary",
+        "body": [
+            "/// <inheritdoc />"
+        ],
+        "prefix": "///"
     }
 }

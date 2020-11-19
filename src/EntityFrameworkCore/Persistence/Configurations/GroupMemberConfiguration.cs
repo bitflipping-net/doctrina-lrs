@@ -10,10 +10,7 @@ namespace Doctrina.Persistence.Configurations
         {
             builder.ToTable("GroupMembers");
 
-            builder.Property(p => p.GroupMemberId)
-                .IsRequired()
-                .ValueGeneratedOnAdd();
-            builder.HasKey(p => p.GroupMemberId);
+            builder.HasKey(g => new { g.GroupId, g.AgentId });
 
             builder.HasOne(g => g.Group)
                 .WithMany()

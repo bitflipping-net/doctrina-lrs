@@ -10,7 +10,24 @@ namespace Doctrina.Application.Identity
 {
     public class ClientContext : IClientContext
     {
-        private Client Client { get; set; }
+        private Client _client;
+        public Client Client
+        {
+            get
+            {
+                if (_client == null)
+                {
+                    var request = _httpContextAccessor.HttpContext.Request;
+                    if (request.Headers.TryGetValue("Authorization", out StringValues authHeader))
+                    {
+                        string api = authHeader.ToString().Substring("Basic ".Length);
+                        _client = _dbContext.Clients.SingleOrDefault(x => x.API == api);
+                    }
+                }
+
+                return _client;
+            }
+        }
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IDoctrinaDbContext _dbContext;
 
@@ -22,19 +39,6 @@ namespace Doctrina.Application.Identity
 
         public Agent GetClientAuthority()
         {
-            var request = _httpContextAccessor.HttpContext.Request;
-            string scheme = request.Scheme;
-            string host = request.Host.ToString();
-
-            if (Client == null)
-            {
-                if(request.Headers.TryGetValue("Authorization", out StringValues authHeader))
-                {
-                    string api = authHeader.ToString().Substring("Basic ".Length);
-                    Client = _dbContext.Clients.SingleOrDefault(x=> x.API == api);
-                }
-            }
-
             return new Agent(Client.Authority);
         }
 

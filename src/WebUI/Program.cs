@@ -39,6 +39,8 @@ namespace Doctrina.WebUI
                     var identityContext = services.GetRequiredService<DoctrinaAuthorizationDbContext>();
                     identityContext.Database.Migrate();
 
+                    doctrinaContext.Seed();
+
                     await host.RunAsync();
                 }
                 catch (Exception ex)

@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Doctrina.Application.Extensions;
+using Doctrina.Domain.Entities;
 using Doctrina.ExperienceApi.Data;
 using Doctrina.Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -19,10 +21,13 @@ namespace Doctrina.Persistence.Infrastructure
         public void Migrate()
         {
             dbContext.Database.Migrate();
+        }
 
+        public void Seed()
+        {
             if (!dbContext.Clients.Any())
             {
-                dbContext.Clients.Add(new Domain.Entities.Client()
+                var client = new Domain.Entities.Client()
                 {
                     API = "admin@example.com:zKR4gkYNHP5tvH".ToBasicAuth(),
                     Authority = new Agent()
@@ -34,9 +39,13 @@ namespace Doctrina.Persistence.Infrastructure
                         }
                     }.ToJson(),
                     Name = "Sample Client",
-                    Scopes = new string[] { "all" },
-                    Enabled = true
-                });
+                    Scopes = new List<string> { "all" },
+                    Enabled = true,
+                    CreatedAt = DateTimeOffset.UtcNow,
+                    UpdatedAt = DateTimeOffset.UtcNow
+                };
+                dbContext.Clients.Add(client);
+
                 dbContext.SaveChanges();
             }
         }

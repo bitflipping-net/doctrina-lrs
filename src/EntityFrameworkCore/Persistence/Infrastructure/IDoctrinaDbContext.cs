@@ -27,5 +27,7 @@ namespace Doctrina.Persistence.Infrastructure
         ChangeTracker ChangeTracker { get; }
 
         EntityEntry<TEntity> Entry<TEntity>([NotNullAttribute] TEntity entity) where TEntity : class;
+
+        DbSet<TEntity> Set<TEntity>() where TEntity : class;
     }
 }

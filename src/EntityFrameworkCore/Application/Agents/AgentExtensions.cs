@@ -12,15 +12,6 @@ namespace Doctrina.Application.Agents
 {
     public static class AgentExtensions
     {
-        public static Task<AgentEntity> SingleOrDefaultAsync(this IQueryable<AgentEntity> query, AgentEntity agent, CancellationToken cancellationToken)
-        {
-            return query.SingleOrDefaultAsync(x =>
-                x.ObjectType == agent.ObjectType &&
-                x.IFI_Key == agent.IFI_Key &&
-                x.IFI_Value == agent.IFI_Value
-            , cancellationToken);
-        }
-
         public static string GetAgentCacheKeyIdentifier(this Agent agent)
         {
             Func<Agent, string> GetIFI = (Agent Agent) =>
@@ -46,7 +37,12 @@ namespace Doctrina.Application.Agents
                 return $"{Agent.ToJson().ComputeHash()}";
             };
 
-            return $"{agent.ObjectType}_{GetIFI(agent)}";
+            if (agent.IsAnonymous())
+            {
+                return null;
+            }
+
+            return $"{agent.ObjectType}_{agent.GetIdentifierKey()}_{agent.GetIdentifierValue()}";
         }
     }
 }

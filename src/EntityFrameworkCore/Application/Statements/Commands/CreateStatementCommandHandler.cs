@@ -8,6 +8,7 @@ using Doctrina.Application.Statements.Notifications;
 using Doctrina.Application.SubStatements.Commands;
 using Doctrina.Application.Verbs.Commands;
 using Doctrina.Domain.Entities;
+using Doctrina.Domain.Entities.Interfaces;
 using Doctrina.ExperienceApi.Data;
 using Doctrina.Persistence.Infrastructure;
 using MediatR;
@@ -18,7 +19,8 @@ using System.Threading.Tasks;
 
 namespace Doctrina.Application.Statements.Commands
 {
-    public class CreateStatementCommandHandler : IRequestHandler<CreateStatementCommand, Guid>
+    public class CreateStatementCommandHandler : BaseStatementCommandHandler,
+        IRequestHandler<CreateStatementCommand, Guid>
     {
         private readonly IDoctrinaDbContext _context;
         private readonly IMediator _mediator;
@@ -26,6 +28,7 @@ namespace Doctrina.Application.Statements.Commands
         private readonly IClientContext _clientContext;
 
         public CreateStatementCommandHandler(IDoctrinaDbContext context, IMediator mediator, IMapper mapper, IClientContext clientContext)
+        : base(mediator, mapper)
         {
             _context = context;
             _mediator = mediator;
@@ -73,59 +76,9 @@ namespace Doctrina.Application.Statements.Commands
             // Start mapping statement
             StatementEntity newStatement = new StatementEntity();
             newStatement.StatementId = request.Statement.Id.GetValueOrDefault();
-            newStatement.Verb = (VerbEntity)await _mediator.Send(UpsertVerbCommand.Create(request.Statement.Verb), cancellationToken);
-            newStatement.Actor = (AgentEntity)await _mediator.Send(UpsertActorCommand.Create(request.Statement.Actor), cancellationToken);
             newStatement.ClientId = _clientContext.GetClientId();
 
-            if (request.Statement.Context != null)
-            {
-                newStatement.Context = _mapper.Map<ContextEntity>(request.Statement.Context);
-                ContextEntity context = newStatement.Context;
-                if (context.Instructor != null)
-                {
-                    context.Instructor = (AgentEntity)await _mediator.Send(UpsertActorCommand.Create(request.Statement.Context.Instructor), cancellationToken);
-                }
-                if (context.Team != null)
-                {
-                    context.Team = (AgentEntity)await _mediator.Send(UpsertActorCommand.Create(request.Statement.Context.Team), cancellationToken);
-                }
-            }
-
-            var objType = request.Statement.Object.ObjectType;
-            if (objType == ObjectType.Activity)
-            {
-                var activity = (ActivityEntity)await _mediator.Send(UpsertActivityCommand.Create((Activity)request.Statement.Object), cancellationToken);
-                newStatement.ObjectType = EntityObjectType.Activity;
-                newStatement.ObjectId = activity.ActivityId;
-            }
-            else if (objType == ObjectType.Agent || objType == ObjectType.Group)
-            {
-                var agent = (AgentEntity)await _mediator.Send(UpsertActorCommand.Create((Agent)request.Statement.Object), cancellationToken); ;
-                newStatement.ObjectType = EntityObjectType.Agent;
-                newStatement.ObjectId = agent.AgentId;
-            }
-            else if (objType == ObjectType.SubStatement)
-            {
-                var subStatement = (SubStatementEntity)await _mediator.Send(CreateSubStatementCommand.Create((SubStatement)request.Statement.Object), cancellationToken);
-                newStatement.ObjectType = EntityObjectType.SubStatement;
-                newStatement.ObjectId = subStatement.SubStatementId;
-            }
-            else if (objType == ObjectType.StatementRef)
-            {
-                var statementRef = (StatementRef)request.Statement.Object;
-                newStatement.ObjectType = EntityObjectType.StatementRef;
-                newStatement.ObjectId = statementRef.Id;
-            }
-
-            if (request.Statement.Context != null)
-            {
-                newStatement.Context = _mapper.Map<ContextEntity>(request.Statement.Context);
-            }
-
-            if (request.Statement.Result != null)
-            {
-                newStatement.Result = _mapper.Map<ResultEntity>(request.Statement.Result);
-            }
+            await HandleStatementBase(request.Statement, newStatement, cancellationToken);
 
             newStatement.Stored = request.Statement.Stored;
             newStatement.Timestamp = request.Statement.Timestamp;

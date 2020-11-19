@@ -5,44 +5,34 @@ namespace Doctrina.Domain.Entities
 {
     public class Client : IClient
     {
-        /// <summary>
-        /// The primary key of the client
-        /// </summary>
+        public Client()
+        {
+            UpdatedAt = DateTimeOffset.UtcNow;
+            CreatedAt = DateTimeOffset.UtcNow;
+        }
+
+        /// <inheritdoc />
         public Guid ClientId { get; set; }
 
-        /// <summary>
-        /// Was created at
-        /// </summary>
+       /// <inheritdoc />
         public DateTimeOffset CreatedAt { get; set; }
 
-        /// <summary>
-        /// Was last updated at
-        /// </summary>
+        /// <inheritdoc />
         public DateTimeOffset UpdatedAt { get; set; }
 
-        /// <summary>
-        /// Name of the client
-        /// </summary>
+        /// <inheritdoc />
         public string Name { get; set; }
 
-        /// <summary>
-        /// API key for authorization
-        /// </summary>
+        /// <inheritdoc />
         public string API { get; set; }
 
-        /// <summary>
-        /// Wether client is enabled or not.
-        /// </summary>
+        /// <inheritdoc />
         public bool Enabled { get; set; }
 
-        /// <summary>
-        /// A JSON encoded string of an agent to be set on statements that the client pushes.
-        /// </summary>
+        /// <inheritdoc />
         public string Authority { get; set; }
 
-        /// <summary>
-        /// An array of permission scopes
-        /// </summary>
-        public string[] Scopes { get; set; }
+        /// <inheritdoc />
+        public List<string> Scopes { get; set; }
     }
 }

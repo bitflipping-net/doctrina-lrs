@@ -52,7 +52,7 @@ namespace Doctrina.Domain.Entities
 
         public static implicit operator string(Ifi ifi)
         {
-            return ifi.ToString();
+            return ifi?.ToString();
         }
 
         public static implicit operator Ifi(string key)

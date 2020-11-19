@@ -18,7 +18,9 @@ namespace Doctrina.Domain.Entities
         public Guid VerbId { get; set; }
         public virtual VerbEntity Verb { get; set; }
         public DateTimeOffset? Timestamp { get; set; }
+        public Guid? ResultId { get; set; }
         public virtual ResultEntity Result { get; set; }
+        public Guid? ContextId { get; set; }
         public virtual ContextEntity Context { get; set; }
         public virtual ICollection<AttachmentEntity> Attachments { get; set; }
         public DateTimeOffset? Stored { get; set; }

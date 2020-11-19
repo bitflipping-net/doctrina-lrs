@@ -25,14 +25,33 @@ namespace Doctrina.Application.Agents.Queries
         {
             var agent = _mapper.Map<AgentEntity>(request.Agent);
 
-            var query = _context.Agents
-                .Where(x => x.ObjectType == agent.ObjectType);
+            if (string.IsNullOrEmpty(agent.IFI_Key) || string.IsNullOrEmpty(agent.IFI_Value))
+                return null;
 
-            return await query.SingleOrDefaultAsync(x =>
-                x.ObjectType == agent.ObjectType &&
-                x.IFI_Key == agent.IFI_Key &&
-                x.IFI_Value == agent.IFI_Value
-            , cancellationToken);
+            if (agent.ObjectType == EntityObjectType.Group)
+            {
+                var query = _context.Agents.OfType<GroupEntity>()
+                .AsNoTracking()
+                .Include(x => x.Members)
+                .Where(x =>
+                    x.ObjectType == agent.ObjectType &&
+                    x.IFI_Key == agent.IFI_Key &&
+                    x.IFI_Value == agent.IFI_Value);
+
+                return await query.SingleOrDefaultAsync(cancellationToken);
+            }
+            else
+            {
+                var query = _context.Agents
+                .AsNoTracking()
+                .Where(x =>
+                    x.ObjectType == agent.ObjectType &&
+                    x.IFI_Key == agent.IFI_Key &&
+                    x.IFI_Value == agent.IFI_Value);
+
+                return await query.SingleOrDefaultAsync(cancellationToken);
+            }
+
         }
     }
 }

@@ -71,11 +71,7 @@ namespace Doctrina.Application.Infrastructure.ExperienceApi{
 
             if (agent.Account != null)
             {
-                var uriBuilder = new UriBuilder(agent.Account.HomePage)
-                {
-                    UserName = agent.Account.Name
-                };
-                return uriBuilder.ToString();
+                return agent.Account.ToUri().ToString();
             }
 
             return null;
