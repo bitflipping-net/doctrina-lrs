@@ -1,0 +1,35 @@
+@host = localhost:5000
+@version = 1.0.3
+@basicAuth = Basic YWRtaW5AZXhhbXBsZS5jb206ektSNGdrWU5IUDV0dkg=
+@agent = %7B%22objectType%22%3A%22Agent%22%2C%22account%22%3A%7B%22homePage%22%3A%22http%3A%2F%2Fwww.example.com%2FagentId%2F1%22%2C%22name%22%3A%22Rick%20James%22%7D%7D
+@profileId = c7ecaecd-2cba-4129-be04-52eef4816a14
+###
+POST /xapi/agents/profile?agent={{agent}}
+    &profileId={{profileId}} HTTP/1.1
+Host: {{host}}
+X-Experience-API-Version: {{version}}
+Authorization: {{basicAuth}}
+Accept-Encoding: gzip, deflate
+User-Agent: node-superagent/1.8.5
+Content-Type: application/json
+Content-Length: 184
+
+{"name":"d103e598-845c-4e4b-b8f3-de3769b075d7","location":{"name":"2de59d04-dc26-45ee-8b35-98bbd1117b54"},"f942eefc-764d-41d5-b940-089ff9557818":"51ff8bc8-fd0d-49a0-8ad5-c311e6c253e5"}
+
+### @name "GetAgentProfiles"
+GET /xapi/agents/profile?agent={{agent}}
+Host: {{host}}
+X-Experience-API-Version: {{version}}
+Authorization: {{basicAuth}}
+
+### @name "GetAgentProfile"
+GET /xapi/agents/profile?profileId={{profileId}}&agent={{agent}} HTTP/1.1
+Host: {{host}}
+X-Experience-API-Version: {{version}}
+Authorization: {{basicAuth}}
+
+### @name DeleteAgentProfile
+DELETE /xapi/agents/profile?agent={{agent}}&profileId={{profileId}} HTTP/1.1
+Host: {{host}}
+X-Experience-API-Version: {{version}}
+Authorization: {{basicAuth}}

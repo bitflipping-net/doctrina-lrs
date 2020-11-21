@@ -27,7 +27,7 @@ namespace Doctrina.Persistence.Configurations.Documents
 
             builder.Property(e => e.Checksum)
                 .IsRequired()
-                .HasMaxLength(Constants.HASH_LENGTH);
+                .HasColumnType("varbinary(64)");
 
             builder.Property(e => e.UpdatedAt)
                 .IsRequired();

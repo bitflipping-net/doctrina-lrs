@@ -236,11 +236,11 @@ namespace Doctrina.Persistence.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Key = table.Column<string>(maxLength: 2083, nullable: true),
                     AgentId = table.Column<Guid>(nullable: true),
-                    RegistrationId = table.Column<Guid>(nullable: true),
                     ActivityId = table.Column<Guid>(nullable: true),
+                    RegistrationId = table.Column<Guid>(nullable: true),
                     ContentType = table.Column<string>(maxLength: 255, nullable: true),
                     Content = table.Column<byte[]>(nullable: true),
-                    Checksum = table.Column<string>(maxLength: 32, nullable: false),
+                    Checksum = table.Column<byte[]>(type: "varbinary(64)", nullable: false),
                     UpdatedAt = table.Column<DateTimeOffset>(nullable: false),
                     CreatedAt = table.Column<DateTimeOffset>(nullable: false),
                     DocumentType = table.Column<string>(nullable: false)

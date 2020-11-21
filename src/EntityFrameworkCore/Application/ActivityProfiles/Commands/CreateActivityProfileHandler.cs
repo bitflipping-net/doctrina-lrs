@@ -34,7 +34,6 @@ namespace Doctrina.Application.ActivityProfiles.Commands
             _context.Documents.Add(profile);
             await _context.SaveChangesAsync(cancellationToken);
 
-            //return profile;
             return profile;
         }
     }

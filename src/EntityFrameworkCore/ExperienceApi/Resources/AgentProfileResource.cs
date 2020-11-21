@@ -6,10 +6,12 @@ using Doctrina.Application.Agents.Queries;
 using Doctrina.ExperienceApi.Data;
 using Doctrina.ExperienceApi.Data.Documents;
 using Doctrina.ExperienceApi.Server.Exceptions;
+using Doctrina.ExperienceApi.Server.Models;
 using Doctrina.ExperienceApi.Server.Resources;
 using MediatR;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -50,28 +52,38 @@ namespace Doctrina.ExperienceApi.Resources
             var agentEntity = await mediator.Send(GetAgentQuery.Create(agent), cancellationToken);
 
             if (agentEntity == null)
-                throw new NotFoundException("Agent Profile", profileId);
+                return null;
 
             var profile = await mediator.Send(GetAgentProfileQuery.Create(agentEntity.AgentId, profileId));
 
             return mapper.Map<IDocument>(profile);
         }
 
-        public async Task<ICollection<IDocument>> GetAgentProfiles(Agent agent, DateTimeOffset? since = null, CancellationToken cancellationToken = default)
+        public async Task<MultipleDocumentResult> GetAgentProfiles(Agent agent, DateTimeOffset? since = null, CancellationToken cancellationToken = default)
         {
             var agentEntity = await mediator.Send(GetAgentQuery.Create(agent), cancellationToken);
 
             if (agentEntity == null)
-                return new HashSet<IDocument>();
+                return MultipleDocumentResult.Empty();
 
             var profiles = await mediator.Send(GetAgentProfilesQuery.Create(agentEntity.AgentId, since), cancellationToken);
 
-            return mapper.Map<ICollection<IDocument>>(profiles);
+            if(!profiles.Any())
+                return MultipleDocumentResult.Empty();
+
+            ICollection<string> ids = profiles.Select(x=> x.Key).ToHashSet();
+            DateTimeOffset? lastModified = profiles.OrderByDescending(x=> x.UpdatedAt).Select(x=> x.UpdatedAt).FirstOrDefault();
+
+            return MultipleDocumentResult.Success(ids, lastModified);
         }
 
-        public Task<IDocument> UpdateAgentProfile(Agent agent, string profileId, byte[] content, string contentType, CancellationToken cancellationToken = default)
+        public async Task<IDocument> UpdateAgentProfile(Agent agent, string profileId, byte[] content, string contentType, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            var agentEntity = await mediator.Send(GetAgentQuery.Create(agent), cancellationToken);
+
+            var document = await mediator.Send(UpdateAgentProfileCommand.Create(agentEntity.AgentId, profileId, content, contentType));
+
+            return mapper.Map<IDocument>(document);
         }
     }
 }

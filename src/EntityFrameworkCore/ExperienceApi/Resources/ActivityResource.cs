@@ -24,6 +24,6 @@ namespace Doctrina.ExperienceApi.Resources
             var activityEntity = await mediator.Send(GetActivityQuery.Create(activityId), cancellationToken);
             return mapper.Map<Activity>(activityEntity);
         }
-            
+
     }
 }

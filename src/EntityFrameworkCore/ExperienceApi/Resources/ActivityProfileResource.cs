@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
+using Doctrina.Application.Activities.Queries;
 using Doctrina.Application.ActivityProfiles.Commands;
 using Doctrina.Application.ActivityProfiles.Queries;
 using Doctrina.ExperienceApi.Data;
 using Doctrina.ExperienceApi.Data.Documents;
+using Doctrina.ExperienceApi.Server.Models;
 using Doctrina.ExperienceApi.Server.Resources;
 using MediatR;
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -58,15 +60,29 @@ namespace Doctrina.ExperienceApi.Resources
         }
 
         /// <inheritdoc/>
-        public async Task<ICollection<IDocument>> GetActivityProfiles(Iri activityId, DateTimeOffset? since = null, CancellationToken cancellationToken = default)
+        public async Task<MultipleDocumentResult> GetActivityProfiles(Iri activityId, DateTimeOffset? since = null, CancellationToken cancellationToken = default)
         {
+            var activity = await mediator.Send(GetActivityQuery.Create(activityId), cancellationToken);
+
+            if(activity == null)
+                return MultipleDocumentResult.Empty();
+
             var documents = await mediator.Send(new GetActivityProfilesQuery()
             {
                 ActivityId = activityId,
                 Since = since
             }, cancellationToken);
 
-            return mapper.Map<ICollection<IDocument>>(documents);
+            if (!documents.Any())
+                return MultipleDocumentResult.Empty();
+
+            var ids = documents.Select(x => x.Key).ToHashSet();
+            var lastModified = documents
+                .OrderByDescending(x => x.UpdatedAt)
+                .Select(x => x.UpdatedAt)
+                .FirstOrDefault();
+
+            return MultipleDocumentResult.Success(ids, lastModified);
         }
 
         /// <inheritdoc/>

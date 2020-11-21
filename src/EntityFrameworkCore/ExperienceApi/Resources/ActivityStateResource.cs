@@ -7,10 +7,12 @@ using Doctrina.Application.Agents.Queries;
 using Doctrina.Domain.Entities;
 using Doctrina.ExperienceApi.Data;
 using Doctrina.ExperienceApi.Data.Documents;
+using Doctrina.ExperienceApi.Server.Models;
 using Doctrina.ExperienceApi.Server.Resources;
 using MediatR;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -61,14 +63,12 @@ namespace Doctrina.ExperienceApi.Resources
             return mapper.Map<ActivityStateDocument>(state);
         }
 
-        public async Task<ICollection<IDocument>> GetActivityStates(Iri activityId, Agent agent, Guid? registration, DateTimeOffset? since = null, CancellationToken cancellationToken = default)
+        public async Task<MultipleDocumentResult> GetActivityStates(Iri activityId, Agent agent, Guid? registration, DateTimeOffset? since = null, CancellationToken cancellationToken = default)
         {
             AgentEntity savedAgent = await mediator.Send(GetAgentQuery.Create(agent), cancellationToken);
 
             if (savedAgent == null)
-            {
-                return new HashSet<IDocument>();
-            }
+                return MultipleDocumentResult.Empty();
 
             var states = await mediator.Send(new GetActivityStatesQuery()
             {
@@ -78,7 +78,15 @@ namespace Doctrina.ExperienceApi.Resources
                 Since = since
             }, cancellationToken);
 
-            return mapper.Map<ICollection<IDocument>>(states);
+            if(!states.Any())
+                return MultipleDocumentResult.Empty();
+
+            var keys = states.Select(x=> x.Key).ToHashSet();
+            var lastModified = states.OrderByDescending(x=> x.UpdatedAt)
+                .Select(x=> x.UpdatedAt)
+                .FirstOrDefault();
+
+            return MultipleDocumentResult.Success(keys, lastModified);
         }
 
         public async Task<IDocument> PostSingleState(string stateId, Iri activityId, Agent agent, byte[] body, string contentType, Guid? registration = null, CancellationToken cancellationToken = default)

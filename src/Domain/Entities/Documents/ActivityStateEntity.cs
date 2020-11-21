@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Doctrina.Domain.Entities.Documents
+﻿namespace Doctrina.Domain.Entities.Documents
 {
     public class ActivityStateEntity : DocumentEntity
     {

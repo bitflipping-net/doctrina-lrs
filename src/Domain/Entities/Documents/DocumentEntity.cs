@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace Doctrina.Domain.Entities.Documents
 {
@@ -16,7 +17,7 @@ namespace Doctrina.Domain.Entities.Documents
             ContentType = contentType;
             UpdatedAt = DateTimeOffset.UtcNow;
             CreatedAt = DateTimeOffset.UtcNow;
-            Checksum = GenerateChecksum();
+            Checksum = GenerateChecksum(Content);
         }
 
         public long DocumentId { get; set; }
@@ -25,9 +26,9 @@ namespace Doctrina.Domain.Entities.Documents
 
         public Guid? AgentId { get; set; }
 
-        public Guid? RegistrationId { get; set; }
-
         public Guid? ActivityId { get; set; }
+
+        public Guid? RegistrationId { get; set; }
 
         /// <summary>
         /// Representation of the Content-Type header received
@@ -40,9 +41,9 @@ namespace Doctrina.Domain.Entities.Documents
         public byte[] Content { get; set; }
 
         /// <summary>
-        /// MD5 Checksum
+        /// SHA1 Checksum
         /// </summary>
-        public string Checksum { get; set; }
+        public byte[] Checksum { get; set; }
 
         /// <summary>
         /// UTC Date when the document was last modified
@@ -55,17 +56,17 @@ namespace Doctrina.Domain.Entities.Documents
         public DateTimeOffset CreatedAt { get; set; }
 
         // Methods:
-        private string GenerateChecksum()
+        private byte[] GenerateChecksum(byte[] content)
         {
-            if (Content == null)
+            if (content == null)
             {
                 throw new NullReferenceException("Content is null or empty");
             }
 
             using (var sha1 = SHA1.Create())
             {
-                byte[] checksum = sha1.ComputeHash(Content);
-                return BitConverter.ToString(checksum).Replace("-", string.Empty).ToLower();
+                byte[] checksum = sha1.ComputeHash(content);
+                return checksum;
             }
         }
 
@@ -74,7 +75,12 @@ namespace Doctrina.Domain.Entities.Documents
             this.Content = content;
             this.ContentType = contentType;
             this.UpdatedAt = DateTimeOffset.UtcNow;
-            Checksum = this.GenerateChecksum();
+            Checksum = this.GenerateChecksum(content);
+        }
+
+         public string GetChecksumString()
+        {
+            return BitConverter.ToString(Checksum).Replace("-", string.Empty).ToLower();
         }
     }
 }

@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Doctrina.Persistence.Migrations
 {
     [DbContext(typeof(DoctrinaDbContext))]
-    [Migration("20201119121407_CreateSchema")]
+    [Migration("20201119221013_CreateSchema")]
     partial class CreateSchema
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -276,10 +276,9 @@ namespace Doctrina.Persistence.Migrations
                     b.Property<Guid?>("AgentId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Checksum")
+                    b.Property<byte[]>("Checksum")
                         .IsRequired()
-                        .HasColumnType("nvarchar(32)")
-                        .HasMaxLength(32);
+                        .HasColumnType("varbinary(64)");
 
                     b.Property<byte[]>("Content")
                         .HasColumnType("varbinary(max)");

@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace Doctrina.ExperienceApi.Resources
 {
+    /// <inheritdoc />
     public class StatementResource : IStatementResource
     {
         private readonly IHttpContextAccessor httpContextAccessor;

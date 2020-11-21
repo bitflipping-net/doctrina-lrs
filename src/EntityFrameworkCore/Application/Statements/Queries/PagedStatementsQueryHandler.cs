@@ -55,17 +55,22 @@ namespace Doctrina.Application.Statements.Queries
                 if (currentAgent != null)
                 {
                     Guid agentId = currentAgent.AgentId;
+                    EntityObjectType agentType = currentAgent.ObjectType;
                     if (request.RelatedAgents.GetValueOrDefault())
                     {
                         query = (
                             from sta in query
-                            join rel in _context.ObjectRelations
-                                on sta.StatementId equals rel.ParentId
+                            join sub in _context.SubStatements
+                                on new { ObjectType = sta.ObjectType, ObjectId = sta.ObjectId }
+                                equals new { ObjectType = sub.ObjectType, ObjectId = sub.SubStatementId }
+                            let ctx = sta.Context
                             where sta.Actor.AgentId == agentId
-                            || (
-                                rel.ChildObjectType == EntityObjectType.Agent &&
-                                rel.ChildId == agentId
-                            )
+                                || (sta.ObjectType == agentType && sta.ObjectId == agentId)
+                                || (sta.Context.InstructorId == agentId || sta.Context.TeamId == agentId)
+                                // SubStatement
+                                || sub.Actor.AgentId == agentId
+                                || (sub.ObjectType == agentType && sub.ObjectId == agentId) // Object
+                                || (sub.Context.InstructorId == agentId || sub.Context.TeamId == agentId)
                             select sta
                         );
                     }
@@ -90,7 +95,7 @@ namespace Doctrina.Application.Statements.Queries
                 {
                     query = (
                         from statement in query
-                        join subStatement in _context.SubStatements 
+                        join subStatement in _context.SubStatements
                             on new { ObjectId = statement.ObjectId, ObjectType = statement.ObjectType }
                             equals new { ObjectId = subStatement.ObjectId, ObjectType = EntityObjectType.SubStatement }
                         where

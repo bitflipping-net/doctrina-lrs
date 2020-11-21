@@ -274,10 +274,9 @@ namespace Doctrina.Persistence.Migrations
                     b.Property<Guid?>("AgentId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Checksum")
+                    b.Property<byte[]>("Checksum")
                         .IsRequired()
-                        .HasColumnType("nvarchar(32)")
-                        .HasMaxLength(32);
+                        .HasColumnType("varbinary(64)");
 
                     b.Property<byte[]>("Content")
                         .HasColumnType("varbinary(max)");
