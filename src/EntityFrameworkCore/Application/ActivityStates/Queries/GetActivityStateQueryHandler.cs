@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Doctrina.Application.ActivityStates.Queries
 {
-    public class GetActivityStateQueryHandler : IRequestHandler<GetActivityStateQuery, ActivityStateDocument>
+    public class GetActivityStateQueryHandler : IRequestHandler<GetActivityStateQuery, ActivityStateEntity>
     {
         private readonly IDoctrinaDbContext _context;
         private readonly IMapper _mapper;
@@ -24,7 +24,7 @@ namespace Doctrina.Application.ActivityStates.Queries
             _mediator = mediator;
         }
 
-        public async Task<ActivityStateDocument> Handle(GetActivityStateQuery request, CancellationToken cancellationToken)
+        public async Task<ActivityStateEntity> Handle(GetActivityStateQuery request, CancellationToken cancellationToken)
         {
             var agent = await _mediator.Send(GetAgentQuery.Create(request.Agent));
 
@@ -44,7 +44,7 @@ namespace Doctrina.Application.ActivityStates.Queries
 
             ActivityStateEntity state = await query.SingleOrDefaultAsync(cancellationToken);
 
-            return _mapper.Map<ActivityStateDocument>(state);
+            return state;
         }
     }
 }

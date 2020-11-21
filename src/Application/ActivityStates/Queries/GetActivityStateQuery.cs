@@ -1,11 +1,11 @@
-﻿using Doctrina.ExperienceApi.Data;
-using Doctrina.ExperienceApi.Data.Documents;
+﻿using Doctrina.Domain.Entities.Documents;
+using Doctrina.ExperienceApi.Data;
 using MediatR;
 using System;
 
 namespace Doctrina.Application.ActivityStates.Queries
 {
-    public class GetActivityStateQuery : IRequest<ActivityStateDocument>
+    public class GetActivityStateQuery : IRequest<ActivityStateEntity>
     {
         public string StateId { get; set; }
         public Iri ActivityId { get; set; }

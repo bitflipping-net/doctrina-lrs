@@ -1,0 +1,14 @@
+@host = localhost:5000
+@version = 1.0.3
+@basicAuth = Basic YWRtaW5AZXhhbXBsZS5jb206ektSNGdrWU5IUDV0dkg=
+@activityId = http://www.example.com/activityId/hashset
+@agent = %7B%22objectType%22%3A%22Agent%22%2C%22account%22%3A%7B%22homePage%22%3A%22http%3A%2F%2Fwww.example.com%2FagentId%2F1%22%2C%22name%22%3A%22Rick%20James%22%7D%7D
+@stateId = a88a3408-dd2e-493d-8e60-7359e1b90fce
+###
+HEAD /xapi/activities/state
+    ?activityId={{activityId}}
+    &agent={{agent}}
+    &stateId={{stateId}}
+Host: {{host}}
+X-Experience-API-Version: {{version}}
+Authorization: {{basicAuth}}

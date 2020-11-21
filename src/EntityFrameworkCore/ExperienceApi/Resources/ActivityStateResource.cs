@@ -60,7 +60,7 @@ namespace Doctrina.ExperienceApi.Resources
                 Registration = registration
             }, cancellationToken);
 
-            return mapper.Map<ActivityStateDocument>(state);
+            return mapper.Map<IDocument>(state);
         }
 
         public async Task<MultipleDocumentResult> GetActivityStates(Iri activityId, Agent agent, Guid? registration, DateTimeOffset? since = null, CancellationToken cancellationToken = default)
